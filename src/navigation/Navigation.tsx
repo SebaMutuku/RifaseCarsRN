@@ -8,7 +8,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
-import {ColorSchemeName, Pressable} from 'react-native';
+import {ColorSchemeName} from 'react-native';
 import Colors from '../constants/Colors';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
@@ -26,6 +26,8 @@ import utils from "../utils/Utils";
 import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
+import {Avatar} from "react-native-paper";
+import {Text, View} from "../components/Themed";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
@@ -35,6 +37,7 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
         const fetchToken = async () => {
             // await utils.saveValue("token", "yayyayayyaass");
             const savedToken = await utils.getValue("token");
+            console.log("Saved token ", savedToken)
             if (savedToken != null || savedToken != undefined) {
                 //checkToken here
                 let checkToken: boolean = false;
@@ -61,7 +64,8 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
         <NavigationContainer
             theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
             ref={navigationRef}>
-            {state.token == null || false ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
+            {/*{state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}*/}
+            <HomeStackNavigator/>
         </NavigationContainer>
     );
 }
@@ -86,7 +90,11 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
 
 function HomeStackNavigator() {
     return (
-        <HomeStacks.Navigator initialRouteName='HomeStack'>
+        <HomeStacks.Navigator initialRouteName='HomeStack' screenOptions={{
+            headerStyle: {
+                backgroundColor: layoutParams.colors.backgroundColor,
+            },
+        }}>
             <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
                                options={{headerShown: false}}/>
             <HomeStacks.Screen name="UserData" component={NotFoundScreen} options={{title: 'Oops!'}}/>
@@ -109,15 +117,15 @@ function UnauthenticatedNavigator() {
     const colorScheme = useColorScheme();
     return (
         <LoginStacks.Navigator initialRouteName="Login" screenOptions={{
-            headerTintColor: Colors[colorScheme].tint,
+            headerTintColor: '#fff',
             animation: "fade_from_bottom",
             headerTitleStyle: {
                 color: "black",
             },
+
             headerShadowVisible: false,
             headerStyle: {
                 backgroundColor: layoutParams.colors.backgroundColor,
-
             },
             headerTitleAlign: 'center'
         }}>
@@ -182,29 +190,49 @@ function BottomTabNavigator() {
             initialRouteName="HomeTab"
             screenOptions={{
                 tabBarActiveTintColor: Colors[colorScheme].tint,
-                headerShown: false
-
+                headerStyle: {
+                    backgroundColor: layoutParams.colors.backgroundColor,
+                },
             }}>
             <HomeBottomTabs.Screen
                 name="HomeTab"
                 component={Home}
                 options={({navigation}: HomeBottomTabScreenProps<'HomeTab'>) => ({
-                    title: 'Tab One',
                     tabBarIcon: ({color}) => <TabBarIcon name="home" color={layoutParams.colors.black}/>,
                     headerRight: () => (
-                        <Pressable
-                            onPress={() => navigation.navigate("Profile")}
-                            style={({pressed}) => ({
-                                opacity: pressed ? 0.5 : 1,
-                            })}>
-                            <FontAwesome
-                                name="info-circle"
-                                size={25}
-                                color={Colors[colorScheme].text}
-                                style={{marginRight: 15}}
-                            />
-                        </Pressable>
+                        <View style={{
+                            justifyContent: 'space-between',
+                            flexDirection: "row",
+                            alignItems: "center"
+                        }}>
+                            <FontAwesome name="bell" size={30} color={layoutParams.colors.deepBlue}
+                                         style={{marginRight: 20}}/>
+                            <Avatar.Image size={50} source={require('../../assets/images/human-male.jpg')}
+                                          onTouchStart={() => navigation.navigate('Profile')} style={{
+                                justifyContent: "center", alignItems: 'center'
+                            }}/>
+                        </View>
                     ),
+                    title: "Home",
+                    headerLeftContainerStyle: {
+                        marginLeft: 10
+                    },
+                    headerRightContainerStyle: {
+                        marginRight: 10
+                    },
+                    headerStyle: {
+                        height: 55,
+                        backgroundColor: layoutParams.colors.backgroundColor
+                    },
+                    headerLeft: () => (
+                        <View>
+                            <Text style={{
+                                fontSize: 20, fontFamily: "Poppins_500Medium"
+                            }}>Let's find the Ideal {'\n'}Car for you</Text>
+                        </View>),
+                    headerShown: false,
+                    headerTitleStyle: false,
+                    headerTitleAllowFontScaling: true
                 })}
             />
             <HomeBottomTabs.Screen
