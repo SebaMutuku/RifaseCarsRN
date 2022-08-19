@@ -1,11 +1,14 @@
 import React from "react";
-import {Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
+import {Image, Pressable, ScrollView, StyleSheet, TouchableOpacity} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
-import {Avatar} from "react-native-paper";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
+import {Text, TextInput, View} from "../../components/Themed";
+import {FontAwesome} from "@expo/vector-icons";
+import CircularImage from "../../components/CircularImage";
+import FlatListComponent from "../../components/FlatListComponent";
 
 const DATA = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", title: "First Item",
@@ -23,12 +26,51 @@ const DATA = [{
     id: "58694a0f-3da1-471f-bd96-145571e29d76", title: "Seventh Item",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d77", title: "Eighth Item",
-},];
+}, , {
+    id: "58694a0f-3da1-471f-bd96-145571e29d78", title: "Eighth Item",
+}, , {
+    id: "58694a0f-3da1-471f-bd96-145571e29d79", title: "Eighth Item",
+}, , {
+    id: "58694a0f-3da1-471f-bd96-145571e29d80", title: "Eighth Item",
+}, , {
+    id: "58694a0f-3da1-471f-bd96-145571e29d81", title: "Eighth Item",
+}];
 export default function Home() {
     const [state, setState] = React.useState({
-        username: "", searchedCar: "", brandSelected: 0
+        username: "", searchedCar: "", brandSelected: 0, selectedId: 0, loading: false, populaCarData: []
     });
     const navigation = useNavigation<CombinedNavigationProps>();
+    React.useEffect(() => loadPopularCars(), []);
+
+    function loadPopularCars() {
+        setState({
+            ...state, loading: true
+        });
+        //Service to get the data from the server to render
+        fetch('https://aboutreact.herokuapp.com/getpost.php?offset=' + 1)
+            //Sending the currect offset with get request
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setState(({
+                    ...state, populaCarData: state.populaCarData, ...responseJson
+                }));
+                setState({
+                    ...state, loading: false
+                });
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    // const addIdToData = (data: any) => {
+    //     let dataWithId = [];
+    //     for (let i = 0; i < data.length; i++) {
+    //         dataWithId.push(i, data[i]);
+    //     }
+    //     return dataWithId;
+    // }
 
     function searchInput() {
         return <TextInput placeholder="Search for a car"
@@ -40,6 +82,12 @@ export default function Home() {
                           underlineColorAndroid="transparent"
                           onChangeText={(text) => setState({...state, searchedCar: text})}
                           value={state.searchedCar}/>;
+    }
+
+    function onPressimage() {
+        console.log("Pressed")
+        navigation.navigate("Profile")
+
     }
 
     function carBrandFlatList() {
@@ -58,11 +106,81 @@ export default function Home() {
             setState({
                 ...state, brandSelected: index
             })
-        }}>
+        }} key={index}>
             <Text style={{
-                fontSize: 15, fontWeight: "600", fontFamily: "Roboto_500Medium"
-            }}>{item.title}</Text>
+                fontSize: 15,
+                fontWeight: "600",
+                fontFamily: "Roboto_500Medium",
+                color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
+            }}>{item?.title}</Text>
         </Pressable>)}</ScrollView>);
+    }
+
+    function renderCarSpecs(itemKey: string, itemValue: any) {
+        return (<View style={{
+            flexDirection: "row", justifyContent: "space-between",
+        }}>
+            <Text style={homeStyles.itemKeytext}>{itemKey}</Text>
+            <Text style={homeStyles.itemValueText}>{itemValue}</Text>
+        </View>);
+    }
+
+    function popularCars() {
+        function renderItem(item: any, index: number) {
+            console.log("item ", item)
+            const backgroundColor = index === state.selectedId ? layoutParams.colors.deepBlue : layoutParams.colors.white;
+            return (<TouchableOpacity style={{
+                ...homeStyles.flatview, backgroundColor: backgroundColor, elevation: 2
+            }}
+                                      onPress={() => {
+                                          setState({
+                                              ...state, selectedId: index
+                                          });
+                                      }}>
+                <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
+                    width: "100%", height: 100, borderRadius: 10, resizeMode: "contain",
+                }}/>
+                <View style={{
+                    margin: 5
+                }}><Text style={{
+                    fontSize: 17, fontFamily: "Poppins_700Bold", textAlign: 'center'
+                }}>{item?.title}</Text>
+                    {renderCarSpecs("Mileage", item!.title)}
+                    {renderCarSpecs("Mileage", item!.title)}
+                    {renderCarSpecs("Mileage", item!.title)}
+                    {renderCarSpecs("Mileage", item!.title)}
+                </View>
+            </TouchableOpacity>);
+        }
+
+        const renderPopularCarsFooter = () => {
+            return (//Footer View with Load More button
+                <View style={homeStyles.footer}>
+                    <TouchableOpacity
+                        style={{
+                            alignItems: "center",
+                            justifyContent: 'center',
+                            backgroundColor: layoutParams.colors.deepBlue,
+                            elevation: 2,
+                            padding: 8,
+                            borderRadius: 10,
+                        }}
+                        onPress={loadPopularCars}
+                    >
+                        <Text style={{fontSize: 20, fontWeight: "bold", color: layout.colors.white}}>Load More</Text>
+                    </TouchableOpacity></View>);
+        };
+
+        return <FlatListComponent showsHorizontallIndicator={false} data={state.populaCarData}
+                                  renderItem={({item, index}) => renderItem(item, index)}
+                                  listFooterComponentStyle={{marginBottom: 0}}
+                                  horizontal={false}
+                                  showsVerticalScrollIndicator={false}
+                                  listFooterComponent={renderPopularCarsFooter()} keyExtractor={item => "_" + item?.id}
+                                  key={'_'} extraData={state.selectedId} contentContainerStyle={{
+            margin: 5
+        }} numColumns={2}
+        />;
     }
 
     return (<SafeAreaProvider>
@@ -74,10 +192,21 @@ export default function Home() {
                 <Text style={{
                     fontSize: 25, fontFamily: "Poppins_500Medium"
                 }}>Let's find the Ideal {'\n'}Car for you</Text>
-                <Avatar.Image size={70} source={require('../../../assets/images/human-male.jpg')}
-                              onTouchStart={() => Alert.alert("Tap", "tapped")} style={{
-                    justifyContent: "center", alignItems: 'center'
-                }}/>
+                <View style={{
+                    flexDirection: "row", justifyContent: "space-between", alignItems: 'center'
+                }}>
+                    <FontAwesome name="bell" size={30} color={layoutParams.colors.deepBlue}
+                                 style={{marginRight: 20}}/>
+                    {/*<Avatar.Image size={50} source={require('../../../assets/images/human-male.jpg')}*/}
+                    {/*              onTouchStart={() => Alert.alert("Tap", "tapped")} style={{*/}
+                    {/*    justifyContent: "center", alignItems: 'center'*/}
+                    {/*}}/>*/}
+                    {CircularImage({
+                        source: require('../../../assets/images/human-male.jpg'),
+                        style: {...homeStyles.circularImage},
+                        onPress: () => onPressimage
+                    })}
+                </View>
             </View>
             {searchInput()}
             <View style={{
@@ -88,9 +217,33 @@ export default function Home() {
                 }}>Brands</Text>
                 {/*brandsFlatList*/}
                 {carBrandFlatList()}
+                <View style={{
+                    justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
+                }}>
+                    <Text style={{
+                        fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular"
+                    }}>Popular Cars</Text>
+                    <TouchableOpacity style={{
+                        padding: 10, backgroundColor: layoutParams.colors.deepBlue, borderRadius: 50
+                    }}>
+                        <Text style={{
+                            fontSize: 15,
+                            fontWeight: "bold",
+                            fontFamily: "Poppins_400Regular",
+                            color: layout.colors.white
+                        }}>View All</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{
+                    marginTop: 10
+                }}/>
+
             </View>
+            {/*All Car Brands*/}
+            {popularCars()}
         </View>
     </SafeAreaProvider>);
+
 }
 const homeStyles = StyleSheet.create({
     container: {
@@ -102,8 +255,17 @@ const homeStyles = StyleSheet.create({
         backgroundColor: layout.colors.white,
         fontSize: 20,
         borderRadius: 10,
-        margin: 5,
         padding: 10,
         elevation: layout.elevation.elevation
+    }, circularImage: {
+        width: 50, height: 50, borderRadius: 50 / 2
+    }, flatview: {
+        flex: 1, margin: 3, borderRadius: 10,
+    }, itemKeytext: {
+        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.greyColor
+    }, itemValueText: {
+        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular"
+    }, footer: {
+        padding: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',
     },
 })

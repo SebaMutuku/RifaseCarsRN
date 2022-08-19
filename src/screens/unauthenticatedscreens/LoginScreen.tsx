@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -6,6 +6,7 @@ import layout from "../../utils/LayoutParams";
 import React from "react";
 import utils from "../../utils/Utils";
 import displayImage from "../../utils/DisplayImage";
+import {Text, TextInput, View} from "../../components/Themed";
 
 export default function LoginScreen() {
     const [state, setState] = React.useState({

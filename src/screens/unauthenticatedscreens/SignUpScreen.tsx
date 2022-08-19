@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 import layout from "../../utils/LayoutParams";
 import displayImage from "../../utils/DisplayImage";
 import React from "react";
@@ -7,6 +7,7 @@ import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
 import {SafeAreaProvider} from "react-native-safe-area-context";
+import {Text, TextInput, View} from "../../components/Themed";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
@@ -15,7 +16,13 @@ export default function SignUpScreen() {
     const navigation = useNavigation<CombinedNavigationProps>();
 
     function validateUserTextFields() {
-        return ((state.email.length <= 0 || !state.email.toLowerCase().match(utils.checkValidMail)) && (state.password.length <= 0 || state.password.length < 8) && !state.checkBoxChecked)
+        if (state.email.length <= 0 || !state.email.toLowerCase().match(utils.checkValidMail)) {
+            return true;
+        }
+        if (state.password.length <= 0 || state.password.length < 8) {
+            return true;
+        }
+        return !state.checkBoxChecked
     }
 
     function onRegister() {
