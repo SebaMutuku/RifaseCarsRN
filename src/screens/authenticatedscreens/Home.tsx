@@ -8,7 +8,7 @@ import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Text, TextInput, View} from "../../components/Themed";
 import {FontAwesome} from "@expo/vector-icons";
 import CircularImage from "../../components/CircularImage";
-import FlatListComponent from "../../components/FlatListComponent";
+import FlatListView from "../../components/FlatListView";
 
 const DATA = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", title: "First Item",
@@ -40,7 +40,8 @@ export default function Home() {
         username: "", searchedCar: "", brandSelected: 0, selectedId: 0, loading: false, populaCarData: []
     });
     const navigation = useNavigation<CombinedNavigationProps>();
-    React.useEffect(() => loadPopularCars(), []);
+
+    // React.useEffect(() => loadPopularCars(), [state.populaCarData]);
 
     function loadPopularCars() {
         setState({
@@ -51,9 +52,9 @@ export default function Home() {
             //Sending the currect offset with get request
             .then((response) => response.json())
             .then((responseJson) => {
-                setState(({
-                    ...state, populaCarData: state.populaCarData, ...responseJson
-                }));
+                setState({
+                    ...state, populaCarData: DATA as any
+                });
                 setState({
                     ...state, loading: false
                 });
@@ -127,7 +128,6 @@ export default function Home() {
 
     function popularCars() {
         function renderItem(item: any, index: number) {
-            console.log("item ", item)
             const backgroundColor = index === state.selectedId ? layoutParams.colors.deepBlue : layoutParams.colors.white;
             return (<TouchableOpacity style={{
                 ...homeStyles.flatview, backgroundColor: backgroundColor, elevation: 2
@@ -146,7 +146,7 @@ export default function Home() {
                     fontSize: 17, fontFamily: "Poppins_700Bold", textAlign: 'center'
                 }}>{item?.title}</Text>
                     {renderCarSpecs("Mileage", item!.title)}
-                    {renderCarSpecs("Mileage", item!.title)}
+                    {renderCarSpecs("Mileage", item.title)}
                     {renderCarSpecs("Mileage", item!.title)}
                     {renderCarSpecs("Mileage", item!.title)}
                 </View>
@@ -163,24 +163,23 @@ export default function Home() {
                             backgroundColor: layoutParams.colors.deepBlue,
                             elevation: 2,
                             padding: 8,
-                            borderRadius: 10,
+                            borderRadius: 10
                         }}
                         onPress={loadPopularCars}
                     >
                         <Text style={{fontSize: 20, fontWeight: "bold", color: layout.colors.white}}>Load More</Text>
-                    </TouchableOpacity></View>);
+                    </TouchableOpacity>
+                </View>);
         };
 
-        return <FlatListComponent showsHorizontallIndicator={false} data={state.populaCarData}
-                                  renderItem={({item, index}) => renderItem(item, index)}
-                                  listFooterComponentStyle={{marginBottom: 0}}
-                                  horizontal={false}
-                                  showsVerticalScrollIndicator={false}
-                                  listFooterComponent={renderPopularCarsFooter()} keyExtractor={item => "_" + item?.id}
-                                  key={'_'} extraData={state.selectedId} contentContainerStyle={{
-            margin: 5
-        }} numColumns={2}
-        />;
+        return <FlatListView showsHorizontallIndicator={false} data={DATA}
+                             renderItem={({item, index}) => renderItem(item, index)}
+                             ListFooterComponentStyle={{marginBottom: 0}}
+                             horizontal={false}
+                             showsVerticalScrollIndicator={false}
+                             ListFooterComponent={renderPopularCarsFooter()} keyExtractor={item => "_" + item?.id}
+                             key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}
+                             numColumns={2}/>;
     }
 
     return (<SafeAreaProvider>

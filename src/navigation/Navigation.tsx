@@ -3,13 +3,11 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import {FontAwesome} from '@expo/vector-icons';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
 import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
 import {ColorSchemeName} from 'react-native';
-import Colors from '../constants/Colors';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import {
@@ -28,6 +26,7 @@ import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
 import {Text, View} from "../components/Themed";
+import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
@@ -109,7 +108,7 @@ function HomeStackNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const HomeBottomTabs = createBottomTabNavigator<HomeBottomTabParamList>();
+const HomeBottomTabs = createMaterialBottomTabNavigator<HomeBottomTabParamList>();
 const LoginStacks = createNativeStackNavigator<UnauthenticatedParamList>();
 const HomeStacks = createNativeStackNavigator<HomeStackParamList>();
 
@@ -188,17 +187,23 @@ function BottomTabNavigator() {
     return (
         <HomeBottomTabs.Navigator
             initialRouteName="HomeTab"
+            activeColor={layoutParams.colors.deepBlue}
+            sceneAnimationEnabled
+            barStyle={{
+                backgroundColor: layoutParams.colors.backgroundColor,
+                justifyContent: 'center',
+                borderRadius: 10
+            }}
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme].tint,
-                headerStyle: {
-                    backgroundColor: layoutParams.colors.backgroundColor,
-                },
-            }}>
+                tabBarBadge: true,
+            }}
+        >
             <HomeBottomTabs.Screen
                 name="HomeTab"
                 component={Home}
                 options={({navigation}: HomeBottomTabScreenProps<'HomeTab'>) => ({
-                    tabBarIcon: ({color}) => <TabBarIcon name="home" color={layoutParams.colors.black}/>,
+                    tabBarLabel: "Home",
+                    tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} size={25}/>,
                     headerRight: () => (
                         <View style={{
                             justifyContent: 'space-between',
@@ -239,16 +244,16 @@ function BottomTabNavigator() {
                 name="Settings"
                 component={TabTwoScreen}
                 options={{
-                    title: 'Tab Two',
-                    tabBarIcon: () => <TabBarIcon name="code" color={layoutParams.colors.black}/>,
+                    tabBarLabel: "Settings",
+                    tabBarIcon: ({color}) => <TabBarIcon name="wrench" color={color} size={25}/>,
                 }}
             />
             <HomeBottomTabs.Screen
                 name="Profile"
                 component={NotFoundScreen}
                 options={{
-                    title: 'Profile',
-                    tabBarIcon: () => <TabBarIcon name="code" color={layoutParams.colors.black}/>,
+                    tabBarLabel: "Profile",
+                    tabBarIcon: ({color}) => <TabBarIcon name="account-cog" color={color} size={25}/>,
                 }}
             />
         </HomeBottomTabs.Navigator>
@@ -260,10 +265,11 @@ function BottomTabNavigator() {
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-    name: React.ComponentProps<typeof FontAwesome>['name'];
+    name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
     color: string;
+    size: number
 }) {
-    return <FontAwesome size={30} style={{marginBottom: -3}} {...props} />;
+    return <MaterialCommunityIcons style={{marginBottom: -3}} {...props} />;
 }
 
 
