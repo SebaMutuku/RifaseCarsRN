@@ -8,7 +8,7 @@ import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/na
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
 import {ColorSchemeName} from 'react-native';
-import NotFoundScreen from '../screens/NotFoundScreen';
+import Profile from '../screens/authenticatedscreens/Profile';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import {
     HomeBottomTabParamList,
@@ -26,7 +26,8 @@ import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
 import {Text, View} from "../components/Themed";
-import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import LastOrders from "../screens/authenticatedscreens/LastOrders";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
@@ -96,9 +97,9 @@ function HomeStackNavigator() {
         }}>
             <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
                                options={{headerShown: false}}/>
-            <HomeStacks.Screen name="UserData" component={NotFoundScreen} options={{title: 'Oops!'}}/>
+            <HomeStacks.Screen name="UserData" component={Profile} options={{title: 'Oops!'}}/>
             <HomeStacks.Group screenOptions={{presentation: 'modal'}}>
-                <HomeStacks.Screen name="Wallet" component={NotFoundScreen}/>
+                <HomeStacks.Screen name="Wallet" component={Profile}/>
             </HomeStacks.Group>
         </HomeStacks.Navigator>
     );
@@ -108,7 +109,7 @@ function HomeStackNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const HomeBottomTabs = createMaterialBottomTabNavigator<HomeBottomTabParamList>();
+const HomeBottomTabs = createBottomTabNavigator<HomeBottomTabParamList>();
 const LoginStacks = createNativeStackNavigator<UnauthenticatedParamList>();
 const HomeStacks = createNativeStackNavigator<HomeStackParamList>();
 
@@ -183,19 +184,42 @@ function UnauthenticatedNavigator() {
 }
 
 function BottomTabNavigator() {
+    const [showLabel, setShowLabel] = React.useState(false);
     const colorScheme = useColorScheme();
     return (
         <HomeBottomTabs.Navigator
             initialRouteName="HomeTab"
-            activeColor={layoutParams.colors.deepBlue}
-            sceneAnimationEnabled
-            barStyle={{
-                backgroundColor: layoutParams.colors.backgroundColor,
-                justifyContent: 'center',
-                borderRadius: 10
-            }}
+            // activeColor={layoutParams.colors.deepBlue}
+            // sceneAnimationEnabled
             screenOptions={{
-                tabBarBadge: true,
+                tabBarItemStyle: {
+                    justifyContent: "center",
+                    alignItems: "center"
+                },
+                tabBarLabelStyle: {
+                    fontSize: 14,
+                    fontWeight: "bold",
+                },
+                headerStyle: {
+                    backgroundColor: layoutParams.colors.backgroundColor
+                },
+                headerTitleStyle: {
+                    fontSize: 25,
+                    fontFamily: "Poppins_400Regular"
+                },
+                tabBarLabelPosition: "beside-icon",
+                headerTitleAlign: "center",
+                tabBarAllowFontScaling: true,
+                tabBarStyle: {
+                    backgroundColor: layoutParams.colors.backgroundColor,
+                    borderRadius: 5,
+                    marginBottom: 4,
+                    marginLeft: 10,
+                    marginRight: 10,
+                },
+                headerTitleAllowFontScaling: true,
+                unmountOnBlur: true,
+                tabBarShowLabel: !showLabel
             }}
         >
             <HomeBottomTabs.Screen
@@ -241,6 +265,15 @@ function BottomTabNavigator() {
                 })}
             />
             <HomeBottomTabs.Screen
+                name="LastOrders"
+                component={LastOrders}
+                options={{
+                    title: "Latest Purchases",
+                    tabBarLabel: "Purchases",
+                    tabBarIcon: ({color}) => <TabBarIcon name="cart" color={color} size={25}/>,
+                }}
+            />
+            <HomeBottomTabs.Screen
                 name="Settings"
                 component={TabTwoScreen}
                 options={{
@@ -250,7 +283,7 @@ function BottomTabNavigator() {
             />
             <HomeBottomTabs.Screen
                 name="Profile"
-                component={NotFoundScreen}
+                component={Profile}
                 options={{
                     tabBarLabel: "Profile",
                     tabBarIcon: ({color}) => <TabBarIcon name="account-cog" color={color} size={25}/>,

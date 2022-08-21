@@ -74,15 +74,19 @@ export default function Home() {
     // }
 
     function searchInput() {
-        return <TextInput placeholder="Search for a car"
-                          autoCapitalize="none"
-                          blurOnSubmit={true}
-                          keyboardType="default"
-                          style={{...homeStyles.textInput}}
-                          inlineImageLeft="magnifying-glass"
-                          underlineColorAndroid="transparent"
-                          onChangeText={(text) => setState({...state, searchedCar: text})}
-                          value={state.searchedCar}/>;
+        return (<View style={{
+            alignItems: "center"
+        }}>
+            <TextInput placeholder="Search for a car"
+                       autoCapitalize="none"
+                       blurOnSubmit={true}
+                       keyboardType="default"
+                       style={{...homeStyles.textInput}}
+                       inlineImageLeft="magnifying-glass"
+                       underlineColorAndroid="transparent"
+                       onChangeText={(text) => setState({...state, searchedCar: text})}
+                       value={state.searchedCar}/>
+        </View>);
     }
 
     function onPressimage() {
@@ -99,7 +103,8 @@ export default function Home() {
         }}>{DATA.map((item, index) => <Pressable style={{
             elevation: state.brandSelected == index ? 1 : 0,
             alignItems: 'center',
-            padding: 8,
+            justifyContent: "center",
+            padding: state.brandSelected == index ? 12 : 8,
             backgroundColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
             margin: 3,
             borderRadius: 10
@@ -128,9 +133,9 @@ export default function Home() {
 
     function popularCars() {
         function renderItem(item: any, index: number) {
-            const backgroundColor = index === state.selectedId ? layoutParams.colors.deepBlue : layoutParams.colors.white;
+            const backgroundColor = index === state.selectedId ? layoutParams.colors.selectedColor : layoutParams.colors.white;
             return (<TouchableOpacity style={{
-                ...homeStyles.flatview, backgroundColor: backgroundColor, elevation: 2
+                ...homeStyles.flatview, backgroundColor: backgroundColor, elevation: index == state.selectedId ? 2 : 0,
             }}
                                       onPress={() => {
                                           setState({
@@ -149,6 +154,14 @@ export default function Home() {
                     {renderCarSpecs("Mileage", item.title)}
                     {renderCarSpecs("Mileage", item!.title)}
                     {renderCarSpecs("Mileage", item!.title)}
+                    <Text style={{
+                        textAlign: 'center',
+                        fontFamily: "Poppins_700Bold",
+                        fontSize: 14,
+                        margin: 10,
+                        color: layoutParams.colors.deepBlue
+                    }}>Show
+                        more details</Text>
                 </View>
             </TouchableOpacity>);
         }
@@ -177,12 +190,14 @@ export default function Home() {
                              ListFooterComponentStyle={{marginBottom: 0}}
                              horizontal={false}
                              showsVerticalScrollIndicator={false}
-                             ListFooterComponent={renderPopularCarsFooter()} keyExtractor={item => "_" + item?.id}
+                             ListFooterComponent={renderPopularCarsFooter()} keyExtractor={(item, index) => item!.title + index}
                              key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}
-                             numColumns={2}/>;
+                             numColumns={2} pagingEnabled={true}/>;
     }
 
-    return (<SafeAreaProvider>
+    return (<SafeAreaProvider style={{
+        ...homeStyles.container
+    }}>
         <View style={homeStyles.container}>
             {/*top view with avatar*/}
             <View style={{
@@ -212,8 +227,8 @@ export default function Home() {
                 margin: 5
             }}>
                 <Text style={{
-                    fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular"
-                }}>Brands</Text>
+                    fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular", margin: 8
+                }}>Choose a brand</Text>
                 {/*brandsFlatList*/}
                 {carBrandFlatList()}
                 <View style={{
@@ -236,7 +251,6 @@ export default function Home() {
                 <View style={{
                     marginTop: 10
                 }}/>
-
             </View>
             {/*All Car Brands*/}
             {popularCars()}
@@ -246,7 +260,7 @@ export default function Home() {
 }
 const homeStyles = StyleSheet.create({
     container: {
-        flex: 1, backgroundColor: layoutParams.colors.backgroundColor
+        flex: 1, backgroundColor: layoutParams.colors.backgroundColor,
     }, textInput: {
         width: layout.WINDOW.width * .95,
         height: layout.WINDOW.height * .05,
@@ -261,7 +275,7 @@ const homeStyles = StyleSheet.create({
     }, flatview: {
         flex: 1, margin: 3, borderRadius: 10,
     }, itemKeytext: {
-        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.greyColor
+        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.grey
     }, itemValueText: {
         fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular"
     }, footer: {

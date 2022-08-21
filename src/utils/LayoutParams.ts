@@ -17,7 +17,8 @@ export default {
         disabledButtonColor: "#D5D8DC",
         disabledTextColor: "#AEB6BF",
         textInputColor: "#E5E7E9",
-        greyColor: "#8cb2c9",
-        loadMore:"#C0392B"
+        grey: "#D7E1E7",
+        selectedColor: "#8cb2c9",
+        loadMore: "#C0392B"
     }
 };

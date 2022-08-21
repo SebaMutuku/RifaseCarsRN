@@ -99,7 +99,7 @@ export default function SignUpScreen() {
                                labelStyle={{
                                    fontSize: 20, color: layout.colors.black
                                }}
-                               uncheckedColor={layout.colors.greyColor}
+                               uncheckedColor={layout.colors.grey}
                                theme={DarkTheme}
                                onPress={() => setState({
                                    ...state, checkBoxChecked: !state.checkBoxChecked

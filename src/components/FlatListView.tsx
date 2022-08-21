@@ -15,9 +15,10 @@ interface flatlistProps {
     columnWrapperStyle?: StyleProp<ViewStyle>;
     contentContainerStyle: StyleProp<ViewStyle>;
     itemSeparatorComponent?: React.ComponentType<any> | null | undefined;
-    numColumns: number | undefined
+    numColumns: number | undefined;
+    pagingEnabled?: boolean | undefined;
 }
 
 export default function FlatListView({...props}: flatlistProps) {
-    return (<FlatList {...props} />);
+    return (<FlatList {...props}/>);
 }
