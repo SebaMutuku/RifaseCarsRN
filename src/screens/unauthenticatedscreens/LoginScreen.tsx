@@ -23,6 +23,7 @@ export default function LoginScreen() {
     }
 
     function onLogin() {
+        navigation.navigate("HomeScreen");
         if (!validateInputs()) {
             if (state.username != null && state.password != null) {
                 const tkn = "seba"
@@ -93,7 +94,7 @@ export default function LoginScreen() {
                     }} onPress={() => navigation.navigate("Reset")}>Reset</Text></Text>
                     <Pressable style={({pressed}) => [{
                         marginTop: 10,
-                        backgroundColor: validateInputs() ? layout.colors.disabledButtonColor : layout.colors.buttonColors,
+                        backgroundColor: validateInputs() ? layout.colors.selectedColor : layout.colors.black,
                         elevation: layout.elevation.elevation,
                         justifyContent: "center"
                     }, styles.wrapperCustom]} onPress={() => onLogin()} disabled={validateInputs()}>

@@ -99,7 +99,7 @@ export default function SignUpScreen() {
                                labelStyle={{
                                    fontSize: 20, color: layout.colors.black
                                }}
-                               uncheckedColor={layout.colors.grey}
+                               uncheckedColor={layout.colors.selectedColor}
                                theme={DarkTheme}
                                onPress={() => setState({
                                    ...state, checkBoxChecked: !state.checkBoxChecked
@@ -107,7 +107,7 @@ export default function SignUpScreen() {
                 />
                 <Pressable style={({pressed}) => [{
                     marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.disabledButtonColor : layout.colors.buttonColors,
+                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
                     elevation: layout.elevation.elevation,
                     justifyContent: "center",
                     alignItems: 'center'
@@ -115,7 +115,7 @@ export default function SignUpScreen() {
                     <Text style={{
                         marginTop: 10,
                         fontFamily: "Poppins_500Medium",
-                        color: validateUserTextFields() ? layout.colors.disabledTextColor : layout.colors.white,
+                        color: validateUserTextFields() ? layout.colors.grey : layout.colors.white,
                         fontSize: 20,
                         textAlign: "center", // justifyContent: "center"
                     }}>

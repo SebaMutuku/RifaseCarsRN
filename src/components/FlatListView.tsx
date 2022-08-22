@@ -2,8 +2,8 @@ import {FlatList, ListRenderItem, StyleProp, ViewStyle} from "react-native";
 import React, {Key} from "react";
 
 interface flatlistProps {
-    showsHorizontallIndicator: boolean,
     showsVerticalScrollIndicator?: boolean,
+    showsHorizontalScrollIndicator?: boolean,
     data: readonly ({ id: string, title: string } | undefined)[] | null | undefined;
     renderItem: ListRenderItem<{ id: string, title: string } | undefined> | null | undefined;
     ListFooterComponentStyle: StyleProp<ViewStyle>;
@@ -15,10 +15,10 @@ interface flatlistProps {
     columnWrapperStyle?: StyleProp<ViewStyle>;
     contentContainerStyle: StyleProp<ViewStyle>;
     itemSeparatorComponent?: React.ComponentType<any> | null | undefined;
-    numColumns: number | undefined;
+    numColumns?: number | undefined;
     pagingEnabled?: boolean | undefined;
 }
 
 export default function FlatListView({...props}: flatlistProps) {
-    return (<FlatList {...props}/>);
+    return (<FlatList {...props} />);
 }

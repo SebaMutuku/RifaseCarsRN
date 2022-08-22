@@ -50,7 +50,7 @@ export default function ResetPassword() {
                 />
                 <Pressable style={({pressed}) => [{
                     marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.disabledButtonColor : layout.colors.buttonColors,
+                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
                     elevation: layout.elevation.elevation,
                     justifyContent: "center",
                     alignItems: 'center'

@@ -130,7 +130,7 @@ function UnauthenticatedNavigator() {
             headerTitleAlign: 'center'
         }}>
             <LoginStacks.Screen name="Login" component={LoginScreen} options={{
-                headerShown: true,
+                headerShown: false,
                 title: "Login Page",
                 headerTitleStyle: {
                     color: layoutParams.colors.black,

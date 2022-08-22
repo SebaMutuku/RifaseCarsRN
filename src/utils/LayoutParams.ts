@@ -1,4 +1,4 @@
-import {Dimensions} from 'react-native';
+import {Dimensions, PixelRatio} from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -19,6 +19,11 @@ export default {
         textInputColor: "#E5E7E9",
         grey: "#D7E1E7",
         selectedColor: "#8cb2c9",
-        loadMore: "#C0392B"
+        loadMore: "#C0392B",
+        red: "#DE3163"
+    },
+    deviceFontSize: {
+        fontSize: PixelRatio.get() <= 2 ? 25 : PixelRatio.get()
     }
+
 };
