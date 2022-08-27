@@ -28,11 +28,13 @@ import {Avatar} from "react-native-paper";
 import {Text, View} from "../components/Themed";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import LastOrders from "../screens/authenticatedscreens/LastOrders";
+import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
         token: "" as any
     });
+
     React.useEffect(() => {
         const fetchToken = async () => {
             // await utils.saveValue("token", "yayyayayyaass");
@@ -64,8 +66,8 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
         <NavigationContainer
             theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
             ref={navigationRef}>
-            {/*{state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}*/}
-            <HomeStackNavigator/>
+            {state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
+            {/*<HomeStackNavigator/>*/}
         </NavigationContainer>
     );
 }
@@ -94,10 +96,26 @@ function HomeStackNavigator() {
             headerStyle: {
                 backgroundColor: layoutParams.colors.backgroundColor,
             },
+            headerShadowVisible:false,
+            headerShown: true,
+            animation: "fade_from_bottom",
+            headerTitleStyle: {
+                color: "black",
+                fontFamily: "Poppins_500Medium",
+                fontWeight: "bold",
+                fontSize: 25
+            },
+            headerTintColor: "black",
+            headerBackVisible: true,
+            headerBackTitleStyle: {
+                fontSize: 20,
+                fontFamily: "Poppins_500Medium"
+            }
         }}>
             <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
                                options={{headerShown: false}}/>
-            <HomeStacks.Screen name="UserData" component={Profile} options={{title: 'Oops!'}}/>
+            <HomeStacks.Screen name="CarDetails" component={CarDetails}
+                               options={({route}: any) => ({title: route.params.cardetails != undefined || route.params.cardetails != null ? route.params?.cardetails.make : "Select a Car"})}/>
             <HomeStacks.Group screenOptions={{presentation: 'modal'}}>
                 <HomeStacks.Screen name="Wallet" component={Profile}/>
             </HomeStacks.Group>

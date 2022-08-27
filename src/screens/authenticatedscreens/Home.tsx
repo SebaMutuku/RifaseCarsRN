@@ -9,38 +9,49 @@ import {FontAwesome} from "@expo/vector-icons";
 import CircularImage from "../../components/CircularImage";
 import FlatListView from "../../components/FlatListView";
 
-const DATA: any[] = [{
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", make: "Honda Fit", mileage: "20000", yom: "1999", price: "900k"
-}, {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63", make: "Audi A3", mileage: "21000", yom: "2000", price: "951k"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72", make: "Suzuki Swift", mileage: "22000", yom: "2001", price: "550k"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d73", make: "BMW I320", mileage: "23000", yom: "2002", price: "2.1M"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d74", make: "Toyota Mark X", mileage: "24000", yom: "2003", price: "2,3M"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d75", make: "Lexus C5", mileage: "25000", yom: "2004", price: "2.8M"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d76", make: "Mazda C6", mileage: "26000", yom: "2005", price: "760k"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d77", make: "Mercedes E5", mileage: "27000", yom: "2006", price: "2.7M"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d78", make: "RangeRover L2", mileage: "28000", yom: "2007", price: "4.5M"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d79", make: "Nissan Murano", mileage: "20000", yom: "2010", price: "940k"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d80", make: "Volvo V1", mileage: "29000", yom: "2008", price: "1.4M"
-}, {
-    id: "58694a0f-3da1-471f-bd96-145571e29d81", make: "Subaru Impreza", mileage: "30000", yom: "2009", price: "1.41M"
-}];
-const carBrands: any [] = ["audi", "bmw", "honda", "lexus", "mazda", "mercedes", "nissan", "rangerover", "subaru", "suzuki", "toyota", "volvo"];
+
 export default function Home() {
+    const DATA: any[] = [{
+        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", make: "Honda Fit", mileage: "20000", yom: "1999", price: "900k"
+    }, {
+        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63", make: "Audi A3", mileage: "21000", yom: "2000", price: "951k"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d72", make: "Suzuki Swift", mileage: "22000", yom: "2001", price: "550k"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d73", make: "BMW I320", mileage: "23000", yom: "2002", price: "2.1M"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d74", make: "Toyota Mark X", mileage: "24000", yom: "2003", price: "2,3M"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d75", make: "Lexus C5", mileage: "25000", yom: "2004", price: "2.8M"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d76", make: "Mazda C6", mileage: "26000", yom: "2005", price: "760k"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d77", make: "Mercedes E5", mileage: "27000", yom: "2006", price: "2.7M"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d78", make: "RangeRover L2", mileage: "28000", yom: "2007", price: "4.5M"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d79", make: "Nissan Murano", mileage: "20000", yom: "2010", price: "940k"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d80", make: "Volvo V1", mileage: "29000", yom: "2008", price: "1.4M"
+    }, {
+        id: "58694a0f-3da1-471f-bd96-145571e29d81",
+        make: "Subaru Impreza",
+        mileage: "30000",
+        yom: "2009",
+        price: "1.41M"
+    }];
+    const carBrands: any [] = ["audi", "bmw", "honda", "lexus", "mazda", "mercedes", "nissan", "rangerover", "subaru", "suzuki", "toyota", "volvo"];
     const [state, setState] = React.useState({
-        username: "", searchedCar: "", brandSelected: 0, selectedId: 0, loading: false, populaCarData: []
+        username: "",
+        searchedCar: "",
+        brandSelected: 0,
+        selectedId: 0,
+        loading: false,
+        populaCarData: [],
+        selectedCar: ""
     });
     const navigation = useNavigation<CombinedNavigationProps>();
-
+    const seletedCarJson = React.useMemo(() => DATA.find(selectedCar => selectedCar.yom === state.selectedCar), [DATA, state.selectedCar]);
     // React.useEffect(() => loadPopularCars(), [state.populaCarData]);
 
     function loadPopularCars() {
@@ -65,13 +76,6 @@ export default function Home() {
             });
     }
 
-    // const addIdToData = (data: any) => {
-    //     let dataWithId = [];
-    //     for (let i = 0; i < data.length; i++) {
-    //         dataWithId.push(i, data[i]);
-    //     }
-    //     return dataWithId;
-    // }
 
     function searchInput() {
         return (<View style={{
@@ -97,7 +101,7 @@ export default function Home() {
 
     function carBrandFlatList() {
         return (<FlatListView showsHorizontalScrollIndicator={false} data={carBrands} horizontal
-                              renderItem={({item, index}) => <Pressable style={{
+                              renderItem={({item, index}: any) => <Pressable style={{
                                   elevation: state.brandSelected == index ? 1 : 0,
                                   alignItems: 'center',
                                   justifyContent: "center",
@@ -139,18 +143,18 @@ export default function Home() {
                     fontWeight: "bold",
                     textAlign: 'center',
                     margin: 3,
-                    color: layoutParams.colors.disabledTextColor,
-                    fontSize: 14
+                    color: layoutParams.colors.lighGrey,
+                    fontSize: 15
                 }} adjustsFontSizeToFit>{yom}</Text>
             </View>
             <View style={{
                 flexDirection: "row", alignItems: 'center'
             }}>
                 <Text style={{
-                    fontWeight: "bold", textAlign: 'center', margin: 3, fontSize: 14
+                    fontWeight: "bold", textAlign: 'center', margin: 3, fontSize: 15
                 }}>Mileage:</Text>
                 <Text style={{
-                    textAlign: 'center', margin: 3, color: layoutParams.colors.disabledTextColor, fontWeight: "bold"
+                    textAlign: 'center', margin: 3, color: layoutParams.colors.lighGrey, fontWeight: "bold"
                 }} adjustsFontSizeToFit>{mileage} kms</Text>
             </View>
         </View>);
@@ -158,24 +162,28 @@ export default function Home() {
 
     function popularCars() {
         function renderItem(item: any, index: number) {
-            const backgroundColor = index === state.selectedId ? layoutParams.colors.selectedColor : layoutParams.colors.white;
+            const backgroundColor = index === state.selectedId ? layoutParams.colors.white : layoutParams.colors.grey;
             return (<TouchableOpacity style={{
                 ...homeStyles.flatview, backgroundColor: backgroundColor, ...layoutParams.elevation
             }}
                                       onPress={() => {
                                           setState({
-                                              ...state, selectedId: index
+                                              ...state, selectedId: index, selectedCar: item.yom
                                           });
+                                          navigation.navigate("CarDetails", {cardetails: seletedCarJson});
                                       }}>
                 <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
-                    width: "100%", height: 100, borderRadius: 10, resizeMode: "contain",
+                    flex: 1, width: layoutParams.WINDOW.width * .5, borderRadius: 10, resizeMode: "contain",
                 }}/>
                 <View style={{
                     marginLeft: 10, marginRight: 10, flexDirection: "row", justifyContent: "space-between"
                 }}><Text style={{
-                    textAlign: 'center', fontSize: 18
+                    textAlign: 'center', fontWeight: "bold",
+                    fontSize: 25,
+                    fontFamily: "Poppins_600SemiBold"
                 }} adjustsFontSizeToFit>{item?.make}</Text>
                     <Text style={{
+                        color: layoutParams.colors.lighGrey,
                         fontWeight: "bold", fontFamily: "Poppins_500Medium", textAlign: 'center', fontSize: 20
                     }} adjustsFontSizeToFit>{item?.price}</Text>
                 </View>
@@ -190,40 +198,92 @@ export default function Home() {
                 </View>
                 <View>
                     <Text style={{
-                        textAlign: 'center', fontFamily: "Poppins_700Bold", // fontSize: 14,
-                        margin: 10, color: layoutParams.colors.deepBlue
+                        textAlign: 'center', fontFamily: "Poppins_700Bold", margin: 10
                     }} adjustsFontSizeToFit>Show more details</Text>
                 </View>
             </TouchableOpacity>);
         }
 
-        const renderPopularCarsFooter = () => {
-            return (<View style={homeStyles.footer}>
-                <TouchableOpacity
-                    style={{
-                        alignItems: "center",
-                        justifyContent: 'center',
-                        backgroundColor: layoutParams.colors.deepBlue,
-                        elevation: 2,
-                        padding: 8,
-                        borderRadius: 10
-                    }}
-                    onPress={loadPopularCars}
-                >
-                    <Text style={{fontSize: 20, fontWeight: "bold", color: layout.colors.white}}>Load More</Text>
-                </TouchableOpacity>
-            </View>);
-        };
+        // const renderPopularCarsFooter = () => {
+        //     return (<View style={homeStyles.footer}>
+        //         <TouchableOpacity
+        //             style={{
+        //                 alignItems: "center",
+        //                 justifyContent: 'center',
+        //                 backgroundColor: layoutParams.colors.deepBlue,
+        //                 elevation: 2,
+        //                 padding: 8,
+        //                 borderRadius: 10
+        //             }}
+        //             onPress={loadPopularCars}
+        //         >
+        //             <Text style={{fontSize: 20, fontWeight: "bold", color: layout.colors.white}}>Load More</Text>
+        //         </TouchableOpacity>
+        //     </View>);
+        // };
+        return <View style={{
+            flex: 2
+        }}><FlatListView showsHorizontalScrollIndicator={false} data={DATA}
+                         renderItem={({item, index}) => renderItem(item, index)}
+                         ListFooterComponentStyle={null}
+                         horizontal
+                         showsVerticalScrollIndicator={false}
+                         ListFooterComponent={null}
+                         keyExtractor={(item: any, index) => item.make + index}
+                         key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}/>
+        </View>;
+    }
 
-        return <FlatListView showsHorizontalScrollIndicator={false} data={DATA}
-                             renderItem={({item, index}) => renderItem(item, index)}
-                             ListFooterComponentStyle={{marginBottom: 0}}
-                             horizontal={false}
-                             showsVerticalScrollIndicator={false}
-                             ListFooterComponent={renderPopularCarsFooter()}
-                             keyExtractor={(item: any, index) => item.make + index}
-                             key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}
-                             numColumns={2} pagingEnabled={true}/>;
+    function renderRecentlyViewed() {
+        return (
+            <View style={{...homeStyles.homeFooter}}>
+                <View style={{
+                    marginRight: 10,
+                    marginLeft: 10,
+                    marginTop: 10,
+                    flexDirection: "row",
+                    justifyContent: "space-between"
+                }}>
+                    <Text style={{
+                        ...homeStyles.footerText,
+                        fontWeight: "bold"
+                    }}>
+                        Recently Added
+                    </Text>
+                    <Text style={{
+                        ...homeStyles.footerText,
+                        color: layoutParams.colors.deepBlue,
+                        textDecorationLine: "underline"
+                    }}>
+                        View All
+                    </Text>
+                </View>
+                <View style={{
+                    flex: 1,
+                    margin: 5,
+                    borderRadius: 10,
+                    flexDirection: "row",
+                    backgroundColor: layoutParams.colors.white,
+                    ...layoutParams.elevation
+                }}>
+                    {/*Image at the start*/}
+                    <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
+                        justifyContent: "flex-start",
+                        height: "100%",
+                        width: layoutParams.WINDOW.width * .4,
+                        borderRadius: 10,
+                        resizeMode: "contain",
+                    }}/>
+                    <View style={{
+                        flex: 1,
+                        marginLeft: 5
+                    }}><Text style={{...homeStyles.footerText, fontSize: 30}}>Audi</Text>
+                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Price : 951k</Text>
+                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Year Of Manufacturing :2021</Text>
+                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Mileage : 5000kms</Text>
+                    </View>
+                </View>
+            </View>)
     }
 
     return (<SafeAreaView style={{
@@ -264,16 +324,14 @@ export default function Home() {
                     <Text style={{
                         fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular"
                     }}>Popular Cars</Text>
-                    <TouchableOpacity style={{
-                        padding: 10, backgroundColor: layoutParams.colors.deepBlue, borderRadius: 50
-                    }}>
+
                         <Text style={{
                             fontSize: 15,
                             fontWeight: "bold",
+                            color: layoutParams.colors.deepBlue,
                             fontFamily: "Poppins_400Regular",
-                            color: layout.colors.white
+                            textDecorationLine: "underline"
                         }}>View All</Text>
-                    </TouchableOpacity>
                 </View>
                 <View style={{
                     marginTop: 10
@@ -281,6 +339,7 @@ export default function Home() {
             </View>
             {/*All Car Brands*/}
             {popularCars()}
+            {renderRecentlyViewed()}
         </View>
     </SafeAreaView>);
 
@@ -300,7 +359,7 @@ const homeStyles = StyleSheet.create({
     }, circularImage: {
         width: 50, height: 50, borderRadius: 50 / 2
     }, flatview: {
-        flex: 1, margin: 3, borderRadius: 10, marginBottom: 10
+        margin: 3, borderRadius: 10, marginBottom: 10,
     }, itemKeytext: {
         fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.disabledTextColor
     }, itemValueText: {
@@ -308,4 +367,18 @@ const homeStyles = StyleSheet.create({
     }, footer: {
         padding: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',
     },
+    homeFooter: {
+        flex: 1, marginRight: 5, marginLeft: 5,
+        ...layoutParams.elevation, backgroundColor: layoutParams.colors.backgroundColor,
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10
+    },
+    footerText: {
+        fontFamily: "Poppins_500Medium", textAlign: 'center'
+    },
+    carDetailsText: {
+        fontSize: 15,
+        // fontWeight:"bold",
+        fontFamily: "Roboto_500Medium"
+    }
 })

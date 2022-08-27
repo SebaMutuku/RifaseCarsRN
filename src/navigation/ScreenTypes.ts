@@ -33,7 +33,7 @@ export type RootStackScreenProps<screen extends keyof HomeBottomTabParamList> = 
 
 export type HomeStackParamList = {
   HomeStack:  undefined;
-  UserData: undefined
+  CarDetails: { cardetails: {} } | undefined
   Wallet: undefined
 
 };
@@ -53,3 +53,4 @@ export type AuthenticationTabScreenProps = CompositeNavigationProp<StackNavigati
 
 export type CombinedNavigationProps = CompositeNavigationProp<StackNavigationProp<UnauthenticatedParamList>,
     CompositeNavigationProp<BottomTabNavigationProp<HomeBottomTabParamList>, StackNavigationProp<HomeStackParamList>>>;
+export type HomeRouteProp = RouteProp<HomeBottomTabParamList>;

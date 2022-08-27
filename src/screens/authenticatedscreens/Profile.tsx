@@ -26,7 +26,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
         <Text adjustsFontSizeToFit
               style={[styles.profileText, {
                 fontSize: 25,
-                color: layoutParams.colors.disabledTextColor
+                color: layoutParams.colors.lighGrey
               }]}>Sebastian</Text>
         <Text style={styles.profileText}>abc@gmail.com</Text>
       </View>

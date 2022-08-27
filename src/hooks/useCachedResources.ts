@@ -10,7 +10,8 @@ import {
     Poppins_500Medium,
     Roboto_400Regular,
     Poppins_700Bold,
-    Roboto_500Medium
+    Roboto_500Medium,
+    Poppins_600SemiBold
 } from "@expo-google-fonts/dev";
 
 export default function useCachedResources() {
@@ -33,6 +34,7 @@ export default function useCachedResources() {
                     Poppins_400Regular,
                     Poppins_700Bold,
                     Roboto_500Medium,
+                    Poppins_600SemiBold,
                     'space-mono': require('../../assets/fonts/SpaceMono-Regular.ttf'),
                 });
             } catch (e) {

@@ -1,4 +1,4 @@
-import {Dimensions, PixelRatio} from 'react-native';
+import {Dimensions} from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -8,7 +8,9 @@ export default {
         width, height,
     }, isSmallDevice: width < 375, elevation: {
         shadowColor: '#000', shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.5, shadowRadius: 2, elevation: 2,
-    }, colors: {
+    },
+    colors: {
+        lighGrey: "#566573",
         backgroundColor: "#D8DEE0",
         white: "#E5E8E8",
         buttonColors: "#273746",
@@ -22,8 +24,5 @@ export default {
         loadMore: "#C0392B",
         red: "#DE3163"
     },
-    deviceFontSize: {
-        fontSize: PixelRatio.get() <= 2 ? 25 : PixelRatio.get()
-    }
 
 };

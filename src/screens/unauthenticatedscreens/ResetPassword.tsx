@@ -1,5 +1,5 @@
 import React from "react";
-import {Pressable, StyleSheet} from "react-native";
+import {Pressable, StatusBar, StyleSheet} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
@@ -32,13 +32,14 @@ export default function ResetPassword() {
                 })}
             </View>
             <View style={{
-                flex: 1, alignItems: 'center'
+                flex: 1
             }}>
                 <Text style={{
-                    textAlign: "center", marginTop: 10, fontSize: 20, fontWeight: "bold"
-                }}>
-                    Please enter your email in the field below
-                </Text>
+                    fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
+                }}> Rifasa Cars </Text>
+                <Text style={{
+                    textAlign: "center", fontSize: 20, color: layoutParams.colors.lighGrey,
+                }}> Reset your account</Text>
                 <TextInput placeholder="abc@mail.com"
                            autoCapitalize="none"
                            blurOnSubmit={true}
@@ -74,12 +75,12 @@ const resetPassStyles = StyleSheet.create({
         flex: 1, backgroundColor: layoutParams.colors.backgroundColor, alignItems: 'center'
     }, textInput: {
         width: layout.WINDOW.width * .95,
-        height: layout.WINDOW.height * .07,
+        height: layout.WINDOW.height * .062,
         marginTop: 20,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.white,
         fontSize: 20,
-        borderRadius: 10,
+        borderRadius: StatusBar.currentHeight,
         margin: 5,
         padding: 10,
         elevation: layout.elevation.elevation
@@ -88,8 +89,8 @@ const resetPassStyles = StyleSheet.create({
         alignItems: "center",
         marginTop: 30,
         width: layout.WINDOW.width * .95,
-        borderRadius: 8,
+        borderRadius: StatusBar.currentHeight,
         padding: 6,
-        height: layout.WINDOW.height * .07
+        height: layout.WINDOW.height * .062,
     },
 })

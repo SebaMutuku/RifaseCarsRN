@@ -1,8 +1,9 @@
-import {Pressable, StyleSheet} from "react-native";
+import {Pressable, StatusBar, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import layout from "../../utils/LayoutParams";
+import layoutParams from "../../utils/LayoutParams";
 import React from "react";
 import utils from "../../utils/Utils";
 import displayImage from "../../utils/DisplayImage";
@@ -52,7 +53,7 @@ export default function LoginScreen() {
         }}>
             {/*upperImageView*/}
             <View style={{
-                borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, elevation: layout.elevation.elevation
+                borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, ...layoutParams.elevation
             }}>
                 {displayImage({
                     borderRadii: 30, resizeMode: "contain"
@@ -60,9 +61,17 @@ export default function LoginScreen() {
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
                 <Text style={{
-                    marginTop: 10, fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center", // justifyContent: "center"
+                    fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
                 }}>
-                    Login to proceed
+                    Rifasa Cars
+                </Text>
+                <Text style={{
+                    color: layoutParams.colors.lighGrey,
+                    fontFamily: "Poppins_500Medium",
+                    fontSize: 20,
+                    textAlign: "center", // justifyContent: "center"
+                }}>
+                    Sign in to you account
                 </Text>
                 <View style={{
                     marginTop: 10
@@ -122,20 +131,18 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
     textInput: {
         width: layout.WINDOW.width * .95,
-        height: layout.WINDOW.height * .07,
+        height: layout.WINDOW.height * .062,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.white,
         fontSize: 20,
-        borderRadius: 10,
+        borderRadius: StatusBar.currentHeight,
         margin: 5,
-        padding: 10,
-        elevation: layout.elevation.elevation
+        padding: 10
     }, wrapperCustom: {
-        elevation: layout.elevation.elevation,
         alignItems: "center",
         width: layout.WINDOW.width * .95,
-        borderRadius: 8,
+        borderRadius: StatusBar.currentHeight,
         padding: 6,
-        height: layout.WINDOW.height * .07
+        height: layout.WINDOW.height * .062
     },
 })
