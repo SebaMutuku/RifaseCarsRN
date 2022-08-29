@@ -8,7 +8,9 @@ export default {
         width, height,
     }, isSmallDevice: width < 375, elevation: {
         shadowColor: '#000', shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.5, shadowRadius: 2, elevation: 2,
-    }, colors: {
+    },
+    colors: {
+        lighGrey: "#566573",
         backgroundColor: "#D8DEE0",
         white: "#E5E8E8",
         buttonColors: "#273746",
@@ -17,7 +19,10 @@ export default {
         disabledButtonColor: "#D5D8DC",
         disabledTextColor: "#AEB6BF",
         textInputColor: "#E5E7E9",
-        greyColor: "#8cb2c9",
-        loadMore:"#C0392B"
-    }
+        grey: "#D7E1E7",
+        selectedColor: "#8cb2c9",
+        loadMore: "#C0392B",
+        red: "#DE3163"
+    },
+
 };

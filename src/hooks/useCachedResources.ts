@@ -10,9 +10,10 @@ import {
     Poppins_500Medium,
     Roboto_400Regular,
     Poppins_700Bold,
-    Roboto_500Medium
+    Roboto_500Medium,
+    Poppins_600SemiBold
 } from "@expo-google-fonts/dev";
-
+SplashScreen.preventAutoHideAsync();
 export default function useCachedResources() {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
 
@@ -33,6 +34,7 @@ export default function useCachedResources() {
                     Poppins_400Regular,
                     Poppins_700Bold,
                     Roboto_500Medium,
+                    Poppins_600SemiBold,
                     'space-mono': require('../../assets/fonts/SpaceMono-Regular.ttf'),
                 });
             } catch (e) {
@@ -43,7 +45,6 @@ export default function useCachedResources() {
                 await SplashScreen.hideAsync();
             }
         }
-
         loadResourcesAndDataAsync();
     }, []);
 

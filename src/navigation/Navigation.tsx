@@ -3,14 +3,12 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import {FontAwesome} from '@expo/vector-icons';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
 import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
 import {ColorSchemeName} from 'react-native';
-import Colors from '../constants/Colors';
-import NotFoundScreen from '../screens/NotFoundScreen';
+import Profile from '../screens/authenticatedscreens/Profile';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import {
     HomeBottomTabParamList,
@@ -28,11 +26,15 @@ import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
 import {Text, View} from "../components/Themed";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import LastOrders from "../screens/authenticatedscreens/LastOrders";
+import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
         token: "" as any
     });
+
     React.useEffect(() => {
         const fetchToken = async () => {
             // await utils.saveValue("token", "yayyayayyaass");
@@ -94,12 +96,28 @@ function HomeStackNavigator() {
             headerStyle: {
                 backgroundColor: layoutParams.colors.backgroundColor,
             },
+            headerShadowVisible:false,
+            headerShown: true,
+            animation: "fade_from_bottom",
+            headerTitleStyle: {
+                color: "black",
+                fontFamily: "Poppins_500Medium",
+                fontWeight: "bold",
+                fontSize: 25
+            },
+            headerTintColor: "black",
+            headerBackVisible: true,
+            headerBackTitleStyle: {
+                fontSize: 20,
+                fontFamily: "Poppins_500Medium"
+            }
         }}>
             <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
                                options={{headerShown: false}}/>
-            <HomeStacks.Screen name="UserData" component={NotFoundScreen} options={{title: 'Oops!'}}/>
+            <HomeStacks.Screen name="CarDetails" component={CarDetails}
+                               options={({route}: any) => ({title: route.params.cardetails != undefined || route.params.cardetails != null ? route.params?.cardetails.make : "Select a Car"})}/>
             <HomeStacks.Group screenOptions={{presentation: 'modal'}}>
-                <HomeStacks.Screen name="Wallet" component={NotFoundScreen}/>
+                <HomeStacks.Screen name="Wallet" component={Profile}/>
             </HomeStacks.Group>
         </HomeStacks.Navigator>
     );
@@ -130,7 +148,7 @@ function UnauthenticatedNavigator() {
             headerTitleAlign: 'center'
         }}>
             <LoginStacks.Screen name="Login" component={LoginScreen} options={{
-                headerShown: true,
+                headerShown: false,
                 title: "Login Page",
                 headerTitleStyle: {
                     color: layoutParams.colors.black,
@@ -184,21 +202,50 @@ function UnauthenticatedNavigator() {
 }
 
 function BottomTabNavigator() {
+    const [showLabel, setShowLabel] = React.useState(false);
     const colorScheme = useColorScheme();
     return (
         <HomeBottomTabs.Navigator
             initialRouteName="HomeTab"
+            // activeColor={layoutParams.colors.deepBlue}
+            // sceneAnimationEnabled
             screenOptions={{
-                tabBarActiveTintColor: Colors[colorScheme].tint,
-                headerStyle: {
-                    backgroundColor: layoutParams.colors.backgroundColor,
+                tabBarItemStyle: {
+                    justifyContent: "center",
+                    alignItems: "center"
                 },
-            }}>
+                tabBarLabelStyle: {
+                    fontSize: 14,
+                    fontWeight: "bold",
+                },
+                headerStyle: {
+                    backgroundColor: layoutParams.colors.backgroundColor
+                },
+                headerTitleStyle: {
+                    fontSize: 25,
+                    fontFamily: "Poppins_400Regular"
+                },
+                tabBarLabelPosition: "beside-icon",
+                headerTitleAlign: "center",
+                tabBarAllowFontScaling: true,
+                tabBarStyle: {
+                    backgroundColor: layoutParams.colors.backgroundColor,
+                    borderRadius: 5,
+                    marginBottom: 4,
+                    marginLeft: 10,
+                    marginRight: 10,
+                },
+                headerTitleAllowFontScaling: true,
+                unmountOnBlur: true,
+                tabBarShowLabel: !showLabel
+            }}
+        >
             <HomeBottomTabs.Screen
                 name="HomeTab"
                 component={Home}
                 options={({navigation}: HomeBottomTabScreenProps<'HomeTab'>) => ({
-                    tabBarIcon: ({color}) => <TabBarIcon name="home" color={layoutParams.colors.black}/>,
+                    tabBarLabel: "Home",
+                    tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} size={25}/>,
                     headerRight: () => (
                         <View style={{
                             justifyContent: 'space-between',
@@ -236,19 +283,28 @@ function BottomTabNavigator() {
                 })}
             />
             <HomeBottomTabs.Screen
+                name="LastOrders"
+                component={LastOrders}
+                options={{
+                    title: "Latest Purchases",
+                    tabBarLabel: "Purchases",
+                    tabBarIcon: ({color}) => <TabBarIcon name="cart" color={color} size={25}/>,
+                }}
+            />
+            <HomeBottomTabs.Screen
                 name="Settings"
                 component={TabTwoScreen}
                 options={{
-                    title: 'Tab Two',
-                    tabBarIcon: () => <TabBarIcon name="code" color={layoutParams.colors.black}/>,
+                    tabBarLabel: "Settings",
+                    tabBarIcon: ({color}) => <TabBarIcon name="wrench" color={color} size={25}/>,
                 }}
             />
             <HomeBottomTabs.Screen
                 name="Profile"
-                component={NotFoundScreen}
+                component={Profile}
                 options={{
-                    title: 'Profile',
-                    tabBarIcon: () => <TabBarIcon name="code" color={layoutParams.colors.black}/>,
+                    tabBarLabel: "Profile",
+                    tabBarIcon: ({color}) => <TabBarIcon name="account-cog" color={color} size={25}/>,
                 }}
             />
         </HomeBottomTabs.Navigator>
@@ -260,10 +316,11 @@ function BottomTabNavigator() {
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-    name: React.ComponentProps<typeof FontAwesome>['name'];
+    name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
     color: string;
+    size: number
 }) {
-    return <FontAwesome size={30} style={{marginBottom: -3}} {...props} />;
+    return <MaterialCommunityIcons style={{marginBottom: -3}} {...props} />;
 }
 
 

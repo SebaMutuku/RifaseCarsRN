@@ -1,5 +1,6 @@
-import {Pressable, StyleSheet} from "react-native";
+import {Pressable, StatusBar, StyleSheet} from "react-native";
 import layout from "../../utils/LayoutParams";
+import layoutParams from "../../utils/LayoutParams";
 import displayImage from "../../utils/DisplayImage";
 import React from "react";
 import utils from "../../utils/Utils";
@@ -55,11 +56,16 @@ export default function SignUpScreen() {
             })}
         </View>
         {/*inputs view*/}
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={{flex: 1}}>
             <Text style={{
-                marginTop: 10, fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center", // justifyContent: "center"
+                fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
             }}>
-                Enter your details here
+                Rifasa Cars
+            </Text>
+            <Text style={{
+                textAlign: "center", fontSize: 15, color: layoutParams.colors.lighGrey, fontFamily: "Poppins_500Medium", // justifyContent: "center"
+            }}>
+                Create an account with us
             </Text>
             <View style={{
                 marginTop: 10, alignItems: 'center'
@@ -99,7 +105,7 @@ export default function SignUpScreen() {
                                labelStyle={{
                                    fontSize: 20, color: layout.colors.black
                                }}
-                               uncheckedColor={layout.colors.greyColor}
+                               uncheckedColor={layout.colors.selectedColor}
                                theme={DarkTheme}
                                onPress={() => setState({
                                    ...state, checkBoxChecked: !state.checkBoxChecked
@@ -107,7 +113,7 @@ export default function SignUpScreen() {
                 />
                 <Pressable style={({pressed}) => [{
                     marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.disabledButtonColor : layout.colors.buttonColors,
+                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
                     elevation: layout.elevation.elevation,
                     justifyContent: "center",
                     alignItems: 'center'
@@ -115,7 +121,7 @@ export default function SignUpScreen() {
                     <Text style={{
                         marginTop: 10,
                         fontFamily: "Poppins_500Medium",
-                        color: validateUserTextFields() ? layout.colors.disabledTextColor : layout.colors.white,
+                        color: validateUserTextFields() ? layout.colors.grey : layout.colors.white,
                         fontSize: 20,
                         textAlign: "center", // justifyContent: "center"
                     }}>
@@ -136,20 +142,18 @@ const registerStyles = StyleSheet.create({
     textInput: {
         // backgroundColor: "#DBE0E6",
         width: layout.WINDOW.width * .95,
-        height: layout.WINDOW.height * .07,
+        height: layout.WINDOW.height * .062,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.textInputColor,
         fontSize: 20,
-        borderRadius: 10,
+        borderRadius: StatusBar.currentHeight,
         margin: 5,
         padding: 10,
-        elevation: layout.elevation.elevation
     }, wrapperCustom: {
-        elevation: layout.elevation.elevation,
         alignItems: "center",
         width: layout.WINDOW.width * .95,
-        borderRadius: 8,
+        borderRadius: StatusBar.currentHeight,
         padding: 6,
-        height: layout.WINDOW.height * .07
+        height: layout.WINDOW.height * .062,
     },
 })

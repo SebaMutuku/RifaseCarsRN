@@ -7,10 +7,8 @@ interface ImageProps {
     onPress?:(event: GestureResponderEvent) => void
 }
 
-export  default function CircularImage({
-                                  style, source,onPress
-                              }: ImageProps) {
-    return (<TouchableOpacity onPress={()=>onPress}>
-        <Image source={source} style={style} resizeMethod="auto"/>
+export default function CircularImage({...props}: ImageProps) {
+    return (<TouchableOpacity {...props}>
+        <Image {...props} resizeMethod="auto"/>
     </TouchableOpacity>);
 }
