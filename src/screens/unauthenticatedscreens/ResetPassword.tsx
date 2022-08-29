@@ -38,7 +38,10 @@ export default function ResetPassword() {
                     fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
                 }}> Rifasa Cars </Text>
                 <Text style={{
-                    textAlign: "center", fontSize: 20, color: layoutParams.colors.lighGrey,
+                    textAlign: "center",
+                    fontSize: 15,
+                    color: layoutParams.colors.lighGrey,
+                    fontFamily: "Poppins_500Medium",
                 }}> Reset your account</Text>
                 <TextInput placeholder="abc@mail.com"
                            autoCapitalize="none"

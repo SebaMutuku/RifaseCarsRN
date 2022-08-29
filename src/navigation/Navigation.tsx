@@ -66,8 +66,8 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
         <NavigationContainer
             theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
             ref={navigationRef}>
-            {state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
-            {/*<HomeStackNavigator/>*/}
+            {/*{state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}*/}
+            <HomeStackNavigator/>
         </NavigationContainer>
     );
 }

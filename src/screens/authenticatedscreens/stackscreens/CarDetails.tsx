@@ -23,9 +23,7 @@ export default function CarDetails() {
     })
 
     const route: any = useRoute<HomeRouteProp>();
-    // console.log(state.appIsReady, route.params)
     React.useEffect(() => {
-        console.log(state.appIsReady, route.params)
         setState({
             ...state, carData: route.params.cardetails
         });
@@ -42,7 +40,6 @@ export default function CarDetails() {
         }
 
     }, [state.appIsReady]);
-    console.log(state.appIsReady, state.carData)
 
     function carSliderImage() {
         return (<View style={{

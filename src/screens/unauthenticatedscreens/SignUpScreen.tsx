@@ -63,8 +63,7 @@ export default function SignUpScreen() {
                 Rifasa Cars
             </Text>
             <Text style={{
-                color: layoutParams.colors.lighGrey,
-                fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center", // justifyContent: "center"
+                textAlign: "center", fontSize: 15, color: layoutParams.colors.lighGrey, fontFamily: "Poppins_500Medium", // justifyContent: "center"
             }}>
                 Create an account with us
             </Text>

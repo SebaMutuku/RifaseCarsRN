@@ -68,7 +68,7 @@ export default function LoginScreen() {
                 <Text style={{
                     color: layoutParams.colors.lighGrey,
                     fontFamily: "Poppins_500Medium",
-                    fontSize: 20,
+                    fontSize: 15,
                     textAlign: "center", // justifyContent: "center"
                 }}>
                     Sign in to you account

@@ -13,7 +13,7 @@ import {
     Roboto_500Medium,
     Poppins_600SemiBold
 } from "@expo-google-fonts/dev";
-
+SplashScreen.preventAutoHideAsync();
 export default function useCachedResources() {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
 
@@ -45,7 +45,6 @@ export default function useCachedResources() {
                 await SplashScreen.hideAsync();
             }
         }
-
         loadResourcesAndDataAsync();
     }, []);
 

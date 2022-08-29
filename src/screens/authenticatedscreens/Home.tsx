@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, Pressable, SafeAreaView, StyleSheet, TouchableOpacity} from "react-native";
+import {Image, Pressable, SafeAreaView, StyleSheet} from "react-native";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
@@ -11,7 +11,7 @@ import FlatListView from "../../components/FlatListView";
 
 
 export default function Home() {
-    const DATA: any[] = [{
+    const DATA: any [] = [{
         id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", make: "Honda Fit", mileage: "20000", yom: "1999", price: "900k"
     }, {
         id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63", make: "Audi A3", mileage: "21000", yom: "2000", price: "951k"
@@ -47,16 +47,18 @@ export default function Home() {
         brandSelected: 0,
         selectedId: 0,
         loading: false,
-        populaCarData: [],
-        selectedCar: ""
+        populaCarData: DATA,
     });
     const navigation = useNavigation<CombinedNavigationProps>();
-    const seletedCarJson = React.useMemo(() => DATA.find(selectedCar => selectedCar.yom === state.selectedCar), [DATA, state.selectedCar]);
+
+    function getSelectedCar(carYom: string) {
+        return state.populaCarData.find(mappedCar => mappedCar.yom === carYom);
+    }
     // React.useEffect(() => loadPopularCars(), [state.populaCarData]);
 
     function loadPopularCars() {
         setState({
-            ...state, loading: true
+            ...state, loading: true,
         });
         //Service to get the data from the server to render
         fetch('https://aboutreact.herokuapp.com/getpost.php?offset=' + 1)
@@ -64,7 +66,7 @@ export default function Home() {
             .then((response) => response.json())
             .then((responseJson) => {
                 setState({
-                    ...state, populaCarData: DATA as any
+                    ...state
                 });
                 setState({
                     ...state, loading: false
@@ -163,15 +165,15 @@ export default function Home() {
     function popularCars() {
         function renderItem(item: any, index: number) {
             const backgroundColor = index === state.selectedId ? layoutParams.colors.white : layoutParams.colors.grey;
-            return (<TouchableOpacity style={{
+            return (<Pressable style={{
                 ...homeStyles.flatview, backgroundColor: backgroundColor, ...layoutParams.elevation
             }}
-                                      onPress={() => {
-                                          setState({
-                                              ...state, selectedId: index, selectedCar: item.yom
-                                          });
-                                          navigation.navigate("CarDetails", {cardetails: seletedCarJson});
-                                      }}>
+                               onPress={() => {
+                                   setState({
+                                       ...state, selectedId: index
+                                   });
+                                   navigation.navigate("CarDetails", {cardetails: getSelectedCar(item.yom)});
+                               }}>
                 <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
                     flex: 1, width: layoutParams.WINDOW.width * .5, borderRadius: 10, resizeMode: "contain",
                 }}/>
@@ -201,7 +203,7 @@ export default function Home() {
                         textAlign: 'center', fontFamily: "Poppins_700Bold", margin: 10
                     }} adjustsFontSizeToFit>Show more details</Text>
                 </View>
-            </TouchableOpacity>);
+            </Pressable>);
         }
 
         // const renderPopularCarsFooter = () => {
@@ -223,7 +225,7 @@ export default function Home() {
         // };
         return <View style={{
             flex: 2
-        }}><FlatListView showsHorizontalScrollIndicator={false} data={DATA}
+        }}><FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
                          renderItem={({item, index}) => renderItem(item, index)}
                          ListFooterComponentStyle={null}
                          horizontal
