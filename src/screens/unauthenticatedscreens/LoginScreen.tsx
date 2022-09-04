@@ -1,4 +1,4 @@
-import {Pressable, StatusBar, StyleSheet} from "react-native";
+import {StatusBar, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -8,6 +8,8 @@ import React from "react";
 import utils from "../../utils/Utils";
 import displayImage from "../../utils/DisplayImage";
 import {Text, TextInput, View} from "../../components/Themed";
+import Toast from "react-native-toast-message";
+import {Button} from "@rneui/base";
 
 export default function LoginScreen() {
     const [state, setState] = React.useState({
@@ -76,6 +78,7 @@ export default function LoginScreen() {
                 <View style={{
                     marginTop: 10
                 }}>
+
                     <TextInput placeholder="Enter your username"
                                autoCapitalize="none"
                                blurOnSubmit={true}
@@ -85,6 +88,14 @@ export default function LoginScreen() {
                                underlineColorAndroid="transparent"
                                onChangeText={(text) => setState({...state, username: text})}
                                value={state.username}
+                    />
+                    <Toast
+                        position='bottom'
+                        bottomOffset={20}
+                        type="info"
+                        autoHide={true}
+                        visibilityTime={4000}
+                        onShow={() => <View><Text>Loading....</Text></View>}
                     />
                     <TextInput placeholder="Enter your password"
                                autoCapitalize="none"
@@ -101,22 +112,11 @@ export default function LoginScreen() {
                     }}>Forgot your password? <Text style={{
                         fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
                     }} onPress={() => navigation.navigate("Reset")}>Reset</Text></Text>
-                    <Pressable style={({pressed}) => [{
-                        marginTop: 10,
-                        backgroundColor: validateInputs() ? layout.colors.selectedColor : layout.colors.black,
-                        elevation: layout.elevation.elevation,
-                        justifyContent: "center"
-                    }, styles.wrapperCustom]} onPress={() => onLogin()} disabled={validateInputs()}>
-                        <Text style={{
-                            marginTop: 10,
-                            fontFamily: "Poppins_500Medium",
-                            color: validateInputs() ? layout.colors.disabledTextColor : layout.colors.white,
-                            fontSize: 20,
-                            textAlign: "center", // justifyContent: "center"
-                        }}>
-                            Sign In
-                        </Text>
-                    </Pressable>
+                    <Button buttonStyle={{
+                        ...styles.buttonStyle, ...styles.wrapperCustom
+                    }} titleStyle={{
+                        ...styles.buttonText
+                    }} title="Sign in" onPress={() => onLogin()} disabled={validateInputs()} loading={false}/>
                     <Text style={{
                         margin: 10, fontSize: 18, textAlign: "center"
                     }}>Not a Member? <Text style={{
@@ -144,5 +144,15 @@ const styles = StyleSheet.create({
         borderRadius: StatusBar.currentHeight,
         padding: 6,
         height: layout.WINDOW.height * .062
-    },
+    }, buttonStyle: {
+        marginTop: layoutParams.WINDOW.height * .009,
+        backgroundColor: layout.colors.black,
+        elevation: layoutParams.elevation.elevation,
+        marginBottom: layoutParams.WINDOW.height * .009,
+        justifyContent: "center",
+        borderRadius: 30,
+        borderColor: 'transparent'
+    }, buttonText: {
+        marginTop: 10, fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center"
+    }
 })

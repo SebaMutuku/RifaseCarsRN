@@ -17,16 +17,16 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
       alignItems: 'center'
     }}>
       {CircularImage({
-        source: require('../../../assets/images/human-male.jpg'), style: {...styles.circularImage}, onPress: () => {
-        }
+        source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
+        size: layoutParams.WINDOW.height * .1,
+        rounded: true
       })}
       <View style={{
         flexDirection: "column"
       }}>
         <Text adjustsFontSizeToFit
               style={[styles.profileText, {
-                fontSize: 25,
-                color: layoutParams.colors.lighGrey
+                fontSize: 25, fontFamily: "Roboto_500Medium", color: layoutParams.colors.lighGrey,
               }]}>Sebastian</Text>
         <Text style={styles.profileText}>abc@gmail.com</Text>
       </View>
@@ -114,13 +114,14 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                              }}>{item}</Text>
                            </TouchableOpacity>);
                          }}
+                         showsVerticalScrollIndicator={false}
                          renderSectionHeader={({section: {title}}) => (<View style={{
                            marginLeft: 20,
                          }}><Text style={styles.header}>{title}</Text></View>)}
                          ListFooterComponentStyle={{
-                           marginBottom: 50
+                           marginBottom: 5
                          }}
-                         ListFooterComponent={<View style={{paddingBottom: 50}}/>}
+                         ListFooterComponent={<View style={{paddingBottom: 5}}/>}
 
     />);
   }
@@ -129,7 +130,13 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
     {/*TopImage Screen*/}
     {topScreen()}
     <View style={{
-      justifyContent: "center", marginTop: 20
+      flex: 1,
+      flexGrow: 1,
+      justifyContent: "center",
+      marginTop: 20,
+      backgroundColor: layoutParams.colors.white,
+      borderTopRightRadius: 10,
+      borderTopLeftRadius: 10, ...layoutParams.elevation
     }}>
       {scrollSectionList()}
     </View>
@@ -157,14 +164,14 @@ const styles = StyleSheet.create({
     marginTop: 20
   }, item: {
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.white,
+    backgroundColor: layoutParams.colors.backgroundColor,
     padding: 20,
     marginTop: 2,
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 10
   }, header: {
-    fontSize: 20, color: layoutParams.colors.black, FontFamily: "Poppins_500Medium", fontWeight: "bold"
+    fontFamily: "Poppins_500Medium", fontSize: 20
   }, title1: {
     fontSize: 24
   }

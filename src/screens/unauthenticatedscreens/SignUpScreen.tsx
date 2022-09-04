@@ -1,4 +1,4 @@
-import {Pressable, StatusBar, StyleSheet} from "react-native";
+import {StatusBar, StyleSheet} from "react-native";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
 import displayImage from "../../utils/DisplayImage";
@@ -9,6 +9,7 @@ import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {Text, TextInput, View} from "../../components/Themed";
+import {Button} from "@rneui/base";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
@@ -111,23 +112,11 @@ export default function SignUpScreen() {
                                    ...state, checkBoxChecked: !state.checkBoxChecked
                                })}
                 />
-                <Pressable style={({pressed}) => [{
-                    marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
-                    elevation: layout.elevation.elevation,
-                    justifyContent: "center",
-                    alignItems: 'center'
-                }, registerStyles.wrapperCustom]} onPress={() => onRegister()} disabled={validateUserTextFields()}>
-                    <Text style={{
-                        marginTop: 10,
-                        fontFamily: "Poppins_500Medium",
-                        color: validateUserTextFields() ? layout.colors.grey : layout.colors.white,
-                        fontSize: 20,
-                        textAlign: "center", // justifyContent: "center"
-                    }}>
-                        Sign Up
-                    </Text>
-                </Pressable>
+                <Button buttonStyle={{
+                    ...registerStyles.buttonStyle, ...registerStyles.wrapperCustom
+                }} titleStyle={{
+                    ...registerStyles.buttonText
+                }} title="Sign Up" onPress={() => onRegister()} disabled={validateUserTextFields()} loading={false}/>
                 <Text style={{
                     margin: 10, fontSize: 18, textAlign: "center"
                 }}>Already have an account? <Text style={{
@@ -145,15 +134,26 @@ const registerStyles = StyleSheet.create({
         height: layout.WINDOW.height * .062,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.textInputColor,
-        fontSize: 20,
-        borderRadius: StatusBar.currentHeight,
-        margin: 5,
-        padding: 10,
+        fontSize: 20, borderRadius: StatusBar.currentHeight, margin: 5, padding: 10,
     }, wrapperCustom: {
         alignItems: "center",
         width: layout.WINDOW.width * .95,
         borderRadius: StatusBar.currentHeight,
         padding: 6,
         height: layout.WINDOW.height * .062,
+    }, buttonStyle: {
+        marginTop: layoutParams.WINDOW.height * .009,
+        backgroundColor: layout.colors.black,
+        elevation: layoutParams.elevation.elevation,
+        marginBottom: layoutParams.WINDOW.height * .009,
+        justifyContent: "center",
+        alignItems: 'center',
+        borderColor: 'transparent',
     },
+    buttonText: {
+        marginTop: 10,
+        fontFamily: "Poppins_500Medium",
+        fontSize: 20,
+        textAlign: "center",
+    }
 })

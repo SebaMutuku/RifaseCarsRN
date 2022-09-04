@@ -1,11 +1,12 @@
 import React from "react";
-import {Pressable, StatusBar, StyleSheet} from "react-native";
+import {StatusBar, StyleSheet} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import displayImage from "../../utils/DisplayImage";
 import utils from "../../utils/Utils";
 import {Text, TextInput, View} from "../../components/Themed";
+import {Button} from "@rneui/base";
 
 export default function ResetPassword() {
     const [state, setState] = React.useState({
@@ -52,23 +53,12 @@ export default function ResetPassword() {
                            onChangeText={(text) => setState({...state, email: text})}
                            value={state.email}
                 />
-                <Pressable style={({pressed}) => [{
-                    marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
-                    elevation: layout.elevation.elevation,
-                    justifyContent: "center",
-                    alignItems: 'center'
-                }, resetPassStyles.wrapperCustom]} onPress={() => onResetPass()} disabled={validateUserTextFields()}>
-                    <Text style={{
-                        marginTop: 10,
-                        fontFamily: "Poppins_500Medium",
-                        color: validateUserTextFields() ? layout.colors.disabledTextColor : layout.colors.white,
-                        fontSize: 20,
-                        textAlign: "center", // justifyContent: "center"
-                    }}>
-                        Reset Password
-                    </Text>
-                </Pressable>
+                <Button buttonStyle={{
+                    ...resetPassStyles.buttonStyle, ...resetPassStyles.wrapperCustom
+                }} titleStyle={{
+                    ...resetPassStyles.buttonText
+                }} title="Reset Password" onPress={() => onResetPass()} disabled={validateUserTextFields()}
+                        loading={false}/>
             </View>
         </View>
     </SafeAreaProvider>);
@@ -96,4 +86,19 @@ const resetPassStyles = StyleSheet.create({
         padding: 6,
         height: layout.WINDOW.height * .062,
     },
+    buttonStyle: {
+        marginTop: layoutParams.WINDOW.height * .009,
+        backgroundColor: layout.colors.black,
+        elevation: layoutParams.elevation.elevation,
+        marginBottom: layoutParams.WINDOW.height * .009,
+        justifyContent: "center",
+        alignItems: 'center',
+        borderColor: 'transparent',
+    },
+    buttonText: {
+        marginTop: 10,
+        fontFamily: "Poppins_500Medium",
+        fontSize: 20,
+        textAlign: "center",
+    }
 })

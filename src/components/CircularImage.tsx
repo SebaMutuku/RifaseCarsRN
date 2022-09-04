@@ -1,14 +1,17 @@
-import {GestureResponderEvent, Image, ImageSourcePropType, ImageStyle, StyleProp, TouchableOpacity} from "react-native";
+import {ImageSourcePropType, ImageStyle} from "react-native";
 import React from "react";
+import {Avatar} from "@rneui/themed";
 
-interface ImageProps {
-    style: StyleProp<ImageStyle>;
-    source: ImageSourcePropType,
-    onPress?:(event: GestureResponderEvent) => void
+interface AvatarProps {
+    avatarStyle?: ImageStyle;
+    source: ImageSourcePropType;
+    onPress?: () => void;
+    size: number;
+    rounded?: boolean
 }
 
-export default function CircularImage({...props}: ImageProps) {
-    return (<TouchableOpacity {...props}>
-        <Image {...props} resizeMethod="auto"/>
-    </TouchableOpacity>);
+export default function CircularImage({...props}: AvatarProps) {
+    return (<Avatar {...props} />
+
+    );
 }

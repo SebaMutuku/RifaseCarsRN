@@ -9,7 +9,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
 import {ColorSchemeName} from 'react-native';
 import Profile from '../screens/authenticatedscreens/Profile';
-import TabTwoScreen from '../screens/TabTwoScreen';
 import {
     HomeBottomTabParamList,
     HomeBottomTabScreenProps,
@@ -29,6 +28,7 @@ import {Text, View} from "../components/Themed";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import LastOrders from "../screens/authenticatedscreens/LastOrders";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
+import Messages from "../screens/authenticatedscreens/Messages";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
@@ -66,8 +66,8 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
         <NavigationContainer
             theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
             ref={navigationRef}>
-            {/*{state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}*/}
-            <HomeStackNavigator/>
+            {state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
+            {/*<HomeStackNavigator/>*/}
         </NavigationContainer>
     );
 }
@@ -223,7 +223,8 @@ function BottomTabNavigator() {
                 },
                 headerTitleStyle: {
                     fontSize: 25,
-                    fontFamily: "Poppins_400Regular"
+                    fontFamily: "Poppins_400Regular",
+                    fontWeight:"bold"
                 },
                 tabBarLabelPosition: "beside-icon",
                 headerTitleAlign: "center",
@@ -292,11 +293,11 @@ function BottomTabNavigator() {
                 }}
             />
             <HomeBottomTabs.Screen
-                name="Settings"
-                component={TabTwoScreen}
+                name="Messages"
+                component={Messages}
                 options={{
-                    tabBarLabel: "Settings",
-                    tabBarIcon: ({color}) => <TabBarIcon name="wrench" color={color} size={25}/>,
+                    tabBarLabel: "Messages",
+                    tabBarIcon: ({color}) => <TabBarIcon name="comment-multiple" color={color} size={25}/>,
                 }}
             />
             <HomeBottomTabs.Screen

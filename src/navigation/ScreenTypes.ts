@@ -25,7 +25,7 @@ export type HomeBottomTabParamList = {
   HomeTab: StackScreenProps<HomeStackParamList>;
   LastOrders: undefined;
   Profile: undefined
-  Settings: undefined
+  Messages: undefined
 };
 
 export type RootStackScreenProps<screen extends keyof HomeBottomTabParamList> = NativeStackScreenProps<HomeBottomTabParamList,

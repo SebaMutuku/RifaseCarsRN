@@ -4,10 +4,11 @@ import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
-import {Text, TextInput, View} from "../../components/Themed";
+import {Text, View} from "../../components/Themed";
 import {FontAwesome} from "@expo/vector-icons";
-import CircularImage from "../../components/CircularImage";
 import FlatListView from "../../components/FlatListView";
+import {SearchBar} from "@rneui/base";
+import CircularImage from "../../components/CircularImage";
 
 
 export default function Home() {
@@ -80,25 +81,24 @@ export default function Home() {
 
 
     function searchInput() {
-        return (<View style={{
-            alignItems: "center"
-        }}>
-            <TextInput placeholder="Search for a car"
-                       autoCapitalize="none"
-                       blurOnSubmit={true}
-                       keyboardType="default"
-                       style={{...homeStyles.textInput}}
-                       inlineImageLeft="magnifying-glass"
-                       underlineColorAndroid="transparent"
-                       onChangeText={(text) => setState({...state, searchedCar: text})}
-                       value={state.searchedCar}/>
-        </View>);
+        return (<SearchBar placeholder="Search for a car" onChangeText={(value) => setState({
+            ...state,
+            searchedCar: value
+        })} value={state.searchedCar} inputStyle={{
+            fontSize: 20,
+            fontWeight: "bold",
+            color: layoutParams.colors.black,
+        }} containerStyle={{
+            backgroundColor: layoutParams.colors.backgroundColor,
+        }} inputContainerStyle={{
+            backgroundColor: layoutParams.colors.backgroundColor,
+            borderWidth: 0,
+            elevation: layout.elevation.elevation, borderRadius: 20
+        }} autoCapitalize="none" lightTheme/>);
     }
 
     function onPressimage() {
-        console.log("Pressed")
-        navigation.navigate("Profile")
-
+        navigation.navigate("Profile");
     }
 
     function carBrandFlatList() {
@@ -180,7 +180,8 @@ export default function Home() {
                 <View style={{
                     marginLeft: 10, marginRight: 10, flexDirection: "row", justifyContent: "space-between"
                 }}><Text style={{
-                    textAlign: 'center', fontWeight: "bold",
+                    textAlign: 'center',
+                    fontWeight: "bold",
                     fontSize: 25,
                     fontFamily: "Poppins_600SemiBold"
                 }} adjustsFontSizeToFit>{item?.make}</Text>
@@ -305,9 +306,10 @@ export default function Home() {
                     <FontAwesome name="bell" size={30} color={layoutParams.colors.deepBlue}
                                  style={{marginRight: 20}}/>
                     {CircularImage({
-                        source: require('../../../assets/images/human-male.jpg'),
-                        style: {...homeStyles.circularImage},
-                        onPress: () => onPressimage
+                        source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
+                        size: layoutParams.WINDOW.height * .07,
+                        rounded: true,
+                        onPress: onPressimage
                     })}
                 </View>
             </View>
@@ -351,13 +353,14 @@ const homeStyles = StyleSheet.create({
         flex: 1, backgroundColor: layoutParams.colors.backgroundColor,
     }, textInput: {
         width: layout.WINDOW.width * .95,
+        borderColor: layoutParams.colors.backgroundColor,
         height: layout.WINDOW.height * .05,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.white,
         fontSize: 20,
         borderRadius: 10,
         padding: 10,
-        elevation: layout.elevation.elevation
+        elevation: layout.elevation.elevation,
     }, circularImage: {
         width: 50, height: 50, borderRadius: 50 / 2
     }, flatview: {
