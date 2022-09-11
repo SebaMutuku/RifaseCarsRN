@@ -1,6 +1,6 @@
 import {SafeAreaView, SectionList, StyleSheet, TouchableOpacity} from 'react-native';
 
-import {Text, View} from '../../components/Themed';
+import {Text, View} from '../../components/Components';
 import {HomeBottomTabScreenProps} from "../../navigation/ScreenTypes";
 import layoutParams from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";

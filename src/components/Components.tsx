@@ -5,10 +5,12 @@
 
 import {
     ActivityIndicator as Indicator,
-    ColorValue,
-    StyleProp,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     Text as DefaultText,
     TextInput as DefaultTextInput,
+    TouchableWithoutFeedback,
     View as DefaultView
 } from 'react-native';
 import useColorScheme from "../hooks/useColorScheme";
@@ -38,16 +40,6 @@ export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
 export type TextInputProps = ThemeProps & DefaultTextInput['props'];
 
-interface indicatorProps {
-    style: StyleProp<ViewProps>;
-    size: any;
-    animating: boolean | undefined;
-    color: ColorValue | undefined;
-    children?: React.ReactNode;
-    focusable?: boolean
-
-
-}
 
 export function Text(props: TextProps) {
     const {style, lightColor, darkColor, ...otherProps} = props;
@@ -68,6 +60,50 @@ export function TextInput(props: TextInputProps) {
     return <DefaultTextInput style={style} {...otherProps} />;
 }
 
-export function ActivityIndicator(props: indicatorProps) {
-    return <Indicator {...props}   />;
+export function ActivityIndicator(visible: boolean) {
+    return (
+        visible && (
+            <View style={{
+                width: layoutParams.WINDOW.width,
+                height: layoutParams.WINDOW.height,
+                position: 'absolute',
+                zIndex: 10,
+                alignItems: "center",
+                justifyContent: 'center'
+            }}>
+                <View style={{
+                    width: layoutParams.WINDOW.width * .7,
+                    height: layoutParams.WINDOW.height * .2,
+                    backgroundColor: layoutParams.colors.grey,
+                    ...layoutParams.elevation,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingHorizontal: 20,
+                }}>
+                    <Indicator size="large" color={layoutParams.colors.deepBlue} animating={true}/>
+                    <Text style={{marginLeft: 10, fontSize: 20, fontFamily: "Roboto_500Medium"}}>Loading...</Text>
+                </View>
+            </View>
+        ));
 }
+
+interface KeyBoardProps {
+    children: React.ReactNode
+}
+
+export function KeyboardAvoidingComponent({children}: KeyBoardProps) {
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{flex: 1}}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <React.Fragment>
+                    {children}
+                </React.Fragment>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+    );
+}
+
+

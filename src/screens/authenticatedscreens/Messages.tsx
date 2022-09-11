@@ -4,9 +4,15 @@ import layoutParams from "../../utils/LayoutParams";
 import {SearchBar} from "@rneui/base";
 import FlatListView from "../../components/FlatListView";
 import {Avatar} from '@rneui/themed';
-import {Text, View} from "../../components/Themed";
+import {Text, View} from "../../components/Components";
+
 
 export default function Messages() {
+    type messageTemplate = {
+        from: string,
+        time: string,
+        lastMessage: string
+    }
     const usersD = [{
         name: "Seba", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Vice Chairman'
     }, {
@@ -24,7 +30,58 @@ export default function Messages() {
     }, {
         name: "Laughter", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Laughter'
     }]
-    const messagesData = ["Seba", "Sebastian", "Testing", "Logbook", "Mac", "Users", "Testers", "hehe", "username 1", "username 2"]
+    const messagesData = [
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        },
+        {
+            from: "Seba",
+            lastMessage: "Hey, how are you?",
+            time: "2022-09-01"
+        }
+    ]
     const [state, setState] = React.useState({
         searchedMessage: "", usersData: usersD, selectedUser: 0, selectedMessage: 0, messages: messagesData
     });
@@ -109,10 +166,10 @@ export default function Messages() {
                 <View style={{flexDirection: "column", marginLeft: 5, justifyContent: "space-evenly"}}>
                     <Text style={{
                         fontSize: 20, fontFamily: "Poppins_600SemiBold"
-                    }}>{item as any}</Text>
+                    }}>{item}</Text>
                     <Text style={{
                         fontSize: 15
-                    }}>This is a texting message</Text>
+                    }}>{item.lastMessage}</Text>
                 </View>
             </View>
             <Text style={{
@@ -139,7 +196,7 @@ export default function Messages() {
         <View style={{
             flexGrow: 1,
             flex: 1,
-            backgroundColor: layoutParams.colors.white,
+            backgroundColor: layoutParams.colors.backgroundColor,
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10, ...layoutParams.elevation
         }}>{messagesFlatList()}</View>

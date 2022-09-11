@@ -5,7 +5,7 @@ import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import displayImage from "../../utils/DisplayImage";
 import utils from "../../utils/Utils";
-import {Text, TextInput, View} from "../../components/Themed";
+import {Text, TextInput, View} from "../../components/Components";
 import {Button} from "@rneui/base";
 
 export default function ResetPassword() {

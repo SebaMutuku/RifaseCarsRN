@@ -24,7 +24,7 @@ import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
-import {Text, View} from "../components/Themed";
+import {Text, View} from "../components/Components";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import LastOrders from "../screens/authenticatedscreens/LastOrders";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";

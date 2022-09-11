@@ -4,7 +4,7 @@ import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
-import {Text, View} from "../../components/Themed";
+import {Text, View} from "../../components/Components";
 import {FontAwesome} from "@expo/vector-icons";
 import FlatListView from "../../components/FlatListView";
 import {SearchBar} from "@rneui/base";

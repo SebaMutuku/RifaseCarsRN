@@ -1,5 +1,5 @@
 import {useRoute} from "@react-navigation/native";
-import {Text, View} from "../../../components/Themed";
+import {Text, View} from "../../../components/Components";
 import {HomeRouteProp} from "../../../navigation/ScreenTypes";
 import {Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from "react-native";
 import layoutParams from "../../../utils/LayoutParams";

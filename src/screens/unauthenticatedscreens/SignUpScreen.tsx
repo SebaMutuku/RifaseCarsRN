@@ -8,7 +8,7 @@ import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
 import {SafeAreaProvider} from "react-native-safe-area-context";
-import {Text, TextInput, View} from "../../components/Themed";
+import {KeyboardAvoidingComponent, Text, TextInput, View} from "../../components/Components";
 import {Button} from "@rneui/base";
 
 export default function SignUpScreen() {
@@ -45,27 +45,37 @@ export default function SignUpScreen() {
         return;
     }
 
-    return (<SafeAreaProvider><View style={{
-        flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: layout.colors.backgroundColor
-    }}>
-        {/*upperImageView*/}
-        <View style={{
-            borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, elevation: layout.elevation.elevation
-        }}>
-            {displayImage({
-                borderRadii: 30, resizeMode: "contain"
-            })}
-        </View>
-        {/*inputs view*/}
-        <View style={{flex: 1}}>
-            <Text style={{
-                fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
-            }}>
-                Rifasa Cars
-            </Text>
-            <Text style={{
-                textAlign: "center", fontSize: 15, color: layoutParams.colors.lighGrey, fontFamily: "Poppins_500Medium", // justifyContent: "center"
-            }}>
+    return (<KeyboardAvoidingComponent>
+                <View style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: layout.colors.backgroundColor
+                }}>
+                    {/*upperImageView*/}
+                    <View style={{
+                        borderBottomRightRadius: 30,
+                        borderBottomLeftRadius: 30,
+                        flex: .5,
+                        elevation: layout.elevation.elevation
+                    }}>
+                        {displayImage({
+                            borderRadii: 30, resizeMode: "contain"
+                        })}
+                    </View>
+                    {/*inputs view*/}
+                    <View style={{flex: 1}}>
+                        <Text style={{
+                            fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
+                        }}>
+                            Rifasa Cars
+                        </Text>
+                        <Text style={{
+                            textAlign: "center",
+                            fontSize: 15,
+                            color: layoutParams.colors.lighGrey,
+                            fontFamily: "Poppins_500Medium", // justifyContent: "center"
+                        }}>
                 Create an account with us
             </Text>
             <View style={{
@@ -123,9 +133,9 @@ export default function SignUpScreen() {
                     fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
                 }} onPress={() => navigation.navigate("Login")}>Login</Text></Text>
             </View>
-        </View>
-    </View>
-    </SafeAreaProvider>);
+                    </View>
+                </View>
+            </KeyboardAvoidingComponent>);
 }
 const registerStyles = StyleSheet.create({
     textInput: {

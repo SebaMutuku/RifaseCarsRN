@@ -7,13 +7,13 @@ import layoutParams from "../../utils/LayoutParams";
 import React from "react";
 import utils from "../../utils/Utils";
 import displayImage from "../../utils/DisplayImage";
-import {Text, TextInput, View} from "../../components/Themed";
+import {ActivityIndicator, KeyboardAvoidingComponent, Text, TextInput, View} from "../../components/Components";
 import Toast from "react-native-toast-message";
 import {Button} from "@rneui/base";
 
 export default function LoginScreen() {
     const [state, setState] = React.useState({
-        username: "", password: "", token: ""
+        username: "", password: "", token: "", loading: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
@@ -26,34 +26,44 @@ export default function LoginScreen() {
     }
 
     function onLogin() {
-        navigation.navigate("HomeScreen");
+
+
         if (!validateInputs()) {
-            if (state.username != null && state.password != null) {
-                const tkn = "seba"
+            setState({
+                ...state, loading: true
+            });
+            setTimeout(() => {
                 setState({
-                    ...state, token: tkn
+                    ...state, loading: false
                 });
-                fetch(utils.appUrl + "/login", {
-                    method: "POST", headers: {
-                        "Content-Type": "application/json"
-                    }, body: JSON.stringify({
-                        username: state.username, pasword: state.password
-                    })
-                }).then(response => response.json()).then(reponseData => {
-                    const response = JSON.parse(JSON.stringify(reponseData));
-                    utils.saveValue("token", response.User.token);
-                    navigation.navigate("HomeScreen")
-                }).catch(error => console.log(error));
-            }
+                //
+                navigation.navigate("HomeScreen");
+                if (state.username != null && state.password != null) {
+                    const tkn = "seba"
+                    setState({
+                        ...state, token: tkn
+                    });
+                    fetch(utils.appUrl + "/login", {
+                        method: "POST", headers: {
+                            "Content-Type": "application/json"
+                        }, body: JSON.stringify({
+                            username: state.username, pasword: state.password
+                        })
+                    }).then(response => response.json()).then(reponseData => {
+                        const response = JSON.parse(JSON.stringify(reponseData));
+                        utils.saveValue("token", response.User.token);
+                        navigation.navigate("HomeScreen")
+                    }).catch(error => console.log(error));
+                }
+            }, 3000);
+
         }
         return;
     }
 
-    return (<SafeAreaProvider>
-        <View style={{
-            flex: 1, alignItems: "center", backgroundColor: layout.colors.backgroundColor
-        }}>
-            {/*upperImageView*/}
+    return (
+        <KeyboardAvoidingComponent>
+            {ActivityIndicator(state.loading)}
             <View style={{
                 borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, ...layoutParams.elevation
             }}>
@@ -124,8 +134,7 @@ export default function LoginScreen() {
                     }} onPress={() => navigation.navigate("SignUp")}>Register</Text></Text>
                 </View>
             </View>
-        </View>
-    </SafeAreaProvider>);
+        </KeyboardAvoidingComponent>);
 
 }
 const styles = StyleSheet.create({
