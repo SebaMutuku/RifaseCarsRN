@@ -9,7 +9,7 @@ interface flatlistProps {
     ListFooterComponentStyle?: StyleProp<ViewStyle>;
     ListFooterComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined
     keyExtractor: ((item: ({ id: string, title: string } | undefined), index: number) => string) | undefined;
-    key: Key | null | undefined;
+    key?: Key | null | undefined;
     extraData: any;
     horizontal?: boolean;
     columnWrapperStyle?: StyleProp<ViewStyle>;

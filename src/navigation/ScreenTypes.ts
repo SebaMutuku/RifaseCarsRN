@@ -32,9 +32,10 @@ export type RootStackScreenProps<screen extends keyof HomeBottomTabParamList> = 
     screen>;
 
 export type HomeStackParamList = {
-  HomeStack:  undefined;
+  HomeStack: undefined;
   CarDetails: { cardetails: {} } | undefined
-  Wallet: undefined
+  Wallet: undefined,
+  UserMessage: { fromUser: string, fromUserImage: any } | undefined
 
 };
 export type UnauthenticatedParamList = {

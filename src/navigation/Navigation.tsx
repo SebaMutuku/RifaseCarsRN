@@ -29,6 +29,8 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import LastOrders from "../screens/authenticatedscreens/LastOrders";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
 import Messages from "../screens/authenticatedscreens/Messages";
+import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
+import CircularImage from "../components/CircularImage";
 
 export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
     const [state, setState] = React.useState({
@@ -96,7 +98,7 @@ function HomeStackNavigator() {
             headerStyle: {
                 backgroundColor: layoutParams.colors.backgroundColor,
             },
-            headerShadowVisible:false,
+            headerShadowVisible: false,
             headerShown: true,
             animation: "fade_from_bottom",
             headerTitleStyle: {
@@ -118,6 +120,25 @@ function HomeStackNavigator() {
                                options={({route}: any) => ({title: route.params.cardetails != undefined || route.params.cardetails != null ? route.params?.cardetails.make : "Select a Car"})}/>
             <HomeStacks.Group screenOptions={{presentation: 'modal'}}>
                 <HomeStacks.Screen name="Wallet" component={Profile}/>
+                <HomeStacks.Screen name="UserMessage" component={UserMessage}
+                                   options={({route}: any) => (
+                                       {
+                                           title: route.params.fromUser != undefined || route.params.fromUser != null ? route.params?.fromUser : "UserMessage",
+                                           headerLeft: () => <View style={{
+                                               margin: 5
+                                           }}>
+                                               <CircularImage
+                                                   source={{uri: route.params.fromUserImage}}
+                                                   size={45} rounded/></View>,
+                                           // headerSearchBarOptions: {
+                                           //     autoCapitalize: "none",
+                                           //     shouldShowHintSearchIcon: true,
+                                           //     inputType: "text",
+                                           //     placeholder: "Enter your values"
+                                           // }
+                                       })
+                                   }
+                />
             </HomeStacks.Group>
         </HomeStacks.Navigator>
     );
@@ -130,6 +151,16 @@ function HomeStackNavigator() {
 const HomeBottomTabs = createBottomTabNavigator<HomeBottomTabParamList>();
 const LoginStacks = createNativeStackNavigator<UnauthenticatedParamList>();
 const HomeStacks = createNativeStackNavigator<HomeStackParamList>();
+// const SharedElementStack = createSharedElementStackNavigator<SharedElementParamList>();
+
+// function createSharedElements() {
+//     return (
+//         <SharedElementStack.Navigator initialRouteName="HomeStack">
+//             <SharedElementStack.Screen component={}
+//
+//         </SharedElementStack.Navigator>
+//     )
+// }
 
 function UnauthenticatedNavigator() {
     const colorScheme = useColorScheme();

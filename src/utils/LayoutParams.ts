@@ -1,4 +1,4 @@
-import {Dimensions} from 'react-native';
+import {Dimensions,Platform} from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -6,7 +6,8 @@ const height = Dimensions.get('window').height;
 export default {
     WINDOW: {
         width, height,
-    }, isSmallDevice: width < 375, elevation: {
+    }, isSmallDevice: width < 375,
+    elevation: {
         shadowColor: '#000', shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.5, shadowRadius: 2, elevation: 2,
     },
     colors: {
@@ -22,7 +23,8 @@ export default {
         grey: "#D7E1E7",
         selectedColor: "#8cb2c9",
         loadMore: "#C0392B",
-        red: "#DE3163"
+        red: "#DE3163",
+        messageColor:"#DCF8C5"
     },
 
 };

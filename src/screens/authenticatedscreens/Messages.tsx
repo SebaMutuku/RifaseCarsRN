@@ -5,85 +5,23 @@ import {SearchBar} from "@rneui/base";
 import FlatListView from "../../components/FlatListView";
 import {Avatar} from '@rneui/themed';
 import {Text, View} from "../../components/Components";
+import {messagesData, usersD} from "../../utils/Data";
+import moment from 'moment'
+import {Ionicons} from "@expo/vector-icons";
+import {useNavigation} from "@react-navigation/native";
+import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 
 
 export default function Messages() {
+    const navigation = useNavigation<CombinedNavigationProps>();
     type messageTemplate = {
         from: string,
-        time: string,
+        messageTime: string,
         lastMessage: string
     }
-    const usersD = [{
-        name: "Seba", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Vice Chairman'
-    }, {
-        name: "Sebastian", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Sebastian'
-    }, {
-        name: "Testing", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Testing'
-    }, {
-        name: "Ona", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Ona'
-    }, {
-        name: "Mac", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Mac'
-    }, {
-        name: "Users", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Users'
-    }, {
-        name: "Testers 1", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Testers 1'
-    }, {
-        name: "Laughter", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Laughter'
-    }]
-    const messagesData = [
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        },
-        {
-            from: "Seba",
-            lastMessage: "Hey, how are you?",
-            time: "2022-09-01"
-        }
-    ]
+
     const [state, setState] = React.useState({
-        searchedMessage: "", usersData: usersD, selectedUser: 0, selectedMessage: 0, messages: messagesData
+        searchedMessage: "", usersData: usersD, selectedUser: {}, selectedMessage: 0, messages: messagesData
     });
 
 
@@ -105,13 +43,15 @@ export default function Messages() {
                 flexDirection: "column", justifyContent: "space-evenly", alignItems: 'center'
             }}>
                 <Avatar key={index}
-                        size={layoutParams.WINDOW.height * .06}
+                        size={layoutParams.WINDOW.height * .065}
                         rounded
                         source={item.avatar_url ? {uri: item.avatar_url} : {}}
                         overlayContainerStyle={{
                             backgroundColor: layoutParams.colors.disabledTextColor,
                         }}
                         containerStyle={{
+                            borderColor: layoutParams.colors.selectedColor,
+                            borderWidth: 2.5,
                             margin: 5
                         }}/>
                 <Text style={{
@@ -139,53 +79,67 @@ export default function Messages() {
     }
 
     function messagesFlatList() {
-        const today = new Date();
-        const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-        const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        const dateTime = date + ' ' + time;
-        return <FlatListView data={state.messages as any} renderItem={({item, index}) => <TouchableOpacity style={{
-            flex: 1,
-            flexGrow: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderRadius: 15,
-            margin: 1,
-            paddingRight: 10,
-            backgroundColor: layoutParams.colors.backgroundColor,
-        }}>
-            <View style={{flexDirection: "row", justifyContent: "space-evenly"}}>
-                <Avatar overlayContainerStyle={{
-                    backgroundColor: layoutParams.colors.disabledTextColor,
-                }}
-                        source={{uri: 'https://randomuser.me/api/portraits/men/36.jpg'}}
-                        size={layoutParams.WINDOW.height * .07}
-                        rounded
-                        containerStyle={{
-                            margin: 2
-                        }}/>
-                <View style={{flexDirection: "column", marginLeft: 5, justifyContent: "space-evenly"}}>
-                    <Text style={{
-                        fontSize: 20, fontFamily: "Poppins_600SemiBold"
-                    }}>{item}</Text>
-                    <Text style={{
-                        fontSize: 15
-                    }}>{item.lastMessage}</Text>
+        return <FlatListView data={state.messages} renderItem={({item, index}: any) => {
+            return <TouchableOpacity style={{
+                flex: 1,
+                flexGrow: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: 'center',
+                borderRadius: 15,
+                margin: 1,
+                paddingRight: 10,
+                elevation: state.selectedMessage == index ? layoutParams.elevation.elevation : 0,
+                backgroundColor: layoutParams.colors.backgroundColor,
+            }} key={index} onPress={() => {
+                setState({
+                    ...state,
+                    selectedMessage: index
+                });
+                viewUserMessage(item);
+            }
+            }>
+                <View style={{flexDirection: "row", justifyContent: "space-evenly"}}>
+                    <Avatar overlayContainerStyle={{
+                        backgroundColor: layoutParams.colors.disabledTextColor,
+                    }}
+                            source={{uri: item.image}}
+                            size={layoutParams.WINDOW.height * .07}
+                            rounded
+                            containerStyle={{
+                                margin: 2
+                            }}/>
+                    <View style={{flexDirection: "column", marginLeft: 5, justifyContent: "space-evenly"}}>
+                        <Text style={{
+                            fontSize: 16, fontFamily: "Poppins_500Medium"
+                        }}>{item.from}</Text>
+                        <Text style={{
+                            fontSize: 15,
+                            color: layoutParams.colors.lighGrey
+                        }}>{item.lastMessage}</Text>
+                    </View>
                 </View>
-            </View>
-            <Text style={{
-                fontSize: 16, color: layoutParams.colors.lighGrey, fontFamily: "Poppins_700Bold"
-            }}>{time}</Text>
-        </TouchableOpacity>} keyExtractor={(item: any, index) => item + index}
+                <View>
+                    <Text style={{
+                        fontSize: 12, color: layoutParams.colors.lighGrey, fontFamily: "Poppins_400Regular"
+                    }}>{moment(item.messageTime).fromNow()}</Text>
+                    <Ionicons name="md-checkmark-done" size={20} color={layoutParams.colors.lighGrey}/>
+                </View>
+            </TouchableOpacity>
+        }} keyExtractor={(item: any, index) => item + index}
                              key={'_'} extraData={state.selectedUser}
                              contentContainerStyle={{margin: 5}}
                              showsVerticalScrollIndicator={false}
-                             ListFooterComponentStyle={{
+                             ListFooterComponent={() => <View style={{
                                  marginBottom: 5
-                             }}/>
+                             }}/>}/>
     }
 
-    const addMessage = () => {
-
+    const viewUserMessage = (user: any) => {
+        navigation.navigate("UserMessage", {
+            fromUser: user.from,
+            fromUserImage: user.image
+        });
     }
     return (<SafeAreaView style={{
         ...messageStyles.container

@@ -1,7 +1,6 @@
 import {StatusBar, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
 import React from "react";
@@ -10,8 +9,10 @@ import displayImage from "../../utils/DisplayImage";
 import {ActivityIndicator, KeyboardAvoidingComponent, Text, TextInput, View} from "../../components/Components";
 import Toast from "react-native-toast-message";
 import {Button} from "@rneui/base";
+import {Box, useToast} from "native-base";
 
 export default function LoginScreen() {
+    const toast = useToast();
     const [state, setState] = React.useState({
         username: "", password: "", token: "", loading: false
     });
@@ -26,8 +27,6 @@ export default function LoginScreen() {
     }
 
     function onLogin() {
-
-
         if (!validateInputs()) {
             setState({
                 ...state, loading: true

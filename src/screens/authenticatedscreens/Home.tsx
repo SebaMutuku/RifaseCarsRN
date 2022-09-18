@@ -9,46 +9,17 @@ import {FontAwesome} from "@expo/vector-icons";
 import FlatListView from "../../components/FlatListView";
 import {SearchBar} from "@rneui/base";
 import CircularImage from "../../components/CircularImage";
+import {carBrands, PopularCarData} from "../../utils/Data";
 
 
 export default function Home() {
-    const DATA: any [] = [{
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", make: "Honda Fit", mileage: "20000", yom: "1999", price: "900k"
-    }, {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63", make: "Audi A3", mileage: "21000", yom: "2000", price: "951k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72", make: "Suzuki Swift", mileage: "22000", yom: "2001", price: "550k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d73", make: "BMW I320", mileage: "23000", yom: "2002", price: "2.1M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d74", make: "Toyota Mark X", mileage: "24000", yom: "2003", price: "2,3M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d75", make: "Lexus C5", mileage: "25000", yom: "2004", price: "2.8M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d76", make: "Mazda C6", mileage: "26000", yom: "2005", price: "760k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d77", make: "Mercedes E5", mileage: "27000", yom: "2006", price: "2.7M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d78", make: "RangeRover L2", mileage: "28000", yom: "2007", price: "4.5M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d79", make: "Nissan Murano", mileage: "20000", yom: "2010", price: "940k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d80", make: "Volvo V1", mileage: "29000", yom: "2008", price: "1.4M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d81",
-        make: "Subaru Impreza",
-        mileage: "30000",
-        yom: "2009",
-        price: "1.41M"
-    }];
-    const carBrands: any [] = ["audi", "bmw", "honda", "lexus", "mazda", "mercedes", "nissan", "rangerover", "subaru", "suzuki", "toyota", "volvo"];
     const [state, setState] = React.useState({
         username: "",
         searchedCar: "",
         brandSelected: 0,
         selectedId: 0,
         loading: false,
-        populaCarData: DATA,
+        populaCarData: PopularCarData,
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
@@ -66,6 +37,10 @@ export default function Home() {
             //Sending the currect offset with get request
             .then((response) => response.json())
             .then((responseJson) => {
+                setState(prevState => ({
+                    ...prevState,
+                    populaCarData: [...prevState.populaCarData, responseJson]
+                }))
                 setState({
                     ...state
                 });
@@ -163,34 +138,40 @@ export default function Home() {
     }
 
     function popularCars() {
-        function renderItem(item: any, index: number) {
-            const backgroundColor = index === state.selectedId ? layoutParams.colors.white : layoutParams.colors.grey;
+        const renderItem = (objectItem: any, index: number) => {
             return (<Pressable style={{
-                ...homeStyles.flatview, backgroundColor: backgroundColor, ...layoutParams.elevation
+                ...homeStyles.flatview,
+                backgroundColor: layoutParams.colors.white,
+                elevation: state.selectedId == index ? layoutParams.elevation.elevation : 0
             }}
                                onPress={() => {
                                    setState({
                                        ...state, selectedId: index
                                    });
-                                   navigation.navigate("CarDetails", {cardetails: getSelectedCar(item.yom)});
+                                   navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
                                }}>
                 <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
-                    flex: 1, width: layoutParams.WINDOW.width * .5, borderRadius: 10, resizeMode: "contain",
+                    width: "100%", borderRadius: 10, resizeMode: "contain",
+                    height: "50%"
                 }}/>
                 <View style={{
-                    marginLeft: 10, marginRight: 10, flexDirection: "row", justifyContent: "space-between"
+                    marginLeft: 10,
+                    marginRight: 10,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: 'center'
                 }}><Text style={{
                     textAlign: 'center',
                     fontWeight: "bold",
                     fontSize: 25,
                     fontFamily: "Poppins_600SemiBold"
-                }} adjustsFontSizeToFit>{item?.make}</Text>
+                }} adjustsFontSizeToFit>{objectItem?.make}</Text>
                     <Text style={{
                         color: layoutParams.colors.lighGrey,
                         fontWeight: "bold", fontFamily: "Poppins_500Medium", textAlign: 'center', fontSize: 20
-                    }} adjustsFontSizeToFit>{item?.price}</Text>
+                    }} adjustsFontSizeToFit>{objectItem?.price}</Text>
                 </View>
-                {renderCarSpecs(item.yom, item.mileage, index)}
+                {renderCarSpecs(objectItem.yom, objectItem.mileage, index)}
                 {/*Horizontal line*/}
                 <View style={{
                     justifyContent: 'center', alignItems: 'center'
@@ -201,8 +182,8 @@ export default function Home() {
                 </View>
                 <View>
                     <Text style={{
-                        textAlign: 'center', fontFamily: "Poppins_700Bold", margin: 10
-                    }} adjustsFontSizeToFit>Show more details</Text>
+                        textAlign: 'center', fontFamily: "Roboto_500Medium", margin: 10
+                    }} adjustsFontSizeToFit>Show more specs</Text>
                 </View>
             </Pressable>);
         }
@@ -231,7 +212,7 @@ export default function Home() {
                          ListFooterComponentStyle={null}
                          horizontal
                          showsVerticalScrollIndicator={false}
-                         ListFooterComponent={null}
+                         ListFooterComponent={() => <View style={{marginLeft: 10}}/>}
                          keyExtractor={(item: any, index) => item.make + index}
                          key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}/>
         </View>;
@@ -365,6 +346,7 @@ const homeStyles = StyleSheet.create({
         width: 50, height: 50, borderRadius: 50 / 2
     }, flatview: {
         margin: 3, borderRadius: 10, marginBottom: 10,
+        minWidth: layoutParams.WINDOW.width * .5
     }, itemKeytext: {
         fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.disabledTextColor
     }, itemValueText: {

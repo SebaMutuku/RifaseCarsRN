@@ -7,7 +7,6 @@ import utils from "../../utils/Utils";
 import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
-import {SafeAreaProvider} from "react-native-safe-area-context";
 import {KeyboardAvoidingComponent, Text, TextInput, View} from "../../components/Components";
 import {Button} from "@rneui/base";
 
