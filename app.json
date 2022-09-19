@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RifasaCarsRN",
-    "slug": "RifasaCarsRN",
+    "name": "RifasaCars",
+    "slug": "RifasaCars",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
