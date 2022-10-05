@@ -53,7 +53,7 @@ export default function UserMessage() {
                 alignItems: 'center',
                 justifyContent: "center",
                 backgroundColor: layoutParams.colors.deepBlue
-            }} onPress={() => sendmessage()} disabled={state.messageText.length <= 0} >
+            }} onPress={() => sendmessage()} disabled={state.messageText.length <= 0}>
                 {state.messageText.length > 0 ? <MaterialIcons name="send" size={24} color={layoutParams.colors.white}
                 /> : <MaterialCommunityIcons name="microphone" size={24} color={layoutParams.colors.white}/>}
             </TouchableOpacity>
@@ -61,8 +61,9 @@ export default function UserMessage() {
 
     }
 
+
     function userMessagesFlatList() {
-        return <FlatListView data={state.messagesData} renderItem={({item, index}: any) => {
+        const renderUserMessages = (item: any, index: number) => {
             return <View style={{
                 ...userMessageStyles.messageContent,
                 backgroundColor: item.sender === "me" ? layoutParams.colors.white : layoutParams.colors.messageColor,
@@ -85,12 +86,15 @@ export default function UserMessage() {
                               color={item.sender === "me" ? layoutParams.colors.lighGrey : layoutParams.colors.deepBlue}/>
                 </View>
             </View>
-        }} extraData={null} keyExtractor={(item: any, index) => item + index}
+        }
+        return <FlatListView data={state.messagesData} renderItem={({item, index}) => renderUserMessages(item, index)}
+                             extraData={null}
+                             keyExtractor={(item: any, index) => item + index}
                              contentContainerStyle={{margin: 5}}
                              showsVerticalScrollIndicator={false}
                              ListFooterComponent={() => <View style={{
                                  marginBottom: 5
-                             }}/>}/>
+                             }}/>} initialScrollIndex={state.messagesData.length - 1}/>
     }
 
     return <SafeAreaView style={{...userMessageStyles.container}}>

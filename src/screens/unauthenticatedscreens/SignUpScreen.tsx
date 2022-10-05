@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet} from "react-native";
+import {Pressable, StatusBar, StyleSheet} from "react-native";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
 import displayImage from "../../utils/DisplayImage";
@@ -7,8 +7,8 @@ import utils from "../../utils/Utils";
 import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
-import {KeyboardAvoidingComponent, Text, TextInput, View} from "../../components/Components";
-import {Button} from "@rneui/base";
+import {KeyboardAvoidingComponent, Text, View} from "../../components/Components";
+import TextInputComponent from "../../components/TextInputComponent";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
@@ -16,18 +16,18 @@ export default function SignUpScreen() {
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
-    function validateUserTextFields() {
-        if (state.email.length <= 0 || !state.email.toLowerCase().match(utils.checkValidMail)) {
+    function inputsValid() {
+        if (state.email.length > 0 && state.email.toLowerCase().match(utils.checkValidMail)) {
             return true;
         }
-        if (state.password.length <= 0 || state.password.length < 8) {
+        if (state.password.length > 0 && state.password.length >= 8) {
             return true;
         }
-        return !state.checkBoxChecked
+        return state.checkBoxChecked
     }
 
     function onRegister() {
-        if (!validateUserTextFields()) {
+        if (inputsValid()) {
             if (state.username != null && state.password != null && state.email != null) {
                 fetch(utils.appUrl + "/register", {
                     method: "POST", headers: {
@@ -48,7 +48,6 @@ export default function SignUpScreen() {
                 <View style={{
                     flex: 1,
                     justifyContent: "center",
-                    alignItems: "center",
                     backgroundColor: layout.colors.backgroundColor
                 }}>
                     {/*upperImageView*/}
@@ -75,63 +74,69 @@ export default function SignUpScreen() {
                             color: layoutParams.colors.lighGrey,
                             fontFamily: "Poppins_500Medium", // justifyContent: "center"
                         }}>
-                Create an account with us
-            </Text>
-            <View style={{
-                marginTop: 10, alignItems: 'center'
-            }}>
-                <TextInput placeholder="abc@mail.com"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="email-address"
-                           style={{...registerStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           onChangeText={(text) => setState({...state, email: text})}
-                           value={state.email}
-                />
-                <TextInput placeholder="Enter a username"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="default"
-                           style={{...registerStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           onChangeText={(text) => setState({...state, username: text})}
-                           value={state.username}
-                />
-                <TextInput placeholder="Enter a password"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="default"
-                           style={{...registerStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           secureTextEntry={true}
-                           onChangeText={(text) => setState({...state, password: text})}
-                           value={state.password}
-                />
-                <Checkbox.Item label="Accept terms and condtions here "
-                               status={state.checkBoxChecked ? 'checked' : 'unchecked'}
-                               position={"leading"}
-                               color={layout.colors.black}
-                               labelStyle={{
-                                   fontSize: 20, color: layout.colors.black
-                               }}
-                               uncheckedColor={layout.colors.selectedColor}
-                               theme={DarkTheme}
-                               onPress={() => setState({
-                                   ...state, checkBoxChecked: !state.checkBoxChecked
-                               })}
-                />
-                <Button buttonStyle={{
-                    ...registerStyles.buttonStyle, ...registerStyles.wrapperCustom
-                }} titleStyle={{
-                    ...registerStyles.buttonText
-                }} title="Sign Up" onPress={() => onRegister()} disabled={validateUserTextFields()} loading={false}/>
-                <Text style={{
-                    margin: 10, fontSize: 18, textAlign: "center"
-                }}>Already have an account? <Text style={{
-                    fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
-                }} onPress={() => navigation.navigate("Login")}>Login</Text></Text>
-            </View>
+                            Create an account with us
+                        </Text>
+                        <View style={{
+                            marginTop: 10
+                        }}>
+                            <TextInputComponent placeholder="abc@mail.com"
+                                                onChange={(text) => setState({...state, email: text})}
+                                                secureEntry={false}
+                                                containerStyles={registerStyles.searchInputMainContainer}
+                                                inputView={registerStyles.searchInputContainer}
+                                                searchInput={registerStyles.searchInput} autoCapitalize="none"
+                                                keyboardType="default"
+                                                value={state.email}
+                                                iconName="email"
+                                                iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                                iconColor={layoutParams.colors.lighGrey}/>
+                            <TextInputComponent placeholder="Enter a username"
+                                                onChange={(text) => setState({...state, username: text})}
+                                                secureEntry={false}
+                                                containerStyles={registerStyles.searchInputMainContainer}
+                                                inputView={registerStyles.searchInputContainer}
+                                                searchInput={registerStyles.searchInput} autoCapitalize="none"
+                                                keyboardType="default"
+                                                value={state.username} iconName="account"
+                                                iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                                iconColor={layoutParams.colors.lighGrey}/>
+                            <TextInputComponent placeholder="Enter a password"
+                                                onChange={(text) => setState({...state, password: text})}
+                                                secureEntry={true}
+                                                containerStyles={registerStyles.searchInputMainContainer}
+                                                inputView={registerStyles.searchInputContainer}
+                                                searchInput={registerStyles.searchInput} autoCapitalize="none"
+                                                keyboardType="default"
+                                                value={state.password} iconName="lock"
+                                                iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                                iconColor={layoutParams.colors.lighGrey}/>
+                            <Checkbox.Item label="Accept terms and condtions here "
+                                           status={state.checkBoxChecked ? 'checked' : 'unchecked'}
+                                           position={"leading"}
+                                           color={layout.colors.black}
+                                           labelStyle={{
+                                               fontSize: 20, color: layout.colors.black
+                                           }}
+                                           uncheckedColor={layout.colors.selectedColor}
+                                           theme={DarkTheme}
+                                           onPress={() => setState({
+                                               ...state, checkBoxChecked: !state.checkBoxChecked
+                                           })}
+                            />
+                            <Pressable onPress={() => onRegister()} disabled={!inputsValid()} style={{
+                                ...registerButton(inputsValid()).buttonStyle
+                            }}>
+                                <Text style={{
+                                    ...registerStyles.buttonText,
+                                    color: inputsValid() ? layoutParams.colors.white : layoutParams.colors.black
+                                }}>Sign Up</Text>
+                            </Pressable>
+                            <Text style={{
+                                margin: 10, fontSize: 18, textAlign: "center"
+                            }}>Already have an account? <Text style={{
+                                fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
+                            }} onPress={() => navigation.navigate("Login")}>Login</Text></Text>
+                        </View>
                     </View>
                 </View>
             </KeyboardAvoidingComponent>);
@@ -143,26 +148,35 @@ const registerStyles = StyleSheet.create({
         height: layout.WINDOW.height * .062,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.textInputColor,
-        fontSize: 20, borderRadius: StatusBar.currentHeight, margin: 5, padding: 10,
-    }, wrapperCustom: {
-        alignItems: "center",
-        width: layout.WINDOW.width * .95,
-        borderRadius: StatusBar.currentHeight,
-        padding: 6,
-        height: layout.WINDOW.height * .062,
-    }, buttonStyle: {
-        marginTop: layoutParams.WINDOW.height * .009,
-        backgroundColor: layout.colors.black,
-        elevation: layoutParams.elevation.elevation,
-        marginBottom: layoutParams.WINDOW.height * .009,
-        justifyContent: "center",
-        alignItems: 'center',
-        borderColor: 'transparent',
-    },
-    buttonText: {
-        marginTop: 10,
-        fontFamily: "Poppins_500Medium",
         fontSize: 20,
-        textAlign: "center",
-    }
+        borderRadius: StatusBar.currentHeight,
+        margin: 5,
+        padding: 10,
+    }, buttonText: {
+        marginTop: 10, fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center",
+    }, searchInputMainContainer: {
+        margin: 10
+    }, searchInputContainer: {
+        padding: 15,
+        flexDirection: 'row',
+        backgroundColor: layout.colors.textInputColor,
+        borderRadius: 13,
+        alignItems: 'center',
+    }, searchInput: {
+        flex: 1, fontSize: 16, fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.black,
+    },
 })
+const registerButton = (validatedInput: boolean) => StyleSheet.create({
+    buttonStyle: {
+        alignItems: 'center',
+        justifyContent: "center",
+        padding: 10,
+        backgroundColor: validatedInput ? layout.colors.black : layout.colors.white,
+        borderColor: layout.colors.black,
+        borderWidth: 0.2,
+        borderRadius: 13,
+        margin: 10
+    }
+});
+
+

@@ -1,4 +1,4 @@
-import {SafeAreaView, SectionList, StyleSheet, TouchableOpacity} from 'react-native';
+import {SafeAreaView, SectionList, StyleSheet, Switch, TouchableOpacity} from 'react-native';
 
 import {Text, View} from '../../components/Components';
 import {HomeBottomTabScreenProps} from "../../navigation/ScreenTypes";
@@ -6,11 +6,15 @@ import layoutParams from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";
 import React from "react";
 import {FontAwesome} from "@expo/vector-icons";
+import {sectionData} from "../../utils/Data";
 
 export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'>) {
   const [state, setState] = React.useState({
-    selectedSectionList: 0
+    selectedSectionList: 0, isEnabled: false
   });
+  const toggleSwitch = () => setState(prevState => ({
+    ...prevState, isEnabled: !state.isEnabled
+  }));
 
   function topScreen() {
     return (<View style={{
@@ -34,16 +38,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
   }
 
   function scrollSectionList() {
-    const sectionData = [{
-      title: "Content", data: ["Favourite Cars", "New Cars"]
-    }, {
-      title: "Preferences", data: ["Language", "Notifications"]
-    }, {
-      title: "App Features", data: ["Terms", "FAQ", "About App"]
-    }, {
-      title: "User Settings",
-      data: ["Change Password", "Dark Theme", "Update App", "Privacy", "Close Account", "Logout"]
-    },];
+
     return (<SectionList sections={sectionData}
                          keyExtractor={(item, index) => item + index}
                          renderItem={({item}) => {
@@ -101,9 +96,9 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                iconName = "sign-out"
                                color = layoutParams.colors.red;
                            }
-                           return (<TouchableOpacity style={styles.item}
-                                                     onPress={() => {
-                                                     }}>
+                           return (!item.match("Dark Theme") ? <TouchableOpacity style={styles.item}
+                                                                                 onPress={() => {
+                                                                                 }}>
                              <FontAwesome name={iconName} size={20}
                                           color={color}/>
                              <Text style={{
@@ -112,6 +107,16 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                marginLeft: 10,
                                color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
                              }}>{item}</Text>
+                           </TouchableOpacity> : <TouchableOpacity style={styles.item}
+                                                                   onPress={() => {
+                                                                   }}>
+                             <Switch
+                                 trackColor={{false: "#767577", true: "#81b0ff"}}
+                                 thumbColor={state.isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                                 ios_backgroundColor="#3e3e3e"
+                                 onValueChange={toggleSwitch}
+                                 value={state.isEnabled}
+                             />
                            </TouchableOpacity>);
                          }}
                          showsVerticalScrollIndicator={false}

@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet} from "react-native";
+import {Pressable, SafeAreaView, StatusBar, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import layout from "../../utils/LayoutParams";
@@ -6,10 +6,10 @@ import layoutParams from "../../utils/LayoutParams";
 import React from "react";
 import utils from "../../utils/Utils";
 import displayImage from "../../utils/DisplayImage";
-import {ActivityIndicator, KeyboardAvoidingComponent, Text, TextInput, View} from "../../components/Components";
+import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../components/Components";
 import Toast from "react-native-toast-message";
-import {Button} from "@rneui/base";
-import {Box, useToast} from "native-base";
+import {useToast} from "native-base";
+import TextInputComponent from "../../components/TextInputComponent";
 
 export default function LoginScreen() {
     const toast = useToast();
@@ -18,16 +18,16 @@ export default function LoginScreen() {
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
-    function validateInputs() {
+    function inputsValid() {
         if (state.username.length == 0) {
-            return true;
+            return false;
         }
-        return state.password.length == 0 || state.password.length < 8;
+        return state.password.length > 0 && state.password.length >= 8;
 
     }
 
     function onLogin() {
-        if (!validateInputs()) {
+        if (inputsValid()) {
             setState({
                 ...state, loading: true
             });
@@ -60,9 +60,9 @@ export default function LoginScreen() {
         return;
     }
 
-    return (
-        <KeyboardAvoidingComponent>
-            {ActivityIndicator(state.loading)}
+    return (<KeyboardAvoidingComponent>
+        {ActivityIndicator(state.loading)}
+        <SafeAreaView style={{flex: 1, backgroundColor: layoutParams.colors.backgroundColor}}>
             <View style={{
                 borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, ...layoutParams.elevation
             }}>
@@ -70,7 +70,7 @@ export default function LoginScreen() {
                     borderRadii: 30, resizeMode: "contain"
                 })}
             </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
+            <View style={{flex: 1}}>
                 <Text style={{
                     fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
                 }}>
@@ -87,17 +87,16 @@ export default function LoginScreen() {
                 <View style={{
                     marginTop: 10
                 }}>
+                    <TextInputComponent placeholder="username"
+                                        onChange={(text) => setState({...state, username: text})}
+                                        secureEntry={false} containerStyles={styles.searchInputMainContainer}
+                                        inputView={styles.searchInputContainer}
+                                        searchInput={styles.searchInput} autoCapitalize="none"
+                                        keyboardType="default"
+                                        value={state.username} iconName="account"
+                                        iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                        iconColor={layoutParams.colors.lighGrey}/>
 
-                    <TextInput placeholder="Enter your username"
-                               autoCapitalize="none"
-                               blurOnSubmit={true}
-                               keyboardType="default"
-                               style={{...styles.textInput}}
-                               inlineImageLeft="username"
-                               underlineColorAndroid="transparent"
-                               onChangeText={(text) => setState({...state, username: text})}
-                               value={state.username}
-                    />
                     <Toast
                         position='bottom'
                         bottomOffset={20}
@@ -106,61 +105,73 @@ export default function LoginScreen() {
                         visibilityTime={4000}
                         onShow={() => <View><Text>Loading....</Text></View>}
                     />
-                    <TextInput placeholder="Enter your password"
-                               autoCapitalize="none"
-                               inlineImageLeft="password"
-                               blurOnSubmit={true}
-                               keyboardType="default"
-                               secureTextEntry={true}
-                               style={{...styles.textInput}}
-                               underlineColorAndroid="transparent"
-                               onChangeText={(text) => setState({...state, password: text})}
-                               value={state.password}/>
+                    <TextInputComponent placeholder="password"
+                                        onChange={(text) => setState({...state, password: text})}
+                                        secureEntry={true} containerStyles={styles.searchInputMainContainer}
+                                        inputView={styles.searchInputContainer}
+                                        searchInput={styles.searchInput} autoCapitalize="none"
+                                        keyboardType="default"
+                                        value={state.password} iconName="lock"
+                                        iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                        iconColor={layoutParams.colors.lighGrey}/>
+
                     <Text style={{
-                        margin: 10, fontSize: 18, textAlign: "right"
+                        margin: 10, fontSize: 18, textAlign: "right", fontFamily: "WorkSans_500Medium"
                     }}>Forgot your password? <Text style={{
-                        fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
+                        fontSize: 18, color: layout.colors.deepBlue, fontFamily: "WorkSans_500Medium"
                     }} onPress={() => navigation.navigate("Reset")}>Reset</Text></Text>
-                    <Button buttonStyle={{
-                        ...styles.buttonStyle, ...styles.wrapperCustom
-                    }} titleStyle={{
-                        ...styles.buttonText
-                    }} title="Sign in" onPress={() => onLogin()} disabled={validateInputs()} loading={false}/>
+                    <Pressable style={{
+                        ...styleCatrgory(inputsValid()).loginButton
+                    }} onPress={() => onLogin()} disabled={!inputsValid()}>
+                        <Text style={{
+                            ...styles.buttonText,
+                            color: inputsValid() ? layoutParams.colors.white : layoutParams.colors.black
+                        }}>Login</Text>
+                    </Pressable>
                     <Text style={{
-                        margin: 10, fontSize: 18, textAlign: "center"
+                        margin: 3, fontSize: 18, textAlign: "center", fontFamily: "WorkSans_500Medium"
                     }}>Not a Member? <Text style={{
-                        fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
+                        fontSize: 18, color: layout.colors.deepBlue, fontFamily: "WorkSans_500Medium"
                     }} onPress={() => navigation.navigate("SignUp")}>Register</Text></Text>
+
                 </View>
             </View>
+        </SafeAreaView>
         </KeyboardAvoidingComponent>);
 
 }
 const styles = StyleSheet.create({
-    textInput: {
-        width: layout.WINDOW.width * .95,
-        height: layout.WINDOW.height * .062,
-        borderBottomColor: '#B3CCD3',//if we want only bottom line
-        backgroundColor: layout.colors.white,
-        fontSize: 20,
-        borderRadius: StatusBar.currentHeight,
-        margin: 5,
-        padding: 10
-    }, wrapperCustom: {
-        alignItems: "center",
-        width: layout.WINDOW.width * .95,
-        borderRadius: StatusBar.currentHeight,
-        padding: 6,
-        height: layout.WINDOW.height * .062
-    }, buttonStyle: {
-        marginTop: layoutParams.WINDOW.height * .009,
+    buttonStyle: {
+        margin: layoutParams.WINDOW.height * .009,
         backgroundColor: layout.colors.black,
-        elevation: layoutParams.elevation.elevation,
         marginBottom: layoutParams.WINDOW.height * .009,
         justifyContent: "center",
-        borderRadius: 30,
-        borderColor: 'transparent'
+        borderColor: layout.colors.black,
+        borderWidth: 0.2,
+        borderRadius: 13
     }, buttonText: {
-        marginTop: 10, fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center"
-    }
+        fontFamily: "WorkSans_600SemiBold", fontSize: 20, textAlign: "center"
+    }, searchInputMainContainer: {
+        margin: 10
+    }, searchInputContainer: {
+        padding: 15,
+        flexDirection: 'row',
+        backgroundColor: layoutParams.colors.grey,
+        borderRadius: 13,
+        alignItems: 'center',
+    }, searchInput: {
+        flex: 1, fontSize: 16, fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.black,
+    },
 })
+const styleCatrgory = (validatedInput: boolean) => StyleSheet.create({
+    loginButton: {
+        alignItems: 'center',
+        justifyContent: "center",
+        padding: 15,
+        backgroundColor: validatedInput ? layout.colors.black : layout.colors.white,
+        borderColor: layout.colors.black,
+        borderWidth: 0.2,
+        borderRadius: 13,
+        margin: 10
+    }
+});

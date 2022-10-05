@@ -180,3 +180,12 @@ export const communicationData: any [] = [{
 }, {
     sender: "me", message: "Hey man? Good morning bro?", messageTime: "2022-09-18"
 }]
+export const sectionData = [{
+    title: "Content", data: ["Favourite Cars", "New Cars"]
+}, {
+    title: "Preferences", data: ["Language", "Notifications"]
+}, {
+    title: "App Features", data: ["Terms", "FAQ", "About App"]
+}, {
+    title: "User Settings", data: ["Change Password", "Dark Theme", "Update App", "Privacy", "Close Account", "Logout"]
+}];

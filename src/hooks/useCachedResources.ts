@@ -8,11 +8,16 @@ import {
     Poppins_100Thin,
     Poppins_400Regular,
     Poppins_500Medium,
-    Roboto_400Regular,
+    Poppins_600SemiBold,
     Poppins_700Bold,
+    Roboto_400Regular,
     Roboto_500Medium,
-    Poppins_600SemiBold
+    WorkSans_500Medium,
+    WorkSans_600SemiBold,
+    WorkSans_700Bold,
+    WorkSans_400Regular
 } from "@expo-google-fonts/dev";
+
 SplashScreen.preventAutoHideAsync();
 export default function useCachedResources() {
     const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -29,6 +34,10 @@ export default function useCachedResources() {
                     Roboto_400Regular,
                     Bangers_400Regular,
                     OpenSans_400Regular,
+                    WorkSans_600SemiBold,
+                    WorkSans_500Medium,
+                    WorkSans_400Regular,
+                    WorkSans_700Bold,
                     Poppins_100Thin,
                     Poppins_500Medium,
                     Poppins_400Regular,

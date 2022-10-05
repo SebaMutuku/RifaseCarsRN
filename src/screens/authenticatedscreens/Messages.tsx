@@ -1,7 +1,7 @@
 import React from "react";
-import {SafeAreaView, StyleSheet, TouchableOpacity} from "react-native";
+import {SafeAreaView, StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import layoutParams from "../../utils/LayoutParams";
-import {SearchBar} from "@rneui/base";
+import {Button} from "@rneui/base";
 import FlatListView from "../../components/FlatListView";
 import {Avatar} from '@rneui/themed';
 import {Text, View} from "../../components/Components";
@@ -10,6 +10,8 @@ import moment from 'moment'
 import {Ionicons} from "@expo/vector-icons";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
+import Swipeable from "react-native-gesture-handler/Swipeable";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 
 export default function Messages() {
@@ -26,23 +28,52 @@ export default function Messages() {
 
 
     function searchInput() {
-        return (<SearchBar placeholder="Search" onChangeText={(value) => setState({
-            ...state, searchedMessage: value
-        })} value={state.searchedMessage} inputStyle={{
-            fontSize: 20, fontWeight: "bold", color: layoutParams.colors.black
-        }} containerStyle={{
-            backgroundColor: layoutParams.colors.backgroundColor
-        }} inputContainerStyle={{
-            backgroundColor: layoutParams.colors.white, borderWidth: 0, borderRadius: 15
-        }} autoCapitalize="none" lightTheme/>);
+        return (
+            <View style={[messageStyles.searchInputMainContainer,]}>
+                <View style={messageStyles.searchInputContainer}>
+                    <TextInput
+                        style={[
+                            messageStyles.searchInput,
+                            !layoutParams.platform.isAndroid && {paddingVertical: 16},
+                        ]}
+                        placeholder="Search" onChangeText={(value) => setState({
+                        ...state, searchedMessage: value
+                    })} value={state.searchedMessage}
+                        autoCapitalize="none"
+                        selectionColor="dodgerblue"
+                        placeholderTextColor="#B9BABC"
+                    />
+                    <Icon name="search" size={30} color="#B9BABC"/>
+                </View>
+            </View>);
     }
 
+    const renderRightActions = () => {
+        return (
+            <View
+                style={{
+                    margin: 0,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    width: 70,
+                }}>
+                <Button color="red" onPress={() => {
+                }} title="DELETE"></Button>
+            </View>
+        );
+    };
+
     function usersFlatList() {
-        return <FlatListView data={state.usersData as any} renderItem={({item, index}: any) => {
-            return (<View style={{
-                flexDirection: "column", justifyContent: "space-evenly", alignItems: 'center'
-            }}>
-                <Avatar key={index}
+        const closeRow = (index: number) => {
+            console.log(index)
+        };
+        const renderUsers = (item: any, index: number) =>
+            <Swipeable renderRightActions={() => renderRightActions()}
+                       rightThreshold={-100} onSwipeableOpen={() => closeRow(index)}>
+                <View style={{
+                    flexDirection: "column", justifyContent: "space-evenly", alignItems: 'center'
+                }} key={index}>
+                    <Avatar
                         size={layoutParams.WINDOW.height * .065}
                         rounded
                         source={item.avatar_url ? {uri: item.avatar_url} : {}}
@@ -54,11 +85,13 @@ export default function Messages() {
                             borderWidth: 2.5,
                             margin: 5
                         }}/>
-                <Text style={{
-                    ...messageStyles.text
-                }}>{item.name}</Text>
-            </View>);
-        }} keyExtractor={(item: any, index) => item + index}
+                    <Text style={{
+                        ...messageStyles.text
+                    }}>{item.name}</Text>
+                </View>
+            </Swipeable>
+        return <FlatListView data={state.usersData as any} renderItem={({item, index}: any) => renderUsers(item, index)
+        } keyExtractor={(item: any, index) => item + index}
                              horizontal={true}
                              key={'_'} extraData={state.selectedUser}
                              contentContainerStyle={{margin: 5}}
@@ -161,5 +194,21 @@ const messageStyles = StyleSheet.create({
         flex: 1, backgroundColor: layoutParams.colors.backgroundColor
     }, text: {
         fontFamily: "Poppins_500Medium", color: layoutParams.colors.lighGrey
-    }
+    },
+    searchInputMainContainer: {
+        margin: 10
+    },
+    searchInputContainer: {
+        padding: 10,
+        flexDirection: 'row',
+        backgroundColor: layoutParams.colors.searchInput,
+        borderRadius: 13,
+        alignItems: 'center',
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium',
+        color: layoutParams.colors.black,
+    },
 })

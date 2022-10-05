@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, Pressable, SafeAreaView, StyleSheet} from "react-native";
+import {Image, Pressable, SafeAreaView, StyleSheet, TextInput} from "react-native";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
@@ -7,9 +7,9 @@ import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Text, View} from "../../components/Components";
 import {FontAwesome} from "@expo/vector-icons";
 import FlatListView from "../../components/FlatListView";
-import {SearchBar} from "@rneui/base";
 import CircularImage from "../../components/CircularImage";
 import {carBrands, PopularCarData} from "../../utils/Data";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
 export default function Home() {
@@ -56,20 +56,22 @@ export default function Home() {
 
 
     function searchInput() {
-        return (<SearchBar placeholder="Search for a car" onChangeText={(value) => setState({
-            ...state,
-            searchedCar: value
-        })} value={state.searchedCar} inputStyle={{
-            fontSize: 20,
-            fontWeight: "bold",
-            color: layoutParams.colors.black,
-        }} containerStyle={{
-            backgroundColor: layoutParams.colors.backgroundColor,
-        }} inputContainerStyle={{
-            backgroundColor: layoutParams.colors.backgroundColor,
-            borderWidth: 0,
-            elevation: layout.elevation.elevation, borderRadius: 20
-        }} autoCapitalize="none" lightTheme/>);
+        return (
+            <View style={[homeStyles.searchInputMainContainer]}>
+                <View style={homeStyles.searchInputContainer}>
+                    <TextInput
+                        style={[
+                            homeStyles.searchInput,
+                            !layoutParams.platform.isAndroid && {paddingVertical: 16},
+                        ]}
+                        autoCapitalize="none"
+                        selectionColor="dodgerblue"
+                        placeholderTextColor="#B9BABC"
+                        placeholder="Search for a car"
+                    />
+                    <Icon name="search" size={30} color="#B9BABC"/>
+                </View>
+            </View>);
     }
 
     function onPressimage() {
@@ -77,29 +79,34 @@ export default function Home() {
     }
 
     function carBrandFlatList() {
+        const renderButton = (index: number, item: any) => (
+            <Pressable style={{
+            elevation: state.brandSelected == index ? 1 : 0,
+            alignItems: 'center',
+            justifyContent: "center",
+            minWidth: layoutParams.WINDOW.width * .2,
+            padding: state.brandSelected == index ? 10 : 6,
+            backgroundColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
+            borderColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.deepBlue,
+            borderWidth: 0.2,
+            margin: 3,
+            borderRadius: 24
+        }} onPress={() => {
+            setState({
+                ...state, brandSelected: index
+            })
+        }} key={index}>
+            <Text style={{
+                fontSize: 15,
+                fontWeight: "600",
+                fontFamily: "Roboto_500Medium",
+                color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
+            }}
+                  adjustsFontSizeToFit>{item.charAt(0).toString().toUpperCase() + item.substring(1, item.length)}</Text>
+        </Pressable>)
         return (<FlatListView showsHorizontalScrollIndicator={false} data={carBrands} horizontal
-                              renderItem={({item, index}: any) => <Pressable style={{
-                                  elevation: state.brandSelected == index ? 1 : 0,
-                                  alignItems: 'center',
-                                  justifyContent: "center",
-                                  minWidth: 70,
-                                  padding: state.brandSelected == index ? 12 : 6,
-                                  backgroundColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
-                                  margin: 3,
-                                  borderRadius: 10
-                              }} onPress={() => {
-                                  setState({
-                                      ...state, brandSelected: index
-                                  })
-                              }} key={index}>
-                                  <Text style={{
-                                      fontSize: 15,
-                                      fontWeight: "600",
-                                      fontFamily: "Roboto_500Medium",
-                                      color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
-                                  }}
-                                        adjustsFontSizeToFit>{item.charAt(0).toString().toUpperCase() + item.substring(1, item.length)}</Text>
-                              </Pressable>} ListFooterComponentStyle={null}
+                              renderItem={({item, index}: any) => renderButton(index, item)}
+                              ListFooterComponentStyle={null}
                               ListFooterComponent={() => <View style={null}/>}
                               keyExtractor={(item: any, index) => item + index}
                               key={'_'}
@@ -137,11 +144,11 @@ export default function Home() {
         </View>);
     }
 
-    function popularCars() {
+    function renderPopularCars() {
         const renderItem = (objectItem: any, index: number) => {
             return (<Pressable style={{
-                ...homeStyles.flatview,
-                backgroundColor: layoutParams.colors.white,
+                ...homeStyles.popularCars,
+                backgroundColor: layoutParams.colors.searchInput,
                 elevation: state.selectedId == index ? layoutParams.elevation.elevation : 0
             }}
                                onPress={() => {
@@ -151,8 +158,9 @@ export default function Home() {
                                    navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
                                }}>
                 <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
-                    width: "100%", borderRadius: 10, resizeMode: "contain",
-                    height: "50%"
+                    width: "100%",
+                    borderRadius: 10, resizeMode: "contain",
+                    height: "40%"
                 }}/>
                 <View style={{
                     marginLeft: 10,
@@ -187,26 +195,8 @@ export default function Home() {
                 </View>
             </Pressable>);
         }
-
-        // const renderPopularCarsFooter = () => {
-        //     return (<View style={homeStyles.footer}>
-        //         <TouchableOpacity
-        //             style={{
-        //                 alignItems: "center",
-        //                 justifyContent: 'center',
-        //                 backgroundColor: layoutParams.colors.deepBlue,
-        //                 elevation: 2,
-        //                 padding: 8,
-        //                 borderRadius: 10
-        //             }}
-        //             onPress={loadPopularCars}
-        //         >
-        //             <Text style={{fontSize: 20, fontWeight: "bold", color: layout.colors.white}}>Load More</Text>
-        //         </TouchableOpacity>
-        //     </View>);
-        // };
         return <View style={{
-            flex: 2
+            flex: 1.7
         }}><FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
                          renderItem={({item, index}) => renderItem(item, index)}
                          ListFooterComponentStyle={null}
@@ -221,33 +211,13 @@ export default function Home() {
     function renderRecentlyViewed() {
         return (
             <View style={{...homeStyles.homeFooter}}>
-                <View style={{
-                    marginRight: 10,
-                    marginLeft: 10,
-                    marginTop: 10,
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                }}>
-                    <Text style={{
-                        ...homeStyles.footerText,
-                        fontWeight: "bold"
-                    }}>
-                        Recently Added
-                    </Text>
-                    <Text style={{
-                        ...homeStyles.footerText,
-                        color: layoutParams.colors.deepBlue,
-                        textDecorationLine: "underline"
-                    }}>
-                        View All
-                    </Text>
-                </View>
+
                 <View style={{
                     flex: 1,
                     margin: 5,
                     borderRadius: 10,
                     flexDirection: "row",
-                    backgroundColor: layoutParams.colors.white,
+                    backgroundColor: layoutParams.colors.searchInput,
                     ...layoutParams.elevation
                 }}>
                     {/*Image at the start*/}
@@ -261,7 +231,10 @@ export default function Home() {
                     <View style={{
                         flex: 1,
                         marginLeft: 5
-                    }}><Text style={{...homeStyles.footerText, fontSize: 30}}>Audi</Text>
+                    }}><Text style={{
+                        fontSize: 22,
+                        fontFamily: 'WorkSans_500Medium'
+                    }}>Audi</Text>
                         <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Price : 951k</Text>
                         <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Year Of Manufacturing :2021</Text>
                         <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Mileage : 5000kms</Text>
@@ -278,9 +251,11 @@ export default function Home() {
             <View style={{
                 flexDirection: "row", justifyContent: "space-between", margin: 5
             }}>
-                <Text style={{
-                    fontSize: 25, fontFamily: "Poppins_500Medium"
-                }}>Let's find the Ideal {'\n'}Car for you</Text>
+                <View style={{flex: 1}}>
+                    <Text style={homeStyles.headerTextNormal}>Let's find the</Text>
+                    <Text style={homeStyles.headerTextBold}>Ideal car for you</Text>
+                </View>
+
                 <View style={{
                     flexDirection: "row", justifyContent: "space-between", alignItems: 'center'
                 }}>
@@ -299,7 +274,7 @@ export default function Home() {
                 margin: 5
             }}>
                 <Text style={{
-                    fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular", margin: 8
+                    fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold", margin: 8
                 }}>Choose a brand</Text>
                 {/*brandsFlatList*/}
                 {carBrandFlatList()}
@@ -307,14 +282,14 @@ export default function Home() {
                     justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
                 }}>
                     <Text style={{
-                        fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular"
+                        fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold"
                     }}>Popular Cars</Text>
 
                         <Text style={{
                             fontSize: 15,
                             fontWeight: "bold",
                             color: layoutParams.colors.deepBlue,
-                            fontFamily: "Poppins_400Regular",
+                            fontFamily: "WorkSans_700Bold",
                             textDecorationLine: "underline"
                         }}>View All</Text>
                 </View>
@@ -323,15 +298,39 @@ export default function Home() {
                 }}/>
             </View>
             {/*All Car Brands*/}
-            {popularCars()}
+            {renderPopularCars()}
+            <View style={{
+                marginRight: 10,
+                marginLeft: 10,
+                marginTop: 10,
+                flexDirection: "row",
+                justifyContent: "space-between"
+            }}>
+                <Text style={{
+                    fontSize: 20,
+                    fontFamily: "WorkSans_600SemiBold"
+                }}>
+                    Recently Added
+                </Text>
+                <Text style={{
+                    fontSize: 15,
+                    ...homeStyles.footerText,
+                    color: layoutParams.colors.deepBlue,
+                    textDecorationLine: "underline"
+                }}>
+                    View All
+                </Text>
+            </View>
             {renderRecentlyViewed()}
+
         </View>
     </SafeAreaView>);
 
 }
 const homeStyles = StyleSheet.create({
     container: {
-        flex: 1, backgroundColor: layoutParams.colors.backgroundColor,
+        flex: 1,
+        backgroundColor: layoutParams.colors.white,
     }, textInput: {
         width: layout.WINDOW.width * .95,
         borderColor: layoutParams.colors.backgroundColor,
@@ -344,8 +343,9 @@ const homeStyles = StyleSheet.create({
         elevation: layout.elevation.elevation,
     }, circularImage: {
         width: 50, height: 50, borderRadius: 50 / 2
-    }, flatview: {
-        margin: 3, borderRadius: 10, marginBottom: 10,
+    }, popularCars: {
+        flex: 1,
+        margin: 3, borderRadius: 10, marginBottom: 30,
         minWidth: layoutParams.WINDOW.width * .5
     }, itemKeytext: {
         fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.disabledTextColor
@@ -361,11 +361,37 @@ const homeStyles = StyleSheet.create({
         borderTopLeftRadius: 10
     },
     footerText: {
-        fontFamily: "Poppins_500Medium", textAlign: 'center'
+        fontFamily: "WorkSans_600SemiBold", textAlign: 'center'
     },
     carDetailsText: {
         fontSize: 15,
         // fontWeight:"bold",
         fontFamily: "Roboto_500Medium"
-    }
+    },
+    headerTextNormal: {
+        color: 'grey',
+        fontFamily: 'WorkSans_600SemiBold',
+        letterSpacing: 0.2,
+        fontSize: 15
+    },
+    headerTextBold: {
+        fontSize: 25,
+        fontFamily: 'WorkSans_600SemiBold'
+    },
+    searchInputMainContainer: {
+        margin: 10
+    },
+    searchInputContainer: {
+        padding: 10,
+        flexDirection: 'row',
+        backgroundColor: layoutParams.colors.searchInput,
+        borderRadius: 13,
+        alignItems: 'center',
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium',
+        color: layoutParams.colors.black,
+    },
 })

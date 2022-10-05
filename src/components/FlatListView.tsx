@@ -17,9 +17,11 @@ interface flatlistProps {
     itemSeparatorComponent?: React.ComponentType<any> | null | undefined;
     numColumns?: number | undefined;
     pagingEnabled?: boolean | undefined;
-    ListHeaderComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined
+    ListHeaderComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined;
+    initialScrollIndex?: number
+
 }
 
 export default function FlatListView({...props}: flatlistProps) {
-    return (<FlatList {...props}  />);
+    return (<FlatList {...props} />);
 }

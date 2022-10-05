@@ -1,4 +1,4 @@
-import {Dimensions,Platform} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -12,8 +12,8 @@ export default {
     },
     colors: {
         lighGrey: "#566573",
-        backgroundColor: "#D8DEE0",
-        white: "#E5E8E8",
+        backgroundColor: "#FFFFFF",
+        white: "#FFFFFF",
         buttonColors: "#273746",
         deepBlue: "#185EA4",
         black: "#17202A",
@@ -24,7 +24,10 @@ export default {
         selectedColor: "#8cb2c9",
         loadMore: "#C0392B",
         red: "#DE3163",
-        messageColor:"#DCF8C5"
-    },
+        messageColor: "#DCF8C5",
+        searchInput: "#F8FAFB"
+    }, platform: {
+        isAndroid: Platform.OS === 'android', isiOS: Platform.OS == 'ios'
+    }
 
 };
