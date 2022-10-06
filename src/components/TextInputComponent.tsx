@@ -1,4 +1,4 @@
-import {TextInput, View} from "./Components";
+import {TextInput, View} from "./Widgets";
 import layoutParams from "../utils/LayoutParams";
 import React from "react";
 import {ColorValue, KeyboardTypeOptions, StyleProp, TextStyle, ViewStyle} from "react-native";

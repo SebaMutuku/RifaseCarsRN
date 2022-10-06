@@ -25,7 +25,8 @@ export default {
         loadMore: "#C0392B",
         red: "#DE3163",
         messageColor: "#DCF8C5",
-        searchInput: "#F8FAFB"
+        searchInput: "#F8FAFB",
+        listColors:"#F5F9FD"
     }, platform: {
         isAndroid: Platform.OS === 'android', isiOS: Platform.OS == 'ios'
     }

@@ -24,7 +24,7 @@ import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
-import {Text, View} from "../components/Components";
+import {Text, View} from "../components/Widgets";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import LastOrders from "../screens/authenticatedscreens/LastOrders";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
@@ -103,15 +103,13 @@ function HomeStackNavigator() {
             animation: "fade_from_bottom",
             headerTitleStyle: {
                 color: "black",
-                fontFamily: "Poppins_500Medium",
-                fontWeight: "bold",
-                fontSize: 25
+                fontFamily: "WorkSans_600SemiBold",
+                fontSize: 20
             },
             headerTintColor: "black",
             headerBackVisible: true,
             headerBackTitleStyle: {
                 fontSize: 20,
-                fontFamily: "Poppins_500Medium"
             }
         }}>
             <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
@@ -183,10 +181,8 @@ function UnauthenticatedNavigator() {
                 title: "Login Page",
                 headerTitleStyle: {
                     color: layoutParams.colors.black,
-                    fontFamily: "Poppins_500Medium",
-                    fontSize: 25,
-                    fontWeight: "bold",
-
+                    fontFamily: "WorkSans_600SemiBold",
+                    fontSize: 20
                 }
             }}/>
             <LoginStacks.Screen name="SignUp" component={SignUpScreen}
@@ -196,15 +192,14 @@ function UnauthenticatedNavigator() {
                                     animation: "fade_from_bottom",
                                     headerTitleStyle: {
                                         color: "black",
-                                        fontFamily: "Poppins_500Medium",
-                                        fontWeight: "bold",
+                                        fontFamily: "WorkSans_600SemiBold",
                                         fontSize: 20
                                     },
                                     headerTintColor: "black",
                                     headerBackVisible: true,
                                     headerBackTitleStyle: {
                                         fontSize: 20,
-                                        fontFamily: "Poppins_500Medium"
+                                        fontFamily: "WorkSans_600SemiBold"
                                     }
 
                                 }}/>
@@ -212,11 +207,10 @@ function UnauthenticatedNavigator() {
                                 options={{
                                     headerShown: true,
                                     animation: "fade_from_bottom",
-                                    title: "Password Reset Page",
+                                    title: "Reset password",
                                     headerTitleStyle: {
                                         color: "black",
-                                        fontFamily: "Poppins_500Medium",
-                                        fontWeight: "bold",
+                                        fontFamily: "WorkSans_600SemiBold",
                                         fontSize: 20
                                     },
                                     headerTintColor: "black",
@@ -253,9 +247,8 @@ function BottomTabNavigator() {
                     backgroundColor: layoutParams.colors.backgroundColor
                 },
                 headerTitleStyle: {
-                    fontSize: 25,
-                    fontFamily: "Poppins_400Regular",
-                    fontWeight:"bold"
+                    fontSize: 20,
+                    fontFamily: "WorkSans_600SemiBold",
                 },
                 tabBarLabelPosition: "beside-icon",
                 headerTitleAlign: "center",

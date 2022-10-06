@@ -39,6 +39,7 @@ type ThemeProps = {
 export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
 export type TextInputProps = ThemeProps & DefaultTextInput['props'];
+export const toastRef = React.createRef<any>();
 
 
 export function Text(props: TextProps) {
@@ -88,6 +89,9 @@ export function ActivityIndicator(visible: boolean) {
         ));
 }
 
+export const showToast = (text: string) => {
+    toastRef.current?.show(text);
+};
 interface KeyBoardProps {
     children: React.ReactNode
 }

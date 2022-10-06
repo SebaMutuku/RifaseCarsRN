@@ -1,4 +1,4 @@
-import {Text, View} from "../../components/Components";
+import {Text, View} from "../../components/Widgets";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import layoutParams from "../../utils/LayoutParams";
 

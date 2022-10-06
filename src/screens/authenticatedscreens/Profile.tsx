@@ -1,12 +1,13 @@
-import {SafeAreaView, SectionList, StyleSheet, Switch, TouchableOpacity} from 'react-native';
+import {Animated, SafeAreaView, SectionList, StyleSheet, Switch, TouchableOpacity} from 'react-native';
 
-import {Text, View} from '../../components/Components';
+import {Text, View} from '../../components/Widgets';
 import {HomeBottomTabScreenProps} from "../../navigation/ScreenTypes";
 import layoutParams from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";
 import React from "react";
 import {FontAwesome} from "@expo/vector-icons";
 import {sectionData} from "../../utils/Data";
+import {sharedStyles} from "../../utils/SharedStyles";
 
 export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'>) {
   const [state, setState] = React.useState({
@@ -15,10 +16,20 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
   const toggleSwitch = () => setState(prevState => ({
     ...prevState, isEnabled: !state.isEnabled
   }));
+  const sectionItemOpacity = React.useRef<Animated.Value>(new Animated.Value(0));
+  const profileView = React.useRef<Animated.Value>(new Animated.Value(0));
+  React.useEffect(() => {
+    Animated.parallel([Animated.timing(sectionItemOpacity.current, {
+      toValue: 1, duration: 500, delay: 200, useNativeDriver: true,
+    }), Animated.timing(profileView.current, {
+      toValue: 1, duration: 500, delay: 600, useNativeDriver: true,
+    })]).start()
+  }, [])
+  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
   function topScreen() {
-    return (<View style={{
-      alignItems: 'center'
+    return (<Animated.View style={{
+      alignItems: 'center', opacity: profileView.current
     }}>
       {CircularImage({
         source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
@@ -26,19 +37,18 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
         rounded: true
       })}
       <View style={{
-        flexDirection: "column"
+        flexDirection: "column",
       }}>
         <Text adjustsFontSizeToFit
               style={[styles.profileText, {
-                fontSize: 25, fontFamily: "Roboto_500Medium", color: layoutParams.colors.lighGrey,
+                fontSize: 25, fontFamily: "WorkSans_700Bold", color: layoutParams.colors.lighGrey,
               }]}>Sebastian</Text>
         <Text style={styles.profileText}>abc@gmail.com</Text>
       </View>
-    </View>);
+    </Animated.View>);
   }
 
   function scrollSectionList() {
-
     return (<SectionList sections={sectionData}
                          keyExtractor={(item, index) => item + index}
                          renderItem={({item}) => {
@@ -96,18 +106,20 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                iconName = "sign-out"
                                color = layoutParams.colors.red;
                            }
-                           return (!item.match("Dark Theme") ? <TouchableOpacity style={styles.item}
+                           return (!item.match("Dark Theme") ? <TouchableOpacity style={{...styles.item}}
                                                                                  onPress={() => {
                                                                                  }}>
                              <FontAwesome name={iconName} size={20}
                                           color={color}/>
                              <Text style={{
-                               fontFamily: "normal",
+                               fontFamily: "WorkSans_500Medium",
                                fontSize: 18,
                                marginLeft: 10,
                                color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
                              }}>{item}</Text>
-                           </TouchableOpacity> : <TouchableOpacity style={styles.item}
+                           </TouchableOpacity> : <TouchableOpacity style={{
+                             ...styles.item
+                           }}
                                                                    onPress={() => {
                                                                    }}>
                              <Switch
@@ -131,28 +143,28 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
     />);
   }
 
-  return (<SafeAreaView style={styles.container}>
+  return (<SafeAreaView style={sharedStyles.container}>
     {/*TopImage Screen*/}
     {topScreen()}
-    <View style={{
-      flex: 1,
-      flexGrow: 1,
-      justifyContent: "center",
+    <Animated.View style={{
       marginTop: 20,
       backgroundColor: layoutParams.colors.white,
-      borderTopRightRadius: 10,
-      borderTopLeftRadius: 10, ...layoutParams.elevation
+      borderTopLeftRadius: 32,
+      borderTopRightRadius: 32,
+      shadowOffset: {width: 1.1, height: 1.1},
+      shadowOpacity: 0.2,
+      shadowRadius: 10.0,
+      elevation: 16,
+      opacity: sectionItemOpacity.current
     }}>
       {scrollSectionList()}
-    </View>
+    </Animated.View>
 
   </SafeAreaView>);
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, backgroundColor: layoutParams.colors.backgroundColor
-  }, title: {
-    fontSize: 20, fontWeight: 'bold',
+  title: {
+    fontSize: 20, fontFamily: "WorkSans_700Bold"
   }, link: {
     marginTop: 15, paddingVertical: 15,
   }, linkText: {
@@ -160,7 +172,7 @@ const styles = StyleSheet.create({
   }, circularImage: {
     width: 50, height: 50, borderRadius: 50 / 2, justifyContent: 'center', alignItems: 'center'
   }, profileText: {
-    fontSize: 14, fontWeight: "normal", fontFamily: "Roboto_500Medium"
+    fontSize: 14, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold"
   }, scrollView: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -169,14 +181,18 @@ const styles = StyleSheet.create({
     marginTop: 20
   }, item: {
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.backgroundColor,
-    padding: 20,
-    marginTop: 1,
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: 10
+    backgroundColor: layoutParams.colors.white,
+    borderRadius: 16,
+    alignItems: 'center',
+    margin: 2,
+    padding: 15,
+    elevation: 3,
+    shadowColor: 'grey',
+    shadowOffset: {width: 1.1, height: 1.1},
+    shadowOpacity: 0.22,
+    shadowRadius: 8.0,
   }, header: {
-    fontFamily: "Poppins_500Medium", fontSize: 20
+    fontFamily: "WorkSans_600SemiBold", fontSize: 20
   }, title1: {
     fontSize: 24
   }

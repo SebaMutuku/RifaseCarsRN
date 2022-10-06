@@ -1,15 +1,16 @@
-import {Pressable, SafeAreaView, StatusBar, StyleSheet} from "react-native";
+import {Pressable, SafeAreaView, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
 import React from "react";
 import utils from "../../utils/Utils";
-import displayImage from "../../utils/DisplayImage";
-import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../components/Components";
+import displayImage from "../../components/DisplayImage";
+import {ActivityIndicator, KeyboardAvoidingComponent, showToast, Text, View} from "../../components/Widgets";
 import Toast from "react-native-toast-message";
 import {useToast} from "native-base";
 import TextInputComponent from "../../components/TextInputComponent";
+import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 
 export default function LoginScreen() {
     const toast = useToast();
@@ -51,7 +52,7 @@ export default function LoginScreen() {
                     }).then(response => response.json()).then(reponseData => {
                         const response = JSON.parse(JSON.stringify(reponseData));
                         utils.saveValue("token", response.User.token);
-                        navigation.navigate("HomeScreen")
+                        navigation.navigate("HomeScreen");
                     }).catch(error => console.log(error));
                 }
             }, 3000);
@@ -72,15 +73,11 @@ export default function LoginScreen() {
             </View>
             <View style={{flex: 1}}>
                 <Text style={{
-                    fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
-                }}>
-                    Rifasa Cars
-                </Text>
-                <Text style={{
+                    marginTop: 10,
                     color: layoutParams.colors.lighGrey,
-                    fontFamily: "Poppins_500Medium",
+                    fontFamily: "WorkSans_500Medium",
                     fontSize: 15,
-                    textAlign: "center", // justifyContent: "center"
+                    textAlign: "center"
                 }}>
                     Sign in to you account
                 </Text>
@@ -89,9 +86,9 @@ export default function LoginScreen() {
                 }}>
                     <TextInputComponent placeholder="username"
                                         onChange={(text) => setState({...state, username: text})}
-                                        secureEntry={false} containerStyles={styles.searchInputMainContainer}
-                                        inputView={styles.searchInputContainer}
-                                        searchInput={styles.searchInput} autoCapitalize="none"
+                                        secureEntry={false} containerStyles={sharedStyles.searchInputMainContainer}
+                                        inputView={sharedStyles.searchInputContainer}
+                                        searchInput={sharedStyles.searchInput} autoCapitalize="none"
                                         keyboardType="default"
                                         value={state.username} iconName="account"
                                         iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
@@ -107,29 +104,32 @@ export default function LoginScreen() {
                     />
                     <TextInputComponent placeholder="password"
                                         onChange={(text) => setState({...state, password: text})}
-                                        secureEntry={true} containerStyles={styles.searchInputMainContainer}
-                                        inputView={styles.searchInputContainer}
-                                        searchInput={styles.searchInput} autoCapitalize="none"
+                                        secureEntry={true} containerStyles={sharedStyles.searchInputMainContainer}
+                                        inputView={sharedStyles.searchInputContainer}
+                                        searchInput={sharedStyles.searchInput} autoCapitalize="none"
                                         keyboardType="default"
                                         value={state.password} iconName="lock"
                                         iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
                                         iconColor={layoutParams.colors.lighGrey}/>
 
                     <Text style={{
-                        margin: 10, fontSize: 18, textAlign: "right", fontFamily: "WorkSans_500Medium"
+                        margin: 10, textAlign: "right", fontFamily: "WorkSans_500Medium"
                     }}>Forgot your password? <Text style={{
                         fontSize: 18, color: layout.colors.deepBlue, fontFamily: "WorkSans_500Medium"
                     }} onPress={() => navigation.navigate("Reset")}>Reset</Text></Text>
                     <Pressable style={{
-                        ...styleCatrgory(inputsValid()).loginButton
-                    }} onPress={() => onLogin()} disabled={!inputsValid()}>
+                        ...buttonStyle(inputsValid()).button
+                    }} onPress={() => {
+                        onLogin()
+                        showToast("User Logged In")
+                    }} disabled={!inputsValid()}>
                         <Text style={{
                             ...styles.buttonText,
                             color: inputsValid() ? layoutParams.colors.white : layoutParams.colors.black
                         }}>Login</Text>
                     </Pressable>
                     <Text style={{
-                        margin: 3, fontSize: 18, textAlign: "center", fontFamily: "WorkSans_500Medium"
+                        margin: 3, textAlign: "center", fontFamily: "WorkSans_500Medium"
                     }}>Not a Member? <Text style={{
                         fontSize: 18, color: layout.colors.deepBlue, fontFamily: "WorkSans_500Medium"
                     }} onPress={() => navigation.navigate("SignUp")}>Register</Text></Text>
@@ -141,37 +141,8 @@ export default function LoginScreen() {
 
 }
 const styles = StyleSheet.create({
-    buttonStyle: {
-        margin: layoutParams.WINDOW.height * .009,
-        backgroundColor: layout.colors.black,
-        marginBottom: layoutParams.WINDOW.height * .009,
-        justifyContent: "center",
-        borderColor: layout.colors.black,
-        borderWidth: 0.2,
-        borderRadius: 13
-    }, buttonText: {
+    buttonText: {
         fontFamily: "WorkSans_600SemiBold", fontSize: 20, textAlign: "center"
-    }, searchInputMainContainer: {
-        margin: 10
-    }, searchInputContainer: {
-        padding: 15,
-        flexDirection: 'row',
-        backgroundColor: layoutParams.colors.grey,
-        borderRadius: 13,
-        alignItems: 'center',
-    }, searchInput: {
-        flex: 1, fontSize: 16, fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.black,
-    },
-})
-const styleCatrgory = (validatedInput: boolean) => StyleSheet.create({
-    loginButton: {
-        alignItems: 'center',
-        justifyContent: "center",
-        padding: 15,
-        backgroundColor: validatedInput ? layout.colors.black : layout.colors.white,
-        borderColor: layout.colors.black,
-        borderWidth: 0.2,
-        borderRadius: 13,
-        margin: 10
     }
-});
+})
+

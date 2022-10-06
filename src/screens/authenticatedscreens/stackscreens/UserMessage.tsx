@@ -1,4 +1,4 @@
-import {Text, TextInput, View} from "../../../components/Components";
+import {Text, TextInput, View} from "../../../components/Widgets";
 import {Keyboard, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity} from "react-native";
 import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
@@ -66,7 +66,7 @@ export default function UserMessage() {
         const renderUserMessages = (item: any, index: number) => {
             return <View style={{
                 ...userMessageStyles.messageContent,
-                backgroundColor: item.sender === "me" ? layoutParams.colors.white : layoutParams.colors.messageColor,
+                backgroundColor: item.sender === "me" ? layoutParams.colors.listColors : layoutParams.colors.messageColor,
                 marginRight: item.sender === "me" ? StatusBar.currentHeight : 0,
                 marginLeft: item.sender === "me" ? 0 : StatusBar.currentHeight
             }} key={index}>

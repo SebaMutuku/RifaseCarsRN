@@ -4,7 +4,7 @@ import layoutParams from "../../utils/LayoutParams";
 import {Button} from "@rneui/base";
 import FlatListView from "../../components/FlatListView";
 import {Avatar} from '@rneui/themed';
-import {Text, View} from "../../components/Components";
+import {Text, View} from "../../components/Widgets";
 import {messagesData, usersD} from "../../utils/Data";
 import moment from 'moment'
 import {Ionicons} from "@expo/vector-icons";

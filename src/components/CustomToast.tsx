@@ -1,5 +1,7 @@
 import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Animated, Platform, StyleSheet, Text, ToastAndroid, useWindowDimensions, View,} from 'react-native';
+import {AntDesign} from "@expo/vector-icons";
+import layoutParams from "../utils/LayoutParams";
 
 interface Props {
 }
@@ -77,7 +79,12 @@ const CustomToast: React.FC<Props> = React.forwardRef((_props, ref) => {
                     pointerEvents="none"
                 >
                     <Animated.View style={[styles.content, {opacity: opacityValue}]}>
-                        <Text style={styles.text}>{toastText}</Text>
+                        <AntDesign name="checkcircle" size={24} color={layoutParams.colors.white}/>
+                        <View style={{flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                            <Text>Success</Text>
+                            <Text style={styles.text}>{toastText}</Text>
+                        </View>
+
                     </Animated.View>
                 </View>
             )}
@@ -90,21 +97,24 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        elevation: 999,
+        elevation: 1,
         alignItems: 'center',
         zIndex: 10000,
     },
     content: {
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        borderRadius: 12,
-        padding: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        backgroundColor: layoutParams.colors.deepBlue,
+        borderRadius: 2,
+        padding: 15,
         bottom: 64,
-        maxWidth: '80%',
+        margin: 10,
     },
     text: {
-        fontSize: 14,
+        fontSize: 40,
         color: '#f8f8f8',
         textAlign: 'center',
+        fontFamily: "WorkSans_600SemiBold",
         paddingHorizontal: 8,
         paddingVertical: 4,
     },

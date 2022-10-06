@@ -4,12 +4,13 @@ import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
-import {Text, View} from "../../components/Components";
+import {Text, View} from "../../components/Widgets";
 import {FontAwesome} from "@expo/vector-icons";
 import FlatListView from "../../components/FlatListView";
 import CircularImage from "../../components/CircularImage";
 import {carBrands, PopularCarData} from "../../utils/Data";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {sharedStyles} from "../../utils/SharedStyles";
 
 
 export default function Home() {
@@ -148,7 +149,7 @@ export default function Home() {
         const renderItem = (objectItem: any, index: number) => {
             return (<Pressable style={{
                 ...homeStyles.popularCars,
-                backgroundColor: layoutParams.colors.searchInput,
+                backgroundColor: layoutParams.colors.listColors,
                 elevation: state.selectedId == index ? layoutParams.elevation.elevation : 0
             }}
                                onPress={() => {
@@ -244,9 +245,9 @@ export default function Home() {
     }
 
     return (<SafeAreaView style={{
-        ...homeStyles.container
+        ...sharedStyles.container
     }}>
-        <View style={homeStyles.container}>
+        <View style={sharedStyles.container}>
             {/*top view with avatar*/}
             <View style={{
                 flexDirection: "row", justifyContent: "space-between", margin: 5
@@ -328,10 +329,7 @@ export default function Home() {
 
 }
 const homeStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: layoutParams.colors.white,
-    }, textInput: {
+    textInput: {
         width: layout.WINDOW.width * .95,
         borderColor: layoutParams.colors.backgroundColor,
         height: layout.WINDOW.height * .05,

@@ -6,12 +6,13 @@ import useCachedResources from './src/hooks/useCachedResources';
 import useColorScheme from './src/hooks/useColorScheme';
 import Navigation from './src/navigation/Navigation';
 import layoutParams from "./src/utils/LayoutParams";
+import CustomToast from "./src/components/CustomToast";
+import {toastRef} from "./src/components/Widgets";
 
 export default function App() {
 
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  console.log(`Loading is complete ${isLoadingComplete}`)
 
   if (!isLoadingComplete) {
     return null;
@@ -20,6 +21,7 @@ export default function App() {
       <SafeAreaProvider>
         <StatusBar translucent={false} animated={true} backgroundColor={layoutParams.colors.black} style="auto" />
         <Navigation colorScheme={colorScheme}/>
+        <CustomToast {...{ref: toastRef}} />
       </SafeAreaProvider>
     );
   }
