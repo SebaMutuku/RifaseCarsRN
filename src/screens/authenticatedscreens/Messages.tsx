@@ -144,7 +144,7 @@ export default function Messages() {
                             }}/>
                     <View style={{flexDirection: "column", marginLeft: 5, justifyContent: "space-evenly"}}>
                         <Text style={{
-                            fontSize: 16, fontFamily: "Poppins_500Medium"
+                            fontFamily: "WorkSans_600SemiBold"
                         }}>{item.from}</Text>
                         <Text style={{
                             fontSize: 15,
@@ -193,7 +193,7 @@ const messageStyles = StyleSheet.create({
     container: {
         flex: 1, backgroundColor: layoutParams.colors.backgroundColor
     }, text: {
-        fontFamily: "Poppins_500Medium", color: layoutParams.colors.lighGrey
+        fontFamily: "WorkSans_500Medium", color: layoutParams.colors.lighGrey
     },
     searchInputMainContainer: {
         margin: 10

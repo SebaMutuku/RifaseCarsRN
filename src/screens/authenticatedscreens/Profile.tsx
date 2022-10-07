@@ -1,4 +1,4 @@
-import {Animated, SafeAreaView, SectionList, StyleSheet, Switch, TouchableOpacity} from 'react-native';
+import {Animated, SafeAreaView, SectionList, StatusBar, StyleSheet, Switch, TouchableOpacity} from 'react-native';
 
 import {Text, View} from '../../components/Widgets';
 import {HomeBottomTabScreenProps} from "../../navigation/ScreenTypes";
@@ -41,7 +41,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
       }}>
         <Text adjustsFontSizeToFit
               style={[styles.profileText, {
-                fontSize: 25, fontFamily: "WorkSans_700Bold", color: layoutParams.colors.lighGrey,
+                fontSize: 22, fontFamily: "WorkSans_600SemiBold", color: layoutParams.colors.textLightColor,
               }]}>Sebastian</Text>
         <Text style={styles.profileText}>abc@gmail.com</Text>
       </View>
@@ -51,7 +51,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
   function scrollSectionList() {
     return (<SectionList sections={sectionData}
                          keyExtractor={(item, index) => item + index}
-                         renderItem={({item}) => {
+                         renderItem={({item, index, section}) => {
                            let iconName: any = "", color = "";
                            switch (item) {
                              case "Favourite Cars":
@@ -106,22 +106,21 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                iconName = "sign-out"
                                color = layoutParams.colors.red;
                            }
-                           return (!item.match("Dark Theme") ? <TouchableOpacity style={{...styles.item}}
-                                                                                 onPress={() => {
-                                                                                 }}>
+                           return (!item.match("Dark Theme") ? <TouchableOpacity style={{
+                             ...sectionStyle(index, section).item, ...layoutParams.elevation
+                           }} onPress={() => {
+                           }}>
                              <FontAwesome name={iconName} size={20}
                                           color={color}/>
                              <Text style={{
                                fontFamily: "WorkSans_500Medium",
-                               fontSize: 18,
                                marginLeft: 10,
                                color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
                              }}>{item}</Text>
                            </TouchableOpacity> : <TouchableOpacity style={{
-                             ...styles.item
-                           }}
-                                                                   onPress={() => {
-                                                                   }}>
+                             ...sectionStyle(index, section).item, ...layoutParams.elevation
+                           }} onPress={() => {
+                           }}>
                              <Switch
                                  trackColor={{false: "#767577", true: "#81b0ff"}}
                                  thumbColor={state.isEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -133,12 +132,13 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                          }}
                          showsVerticalScrollIndicator={false}
                          renderSectionHeader={({section: {title}}) => (<View style={{
-                           marginLeft: 20,
-                         }}><Text style={styles.header}>{title}</Text></View>)}
+                           margin: 10, padding: 5
+                         }}>
+                           <Text style={styles.header}>{title}</Text></View>)}
                          ListFooterComponentStyle={{
-                           marginBottom: 5
+                           marginBottom: layoutParams.WINDOW.height * 0.1
                          }}
-                         ListFooterComponent={<View style={{paddingBottom: 5}}/>}
+                         ListFooterComponent={<View style={{paddingBottom: StatusBar.currentHeight}}/>}
 
     />);
   }
@@ -172,28 +172,30 @@ const styles = StyleSheet.create({
   }, circularImage: {
     width: 50, height: 50, borderRadius: 50 / 2, justifyContent: 'center', alignItems: 'center'
   }, profileText: {
-    fontSize: 14, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold"
+    fontSize: 14, fontFamily: "WorkSans_600SemiBold"
   }, scrollView: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: layoutParams.colors.backgroundColor,
-    elevation: layoutParams.elevation.elevation,
+    backgroundColor: layoutParams.colors.backgroundColor, ...layoutParams.elevation,
     marginTop: 20
-  }, item: {
-    flexDirection: "row",
-    backgroundColor: layoutParams.colors.white,
-    borderRadius: 16,
-    alignItems: 'center',
-    margin: 2,
-    padding: 15,
-    elevation: 3,
-    shadowColor: 'grey',
-    shadowOffset: {width: 1.1, height: 1.1},
-    shadowOpacity: 0.22,
-    shadowRadius: 8.0,
   }, header: {
     fontFamily: "WorkSans_600SemiBold", fontSize: 20
   }, title1: {
     fontSize: 24
+  }
+});
+
+export const sectionStyle = (index: number, section: any) => StyleSheet.create({
+  item: {
+    flexDirection: "row",
+    backgroundColor: layoutParams.colors.white,
+    alignItems: 'center',
+    marginLeft: 10,
+    marginRight: 10,
+    padding: 15,
+    borderTopLeftRadius: index === 0 ? 16 : 0,
+    borderTopRightRadius: index === 0 ? 16 : 0,
+    borderBottomLeftRadius: index == section.data.length - 1 ? 16 : 0,
+    borderBottomRightRadius: index == section.data.length - 1 ? 16 : 0
   }
 });

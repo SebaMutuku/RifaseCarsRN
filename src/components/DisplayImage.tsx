@@ -1,13 +1,10 @@
 import {Animated} from "react-native";
 import React from "react";
 import layout from "../constants/Layout";
+import {imageProps} from "../utils/AppInterfaces";
 
 
-interface imageProps {
-    borderRadii: number,
-    resizeMode: any,
 
-}
 
 export default function displayImage({resizeMode, borderRadii}: imageProps) {
     return (

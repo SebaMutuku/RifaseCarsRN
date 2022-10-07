@@ -241,7 +241,7 @@ function BottomTabNavigator() {
                 },
                 tabBarLabelStyle: {
                     fontSize: 14,
-                    fontWeight: "bold",
+                    fontFamily:"WorkSans_500Medium"
                 },
                 headerStyle: {
                     backgroundColor: layoutParams.colors.backgroundColor
@@ -255,10 +255,8 @@ function BottomTabNavigator() {
                 tabBarAllowFontScaling: true,
                 tabBarStyle: {
                     backgroundColor: layoutParams.colors.backgroundColor,
-                    borderRadius: 5,
-                    marginBottom: 4,
-                    marginLeft: 10,
-                    marginRight: 10,
+                    borderTopRightRadius: 20,
+                    borderTopLeftRadius: 20,
                 },
                 headerTitleAllowFontScaling: true,
                 unmountOnBlur: true,
@@ -296,23 +294,17 @@ function BottomTabNavigator() {
                         height: 55,
                         backgroundColor: layoutParams.colors.backgroundColor
                     },
-                    headerLeft: () => (
-                        <View>
-                            <Text style={{
-                                fontSize: 20, fontFamily: "Poppins_500Medium"
-                            }}>Let's find the Ideal {'\n'}Car for you</Text>
-                        </View>),
                     headerShown: false,
                     headerTitleStyle: false,
                     headerTitleAllowFontScaling: true
                 })}
             />
             <HomeBottomTabs.Screen
-                name="LastOrders"
+                name="RecentlyView"
                 component={LastOrders}
                 options={{
-                    title: "Latest Purchases",
-                    tabBarLabel: "Purchases",
+                    title: "Recent Views",
+                    tabBarLabel: "Recent Views",
                     tabBarIcon: ({color}) => <TabBarIcon name="cart" color={color} size={25}/>,
                 }}
             />

@@ -1,27 +1,8 @@
-import {FlatList, ListRenderItem, StyleProp, ViewStyle} from "react-native";
-import React, {Key} from "react";
+import {Animated} from "react-native";
+import React from "react";
+import {flatlistProps} from "../utils/AppInterfaces";
 
-interface flatlistProps {
-    showsVerticalScrollIndicator?: boolean,
-    showsHorizontalScrollIndicator?: boolean,
-    data: readonly ({ id: string, title: string } | undefined)[] | null | undefined;
-    renderItem: ListRenderItem<{ id: string, title: string } | undefined> | null | undefined;
-    ListFooterComponentStyle?: StyleProp<ViewStyle>;
-    ListFooterComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined
-    keyExtractor: ((item: ({ id: string, title: string } | undefined), index: number) => string) | undefined;
-    key?: Key | null | undefined;
-    extraData: any;
-    horizontal?: boolean;
-    columnWrapperStyle?: StyleProp<ViewStyle>;
-    contentContainerStyle: StyleProp<ViewStyle>;
-    itemSeparatorComponent?: React.ComponentType<any> | null | undefined;
-    numColumns?: number | undefined;
-    pagingEnabled?: boolean | undefined;
-    ListHeaderComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined;
-    initialScrollIndex?: number
-
-}
 
 export default function FlatListView({...props}: flatlistProps) {
-    return (<FlatList {...props} />);
+    return (<Animated.FlatList {...props} />);
 }

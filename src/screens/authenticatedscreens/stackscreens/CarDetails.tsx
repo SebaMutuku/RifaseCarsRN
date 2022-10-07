@@ -1,21 +1,22 @@
 import {useRoute} from "@react-navigation/native";
 import {Text, View} from "../../../components/Widgets";
 import {HomeRouteProp} from "../../../navigation/ScreenTypes";
-import {Animated, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet} from "react-native";
+import {Animated, Easing, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet} from "react-native";
 import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
 import React from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import {CarObjectInterface} from "../../../utils/AppInterfaces";
 import {sharedStyles} from "../../../utils/SharedStyles";
+import {Entypo, FontAwesome} from "@expo/vector-icons";
 
-SplashScreen.preventAutoHideAsync();
+
 export default function CarDetails() {
     const boxOpacity = React.useRef<Animated.Value>(new Animated.Value(0));
+    const scrollAppearance = React.useRef<Animated.Value>(new Animated.Value(0));
     const [state, setState] = React.useState({
         carData: {} as CarObjectInterface | undefined, appIsReady: false
     })
-    let filteredObject = {};
     const route: any = useRoute<HomeRouteProp>();
     React.useEffect(() => {
         setState({
@@ -26,21 +27,27 @@ export default function CarDetails() {
                 ...state, appIsReady: true
             })
         }
-
         Animated.parallel([
             Animated.timing(boxOpacity.current, {
-            toValue: 1, duration: 500, delay: 200, useNativeDriver: true,
-        })
+                toValue: 1, duration: 500, delay: 200, useNativeDriver: true, easing: Easing.bounce
+            }), Animated.timing(scrollAppearance.current, {
+                toValue: 1, duration: 600, delay: 400, useNativeDriver: true,
+                easing: Easing.linear
+            })
         ]).start();
 
     }, [route.params]);
     const onLayoutRootView = React.useCallback(async () => {
         if (state.appIsReady) {
             await SplashScreen.hideAsync();
-
         }
 
     }, [state.appIsReady]);
+    React.useMemo(() => Object.entries(route.params.cardetails).filter(row => {
+        delete route.params.cardetails['id']
+        return route.params;
+
+    }), [route.params.cardetails]);
 
     function carSliderImage() {
         return (<View style={{
@@ -52,7 +59,74 @@ export default function CarDetails() {
         </View>);
     }
 
-    const infoBox = (text1: string, text2: string) => (<View style={styles.timeBoxContainer}>
+    const lowerSection = () => (<ScrollView>
+        <Text style={{
+            fontSize: 25, fontFamily: "WorkSans_600SemiBold", marginLeft: 30, marginTop: 10
+        }}>Ksh. {route.params.cardetails.price}</Text>
+        <Animated.View
+            style={{
+                flexDirection: 'row', padding: 8, opacity: boxOpacity.current,
+            }}
+            renderToHardwareTextureAndroid // just to avoid UI glitch when animating view with elevation
+        >
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}>
+                {Object.entries(route.params.cardetails).map((entry: any, index) => (infoBox(entry[1], entry[0], index)))}
+            </ScrollView>
+        </Animated.View>
+        <Animated.View style={{
+            marginLeft: 10, marginTop: 10,
+            opacity: scrollAppearance.current
+        }}>
+            <Text style={{
+                fontSize: 20, fontFamily: "WorkSans_600SemiBold",
+            }}>Specifications</Text>
+            {route.params.cardetails.make && <Text style={{
+                ...styles.carDescText
+            }}>The Diesel engine is 1968 cc while the Petrol engine is 1395 cc . It is available with Automatic
+                transmission. Depending upon the variant and fuel type the A3 has a mileage of 19.2 to 20.38 kmpl &
+                Ground
+                clearance of A3 is 165mm. The A3 is a 5 seater 4 cylinder car.
+                Fuel Type: Petrol
+                Fuel Tank Capacity: 50.0
+                Body Type: Sedan
+                Engine Displacement (cc): 1395</Text>}
+        </Animated.View>
+        <View style={{
+            flex: 1,
+            marginTop: 20,
+            marginRight: 10,
+            marginLeft: 10,
+            justifyContent: 'space-between',
+            flexDirection: "row"
+        }}>
+            <FontAwesome.Button name="phone" style={{
+                // padding: 15,
+                backgroundColor: layoutParams.colors.black,
+                ...layoutParams.elevation
+            }} color={layoutParams.colors.white} iconStyle={{
+                margin: 10,
+                color: layoutParams.colors.white
+            }} onPress={() => {
+            }} size={24}>
+                Call the Owner
+            </FontAwesome.Button>
+            <Entypo.Button name="message" style={{
+                // padding: 15,
+                backgroundColor: layoutParams.colors.black,
+                ...layoutParams.elevation
+            }} color={layoutParams.colors.white} iconStyle={{
+                margin: 10,
+                color: layoutParams.colors.white
+            }} onPress={() => {
+            }} size={24}>
+                Chat with dealer
+            </Entypo.Button>
+        </View>
+    </ScrollView>)
+
+    const infoBox = (text1: string, text2: string, key: number) => (<View style={styles.timeBoxContainer} key={key}>
         <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
         <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
     </View>);
@@ -70,24 +144,7 @@ export default function CarDetails() {
             <View style={{
                 ...styles.secondView
             }}>
-                <ScrollView>
-                    <Text style={{
-                        fontSize: 20, fontFamily: "WorkSans_600SemiBold", marginLeft: 30, marginTop: 10
-                    }}>Specifications</Text>
-                    <Animated.View
-                        style={{
-                            flexDirection: 'row', padding: 8, opacity: boxOpacity.current,
-                        }}
-                        renderToHardwareTextureAndroid // just to avoid UI glitch when animating view with elevation
-                    >
-                        {Object.entries(route.params.cardetails).filter(key => {
-                            delete route.params.cardetails['imageUrl']
-                            delete route.params.cardetails['id']
-                            return route.params.cardetails;
-                        }).map((text, index) => (infoBox(text, "Car Info")))}
-                    </Animated.View>
-                </ScrollView>
-
+                {lowerSection()}
             </View>
         </View>
     </SafeAreaView>);
@@ -123,15 +180,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 8,
         paddingHorizontal: 18,
-        paddingVertical: 12,
-        elevation: 3,
-        shadowColor: 'grey',
-        shadowOffset: {width: 1.1, height: 1.1},
-        shadowOpacity: 0.22,
-        shadowRadius: 8.0,
+        paddingVertical: 12, ...layoutParams.elevation
     }, timeBoxTitle: {
         fontSize: 14, fontFamily: 'WorkSans_600SemiBold', color: layoutParams.colors.black,
     }, textStyle: {
         fontSize: 22, fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.lighGrey, letterSpacing: 0.27,
     },
+    carDescText: {
+        fontFamily: "Poppins_500Medium"
+    }
 })

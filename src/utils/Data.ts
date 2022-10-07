@@ -2,78 +2,100 @@ import {CommunicationDateInterface, MessagesData, PopularCarInterface, SectionDa
 
 export const PopularCarData: PopularCarInterface[] = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    make: "Honda Fit",
+    make: "Honda",
     mileage: "20000",
     yom: "1999",
-    price: "900k",
-    imageUrl: "../../../assets/images/mainCarImage.jpg"
+    price: "900,000",
+    imageUrl: "../../../assets/images/mainCarImage.jpg",
+    model: "Fit"
 }, {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    make: "Audi A3",
+    make: "Audi",
     mileage: "21000",
     yom: "2000",
-    price: "951k",
+    price: "951,000",
+    model: "A3",
     imageUrl: '../../../assets/images/mainCarImage.jpg'
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    make: "Suzuki Swift",
+    make: "Suzuki",
     mileage: "22000",
     yom: "2001",
-    price: "550k", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "550,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "Swift",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d73",
-    make: "BMW I320",
+    make: "BMW",
     mileage: "23000",
     yom: "2002",
-    price: "2.1M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "2,100,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "i320",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d74",
-    make: "Toyota Mark X",
+    make: "Toyota",
     mileage: "24000",
     yom: "2003",
-    price: "2,3M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "2,300,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "Mark X",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d75",
-    make: "Lexus C5",
+    make: "Lexus",
     mileage: "25000",
     yom: "2004",
-    price: "2.8M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "2,800,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "C5",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d76",
-    make: "Mazda C6",
+    make: "Mazda",
     mileage: "26000",
     yom: "2005",
-    price: "760k", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "760,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "C6",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d77",
-    make: "Mercedes E5",
+    make: "Mercedes",
     mileage: "27000",
     yom: "2006",
-    price: "2.7M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "2,700,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "E5",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d78",
-    make: "RangeRover L2",
+    make: "RangeRover",
     mileage: "28000",
     yom: "2007",
-    price: "4.5M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "4,500,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "L2",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d79",
-    make: "Nissan Murano",
+    make: "Nissan",
     mileage: "20000",
     yom: "2010",
-    price: "940k", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "940,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "Murano",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d80",
-    make: "Volvo V1",
+    make: "Volvo",
     mileage: "29000",
     yom: "2008",
-    price: "1.4M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "1,400,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "V1",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d81",
-    make: "Subaru Impreza",
+    make: "Subaru ",
     mileage: "30000",
     yom: "2009",
-    price: "1.41M", imageUrl: '../../../assets/images/mainCarImage.jpg'
+    price: "1,410,000",
+    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    model: "Impreza",
 }];
 export const carBrands: any [] = ["audi", "bmw", "honda", "lexus", "mazda", "mercedes", "nissan", "rangerover", "subaru", "suzuki", "toyota", "volvo"];
 export const usersD = [{

@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, Pressable, SafeAreaView, StyleSheet, TextInput} from "react-native";
+import {Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, TextInput} from "react-native";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
@@ -21,13 +21,43 @@ export default function Home() {
         selectedId: 0,
         loading: false,
         populaCarData: PopularCarData,
+        recentViews: [] as any
     });
     const navigation = useNavigation<CombinedNavigationProps>();
+    const brandOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const popularCarOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
 
     function getSelectedCar(carYom: string) {
         return state.populaCarData.find(mappedCar => mappedCar.yom === carYom);
     }
-    // React.useEffect(() => loadPopularCars(), [state.populaCarData]);
+
+    function filterDataByMake(make: string) {
+        return state.populaCarData.filter(item => item.make?.match(make))
+    }
+
+    const allViewedVehicles = React.useMemo(() => {
+        setState(prevState => ({
+            ...prevState, recentViews: [...prevState.recentViews, state.populaCarData[state.selectedId]]
+        }));
+        return state.recentViews;
+    }, [state.selectedId]);
+
+    React.useEffect(() => {
+        Animated.parallel([
+            Animated.timing(brandOpacity, {
+                toValue: 1, duration: 200, delay: 50, useNativeDriver: true, easing: Easing.linear
+            }),
+            Animated.timing(popularCarOpacity, {
+                toValue: 1,
+                duration: state.populaCarData.length,
+                delay: 400,
+                useNativeDriver: true,
+                easing: Easing.linear
+            })
+        ]).start()
+    }, []);
+
+    const PressableView = Animated.createAnimatedComponent(Pressable);
 
     function loadPopularCars() {
         setState({
@@ -58,11 +88,11 @@ export default function Home() {
 
     function searchInput() {
         return (
-            <View style={[homeStyles.searchInputMainContainer]}>
-                <View style={homeStyles.searchInputContainer}>
+            <View style={[sharedStyles.searchInputMainContainer]}>
+                <View style={sharedStyles.searchInputContainer}>
                     <TextInput
                         style={[
-                            homeStyles.searchInput,
+                            sharedStyles.searchInput,
                             !layoutParams.platform.isAndroid && {paddingVertical: 16},
                         ]}
                         autoCapitalize="none"
@@ -81,30 +111,24 @@ export default function Home() {
 
     function carBrandFlatList() {
         const renderButton = (index: number, item: any) => (
-            <Pressable style={{
-            elevation: state.brandSelected == index ? 1 : 0,
-            alignItems: 'center',
-            justifyContent: "center",
-            minWidth: layoutParams.WINDOW.width * .2,
-            padding: state.brandSelected == index ? 10 : 6,
-            backgroundColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
-            borderColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.deepBlue,
-            borderWidth: 0.2,
-            margin: 3,
-            borderRadius: 24
-        }} onPress={() => {
-            setState({
-                ...state, brandSelected: index
-            })
-        }} key={index}>
-            <Text style={{
-                fontSize: 15,
-                fontWeight: "600",
-                fontFamily: "Roboto_500Medium",
-                color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
-            }}
-                  adjustsFontSizeToFit>{item.charAt(0).toString().toUpperCase() + item.substring(1, item.length)}</Text>
-        </Pressable>)
+            <PressableView style={{
+                ...brandStyles(state.brandSelected, index).brandButton,
+                opacity: brandOpacity
+            }} onPress={() => {
+                setState({
+                    ...state, brandSelected: index
+                })
+                filterDataByMake(item);
+                console.log(filterDataByMake((item)))
+            }} key={index}>
+                <Text style={{
+                    fontSize: 15,
+                    fontWeight: "600",
+                    fontFamily: "WorkSans_500Medium",
+                    color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
+                }}
+                      adjustsFontSizeToFit>{item.charAt(0).toString().toUpperCase() + item.substring(1, item.length)}</Text>
+            </PressableView>)
         return (<FlatListView showsHorizontalScrollIndicator={false} data={carBrands} horizontal
                               renderItem={({item, index}: any) => renderButton(index, item)}
                               ListFooterComponentStyle={null}
@@ -114,73 +138,67 @@ export default function Home() {
                               extraData={state.brandSelected} contentContainerStyle={null} numColumns={1}/>);
     }
 
-    function renderCarSpecs(yom: number, mileage: number, index: number) {
+    function renderCarSpecs(yom: string, mileage: string, model: string, index: number) {
         return (<View style={{
-            marginLeft: 10
+            marginLeft: 5
         }} key={index}>
-            <View style={{
-                flexDirection: "row", alignItems: 'center'
-            }}>
-                <Text style={{
-                    fontWeight: "bold", textAlign: 'center', fontSize: 14
-                }}>Y.O.M:</Text>
-                <Text style={{
-                    fontWeight: "bold",
-                    textAlign: 'center',
-                    margin: 3,
-                    color: layoutParams.colors.lighGrey,
-                    fontSize: 15
-                }} adjustsFontSizeToFit>{yom}</Text>
-            </View>
-            <View style={{
-                flexDirection: "row", alignItems: 'center'
-            }}>
-                <Text style={{
-                    fontWeight: "bold", textAlign: 'center', margin: 3, fontSize: 15
-                }}>Mileage:</Text>
-                <Text style={{
-                    textAlign: 'center', margin: 3, color: layoutParams.colors.lighGrey, fontWeight: "bold"
-                }} adjustsFontSizeToFit>{mileage} kms</Text>
-            </View>
+            {renderCarItem("Model : ", model)}
+            {renderCarItem("Y.O.M : ", yom)}
+            {renderCarItem("Mileage : ", mileage + " kms")}
         </View>);
     }
 
+    const renderCarItem = (item: string, key: string) => (<View style={{
+        flexDirection: "row",
+    }}>
+        <Text style={{
+            fontFamily: "WorkSans_600SemiBold",
+            color: layoutParams.colors.lighGrey
+        }} adjustsFontSizeToFit>{item}</Text>
+        <Text style={{
+            fontFamily: "WorkSans_500Medium",
+        }}>{key}</Text>
+    </View>);
+
     function renderPopularCars() {
         const renderItem = (objectItem: any, index: number) => {
-            return (<Pressable style={{
+            return (<PressableView style={{
                 ...homeStyles.popularCars,
                 backgroundColor: layoutParams.colors.listColors,
-                elevation: state.selectedId == index ? layoutParams.elevation.elevation : 0
+                elevation: state.selectedId == index ? layoutParams.elevation.elevation : 0,
+                opacity: popularCarOpacity
             }}
-                               onPress={() => {
-                                   setState({
-                                       ...state, selectedId: index
-                                   });
-                                   navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
-                               }}>
+                                   onPress={() => {
+                                       setState({
+                                           ...state, selectedId: index
+                                       });
+                                       navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
+                                   }}>
                 <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
                     width: "100%",
-                    borderRadius: 10, resizeMode: "contain",
+                    borderRadius: 10,
+                    padding: 10,
+                    resizeMode: "contain",
                     height: "40%"
                 }}/>
                 <View style={{
-                    marginLeft: 10,
-                    marginRight: 10,
+                    marginLeft: 5,
+                    marginRight: 5,
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: 'center'
                 }}><Text style={{
                     textAlign: 'center',
-                    fontWeight: "bold",
-                    fontSize: 25,
-                    fontFamily: "Poppins_600SemiBold"
+                    fontSize: 20,
+                    fontFamily: "WorkSans_600SemiBold"
                 }} adjustsFontSizeToFit>{objectItem?.make}</Text>
                     <Text style={{
                         color: layoutParams.colors.lighGrey,
-                        fontWeight: "bold", fontFamily: "Poppins_500Medium", textAlign: 'center', fontSize: 20
-                    }} adjustsFontSizeToFit>{objectItem?.price}</Text>
+                        fontFamily: "WorkSans_600SemiBold",
+                        fontSize: 18
+                    }} adjustsFontSizeToFit>ksh. {objectItem?.price}</Text>
                 </View>
-                {renderCarSpecs(objectItem.yom, objectItem.mileage, index)}
+                {renderCarSpecs(objectItem?.yom, objectItem?.mileage, objectItem?.model, index)}
                 {/*Horizontal line*/}
                 <View style={{
                     justifyContent: 'center', alignItems: 'center'
@@ -191,35 +209,32 @@ export default function Home() {
                 </View>
                 <View>
                     <Text style={{
-                        textAlign: 'center', fontFamily: "Roboto_500Medium", margin: 10
+                        textAlign: 'center', fontFamily: "WorkSans_600SemiBold",
                     }} adjustsFontSizeToFit>Show more specs</Text>
                 </View>
-            </Pressable>);
+            </PressableView>);
         }
         return <View style={{
             flex: 1.7
-        }}><FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
-                         renderItem={({item, index}) => renderItem(item, index)}
-                         ListFooterComponentStyle={null}
-                         horizontal
-                         showsVerticalScrollIndicator={false}
-                         ListFooterComponent={() => <View style={{marginLeft: 10}}/>}
-                         keyExtractor={(item: any, index) => item.make + index}
-                         key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}/>
+        }}>
+            <FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
+                          renderItem={({item, index}) => renderItem(item, index)}
+                          ListFooterComponentStyle={null}
+                          horizontal
+                          showsVerticalScrollIndicator={false}
+                          ListFooterComponent={() => <View style={{marginLeft: 10}}/>}
+                          keyExtractor={(item: any, index) => item.make + index}
+                          key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}/>
         </View>;
     }
 
-    function renderRecentlyViewed() {
+    const renderRecentlyViewed = () => {
+        let viewedCars: any = JSON.parse(JSON.stringify(allViewedVehicles));
         return (
-            <View style={{...homeStyles.homeFooter}}>
-
+            <>{viewedCars.length > 0 ?
                 <View style={{
-                    flex: 1,
-                    margin: 5,
-                    borderRadius: 10,
-                    flexDirection: "row",
-                    backgroundColor: layoutParams.colors.searchInput,
-                    ...layoutParams.elevation
+                    ...homeStyles.homeFooter,
+                    padding: 5
                 }}>
                     {/*Image at the start*/}
                     <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
@@ -233,16 +248,24 @@ export default function Home() {
                         flex: 1,
                         marginLeft: 5
                     }}><Text style={{
-                        fontSize: 22,
-                        fontFamily: 'WorkSans_500Medium'
-                    }}>Audi</Text>
-                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Price : 951k</Text>
-                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Year Of Manufacturing :2021</Text>
-                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Mileage : 5000kms</Text>
+                        fontSize: 20,
+                        marginTop: 5,
+                        fontFamily: 'WorkSans_600SemiBold'
+                    }}>{viewedCars[viewedCars.length - 1].make}</Text>
+                        {renderCarItem("Model : ", viewedCars[viewedCars.length - 1].model)}
+                        {renderCarItem("Price : ", "ksh. " + viewedCars[viewedCars.length - 1].price)}
+                        {renderCarItem("Year Of Manufacturing : ", viewedCars[viewedCars.length - 1].yom)}
+                        {renderCarItem("Mileage : ", viewedCars[viewedCars.length - 1].mileage + " kms")}
                     </View>
-                </View>
-            </View>)
-    }
+                </View> : <View style={{
+                    ...homeStyles.homeFooter,
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}><Text style={{
+                    fontFamily: "WorkSans_600SemiBold"
+                }}>No Recently view cars</Text></View>}
+            </>)
+    };
 
     return (<SafeAreaView style={{
         ...sharedStyles.container
@@ -283,20 +306,14 @@ export default function Home() {
                     justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
                 }}>
                     <Text style={{
-                        fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold"
+                        fontSize: 22, fontFamily: "WorkSans_600SemiBold"
                     }}>Popular Cars</Text>
-
                         <Text style={{
-                            fontSize: 15,
-                            fontWeight: "bold",
                             color: layoutParams.colors.deepBlue,
-                            fontFamily: "WorkSans_700Bold",
+                            fontFamily: "WorkSans_600SemiBold",
                             textDecorationLine: "underline"
                         }}>View All</Text>
                 </View>
-                <View style={{
-                    marginTop: 10
-                }}/>
             </View>
             {/*All Car Brands*/}
             {renderPopularCars()}
@@ -314,10 +331,9 @@ export default function Home() {
                     Recently Added
                 </Text>
                 <Text style={{
-                    fontSize: 15,
-                    ...homeStyles.footerText,
-                    color: layoutParams.colors.deepBlue,
-                    textDecorationLine: "underline"
+                    ...homeStyles.footerText, color: layoutParams.colors.deepBlue,
+                    textDecorationLine: "underline",
+                    fontFamily: "WorkSans_600SemiBold"
                 }}>
                     View All
                 </Text>
@@ -342,21 +358,11 @@ const homeStyles = StyleSheet.create({
     }, circularImage: {
         width: 50, height: 50, borderRadius: 50 / 2
     }, popularCars: {
-        flex: 1,
-        margin: 3, borderRadius: 10, marginBottom: 30,
+        margin: 3,
+        borderRadius: 10,
+        marginBottom: 30,
+        padding: 5,
         minWidth: layoutParams.WINDOW.width * .5
-    }, itemKeytext: {
-        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.disabledTextColor
-    }, itemValueText: {
-        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular"
-    }, footer: {
-        padding: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',
-    },
-    homeFooter: {
-        flex: 1, marginRight: 5, marginLeft: 5,
-        ...layoutParams.elevation, backgroundColor: layoutParams.colors.backgroundColor,
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10
     },
     footerText: {
         fontFamily: "WorkSans_600SemiBold", textAlign: 'center'
@@ -376,20 +382,26 @@ const homeStyles = StyleSheet.create({
         fontSize: 25,
         fontFamily: 'WorkSans_600SemiBold'
     },
-    searchInputMainContainer: {
-        margin: 10
-    },
-    searchInputContainer: {
-        padding: 10,
-        flexDirection: 'row',
+    homeFooter: {
+        flex: 0.7,
+        margin: 5,
+        borderRadius: 10,
+        flexDirection: "row",
         backgroundColor: layoutParams.colors.searchInput,
-        borderRadius: 13,
+        ...layoutParams.elevation
+    }
+});
+const brandStyles = (brandSelected: number, index: number) => StyleSheet.create({
+    brandButton: {
         alignItems: 'center',
-    },
-    searchInput: {
-        flex: 1,
-        fontSize: 16,
-        fontFamily: 'Poppins_500Medium',
-        color: layoutParams.colors.black,
-    },
-})
+        justifyContent: "center",
+        minWidth: layoutParams.WINDOW.width * .2,
+        padding: brandSelected == index ? 10 : 6,
+        backgroundColor: brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
+        borderColor: brandSelected == index ? layout.colors.deepBlue : layout.colors.deepBlue,
+        borderWidth: 0.05,
+        margin: 3,
+        borderRadius: 24,
+        ...layoutParams.elevation
+    }
+});

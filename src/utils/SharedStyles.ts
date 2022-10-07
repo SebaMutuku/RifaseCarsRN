@@ -9,13 +9,16 @@ export const sharedStyles = StyleSheet.create({
         backgroundColor: layoutParams.colors.backgroundColor,
     },
     searchInputMainContainer: {
-        margin: 10
+        margin: 10,
+
     }, searchInputContainer: {
         padding: 15,
         flexDirection: 'row',
         backgroundColor: layoutParams.colors.searchInput,
         borderRadius: 13,
         alignItems: 'center',
+        ...layoutParams.elevation
+
     }, searchInput: {
         flex: 1,
         fontSize: 16,
@@ -34,6 +37,6 @@ export const buttonStyle = (validatedInput: boolean) => StyleSheet.create({
         backgroundColor: validatedInput ? layout.colors.black : layout.colors.white,
         borderWidth: 0.2,
         margin: 10,
-        borderRadius: 10,
+        borderRadius: 10
     }
 });

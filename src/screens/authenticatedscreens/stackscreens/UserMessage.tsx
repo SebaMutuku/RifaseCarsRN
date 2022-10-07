@@ -7,12 +7,8 @@ import {communicationData} from "../../../utils/Data";
 import FlatListView from "../../../components/FlatListView";
 import moment from "moment/moment";
 import {Ionicons, MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
+import {MessageContext} from "../../../utils/AppInterfaces";
 
-interface MessageContext {
-    sender: string,
-    message: string,
-    messageTime: string
-}
 
 export default function UserMessage() {
     const [state, setState] = React.useState({
@@ -71,7 +67,7 @@ export default function UserMessage() {
                 marginLeft: item.sender === "me" ? 0 : StatusBar.currentHeight
             }} key={index}>
                 <Text style={{
-                    ...userMessageStyles.sender
+                    ...userMessageStyles.sender,
                 }}>{item.sender}</Text>
                 <Text allowFontScaling={true} style={{
                     fontSize: 15
@@ -80,7 +76,8 @@ export default function UserMessage() {
                     ...userMessageStyles.momentAndIcon
                 }}>
                     <Text style={{
-                        ...userMessageStyles.messageTime
+                        ...userMessageStyles.messageTime,
+                        fontFamily: "WorkSans_500Medium"
                     }}>{moment(item.messageTime).fromNow()}</Text>
                     <Ionicons name="md-checkmark-done" size={20}
                               color={item.sender === "me" ? layoutParams.colors.lighGrey : layoutParams.colors.deepBlue}/>
@@ -116,7 +113,7 @@ const userMessageStyles = StyleSheet.create({
     }, messageContent: {
         flexGrow: 1, justifyContent: 'center', borderRadius: 10, padding: 5, marginTop: 10,
     }, sender: {
-        fontSize: 15, fontFamily: "Poppins_600SemiBold", textTransform: 'capitalize'
+        fontSize: 15, fontFamily: "WorkSans_600SemiBold", textTransform: 'capitalize'
     }, messageTime: {
         color: layoutParams.colors.lighGrey
     }, momentAndIcon: {

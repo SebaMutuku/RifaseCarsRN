@@ -16,6 +16,7 @@ import {
 import useColorScheme from "../hooks/useColorScheme";
 import layoutParams from "../utils/LayoutParams";
 import React from "react";
+import {KeyBoardProps, ThemeProps} from "../utils/AppInterfaces";
 
 export function useThemeColor(
     props: { light?: string; dark?: string },
@@ -31,10 +32,6 @@ export function useThemeColor(
     }
 }
 
-type ThemeProps = {
-    lightColor?: string;
-    darkColor?: string;
-};
 
 export type TextProps = ThemeProps & DefaultText['props'];
 export type ViewProps = ThemeProps & DefaultView['props'];
@@ -92,9 +89,7 @@ export function ActivityIndicator(visible: boolean) {
 export const showToast = (text: string) => {
     toastRef.current?.show(text);
 };
-interface KeyBoardProps {
-    children: React.ReactNode
-}
+
 
 export function KeyboardAvoidingComponent({children}: KeyBoardProps) {
     return (

@@ -8,7 +8,11 @@ export default {
         width, height,
     }, isSmallDevice: width < 375,
     elevation: {
-        shadowColor: '#000', shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.5, shadowRadius: 2, elevation: 2,
+        elevation: 10,
+        shadowColor: 'grey',
+        shadowOffset: {width: 1.1, height: 1.1},
+        shadowOpacity: 0.22,
+        shadowRadius: 8.0,
     },
     colors: {
         lighGrey: "#566573",
@@ -26,7 +30,8 @@ export default {
         red: "#DE3163",
         messageColor: "#DCF8C5",
         searchInput: "#F8FAFB",
-        listColors:"#F5F9FD"
+        listColors: "#F5F9FD",
+        textLightColor: "#9DA2A7"
     }, platform: {
         isAndroid: Platform.OS === 'android', isiOS: Platform.OS == 'ios'
     }

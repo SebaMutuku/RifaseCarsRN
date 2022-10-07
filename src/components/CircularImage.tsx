@@ -1,16 +1,10 @@
-import {ImageSourcePropType, ImageStyle} from "react-native";
 import React from "react";
 import {Avatar} from "@rneui/themed";
+import {AvatarPropsInterface} from "../utils/AppInterfaces";
 
-interface AvatarProps {
-    avatarStyle?: ImageStyle;
-    source: ImageSourcePropType;
-    onPress?: () => void;
-    size: number;
-    rounded?: boolean
-}
 
-export default function CircularImage({...props}: AvatarProps) {
+
+export default function CircularImage({...props}: AvatarPropsInterface) {
     return (<Avatar {...props} />
 
     );
