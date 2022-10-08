@@ -53,9 +53,9 @@ export default function LoginScreen() {
                         const response = JSON.parse(JSON.stringify(reponseData));
                         utils.saveValue("token", response.User.token);
                         navigation.navigate("HomeScreen");
-                    }).catch(error => console.log(error));
+                    }).catch(error => showToast(error.message));
                 }
-            }, 3000);
+            }, 1000);
 
         }
         return;

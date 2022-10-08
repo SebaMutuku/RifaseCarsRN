@@ -67,12 +67,12 @@ export function ActivityIndicator(visible: boolean) {
                 position: 'absolute',
                 zIndex: 10,
                 alignItems: "center",
-                justifyContent: 'center'
+                justifyContent: 'center',
             }}>
                 <View style={{
                     width: layoutParams.WINDOW.width * .7,
                     height: layoutParams.WINDOW.height * .2,
-                    backgroundColor: layoutParams.colors.grey,
+                    backgroundColor: layoutParams.colors.white,
                     ...layoutParams.elevation,
                     borderRadius: 10,
                     alignItems: 'center',

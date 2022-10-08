@@ -7,7 +7,7 @@ import {CompositeNavigationProp, CompositeScreenProps, RouteProp} from '@react-n
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackNavigationProp, StackScreenProps} from "@react-navigation/stack";
 import {BottomTabNavigationProp, BottomTabScreenProps} from "@react-navigation/bottom-tabs";
-import {CarObjectInterface} from "../utils/AppInterfaces";
+import {CarItemProps} from "../utils/AppInterfaces";
 
 declare global {
   namespace ReactNavigation {

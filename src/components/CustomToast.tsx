@@ -81,7 +81,6 @@ const CustomToast: React.FC<Props> = React.forwardRef((_props, ref) => {
                     <Animated.View style={[styles.content, {opacity: opacityValue}]}>
                         <AntDesign name="checkcircle" size={24} color={layoutParams.colors.white}/>
                         <View style={{flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-                            <Text>Success</Text>
                             <Text style={styles.text}>{toastText}</Text>
                         </View>
 
@@ -104,14 +103,14 @@ const styles = StyleSheet.create({
     content: {
         flexDirection: "row",
         justifyContent: "space-between",
-        backgroundColor: layoutParams.colors.deepBlue,
-        borderRadius: 2,
+        backgroundColor: layoutParams.colors.lighGrey,
+        borderRadius: 18,
         padding: 15,
         bottom: 64,
         margin: 10,
     },
     text: {
-        fontSize: 40,
+        fontSize: 15,
         color: '#f8f8f8',
         textAlign: 'center',
         fontFamily: "WorkSans_600SemiBold",

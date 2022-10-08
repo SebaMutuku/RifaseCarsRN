@@ -6,16 +6,17 @@ import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
 import React from "react";
 import * as SplashScreen from 'expo-splash-screen';
-import {CarObjectInterface} from "../../../utils/AppInterfaces";
+import {CarItemProps} from "../../../utils/AppInterfaces";
 import {sharedStyles} from "../../../utils/SharedStyles";
-import {Entypo, FontAwesome} from "@expo/vector-icons";
+import {FontAwesome} from "@expo/vector-icons";
 
 
 export default function CarDetails() {
-    const boxOpacity = React.useRef<Animated.Value>(new Animated.Value(0));
-    const scrollAppearance = React.useRef<Animated.Value>(new Animated.Value(0));
+    const viewOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const scrollOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const buttonTranslateX = React.useRef<Animated.Value>(new Animated.Value(100)).current;
     const [state, setState] = React.useState({
-        carData: {} as CarObjectInterface | undefined, appIsReady: false
+        carData: {} as CarItemProps | undefined, appIsReady: false
     })
     const route: any = useRoute<HomeRouteProp>();
     React.useEffect(() => {
@@ -28,10 +29,14 @@ export default function CarDetails() {
             })
         }
         Animated.parallel([
-            Animated.timing(boxOpacity.current, {
+            Animated.timing(viewOpacity, {
                 toValue: 1, duration: 500, delay: 200, useNativeDriver: true, easing: Easing.bounce
-            }), Animated.timing(scrollAppearance.current, {
+            }), Animated.timing(scrollOpacity, {
                 toValue: 1, duration: 600, delay: 400, useNativeDriver: true,
+                easing: Easing.linear
+            }),
+            Animated.timing(buttonTranslateX, {
+                toValue: 1, duration: 1000, delay: 0, useNativeDriver: true,
                 easing: Easing.linear
             })
         ]).start();
@@ -65,7 +70,7 @@ export default function CarDetails() {
         }}>Ksh. {route.params.cardetails.price}</Text>
         <Animated.View
             style={{
-                flexDirection: 'row', padding: 8, opacity: boxOpacity.current,
+                flexDirection: 'row', padding: 8, opacity: viewOpacity,
             }}
             renderToHardwareTextureAndroid // just to avoid UI glitch when animating view with elevation
         >
@@ -77,7 +82,7 @@ export default function CarDetails() {
         </Animated.View>
         <Animated.View style={{
             marginLeft: 10, marginTop: 10,
-            opacity: scrollAppearance.current
+            opacity: scrollOpacity
         }}>
             <Text style={{
                 fontSize: 20, fontFamily: "WorkSans_600SemiBold",
@@ -93,37 +98,23 @@ export default function CarDetails() {
                 Body Type: Sedan
                 Engine Displacement (cc): 1395</Text>}
         </Animated.View>
-        <View style={{
+        <Animated.View style={{
             flex: 1,
             marginTop: 20,
             marginRight: 10,
             marginLeft: 10,
-            justifyContent: 'space-between',
-            flexDirection: "row"
+            translateX: buttonTranslateX
         }}>
             <FontAwesome.Button name="phone" style={{
-                // padding: 15,
-                backgroundColor: layoutParams.colors.black,
-                ...layoutParams.elevation
+                ...layoutParams.elevation,
             }} color={layoutParams.colors.white} iconStyle={{
                 margin: 10,
                 color: layoutParams.colors.white
             }} onPress={() => {
-            }} size={24}>
+            }} size={24} backgroundColor={layoutParams.colors.black} borderRadius={15}>
                 Call the Owner
             </FontAwesome.Button>
-            <Entypo.Button name="message" style={{
-                // padding: 15,
-                backgroundColor: layoutParams.colors.black,
-                ...layoutParams.elevation
-            }} color={layoutParams.colors.white} iconStyle={{
-                margin: 10,
-                color: layoutParams.colors.white
-            }} onPress={() => {
-            }} size={24}>
-                Chat with dealer
-            </Entypo.Button>
-        </View>
+        </Animated.View>
     </ScrollView>)
 
     const infoBox = (text1: string, text2: string, key: number) => (<View style={styles.timeBoxContainer} key={key}>

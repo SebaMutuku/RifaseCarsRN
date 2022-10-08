@@ -106,7 +106,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                iconName = "sign-out"
                                color = layoutParams.colors.red;
                            }
-                           return (!item.match("Dark Theme") ? <TouchableOpacity style={{
+                           return (!item.match("Dark Theme") ? <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation
                            }} onPress={() => {
                            }}>
@@ -117,7 +117,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                marginLeft: 10,
                                color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
                              }}>{item}</Text>
-                           </TouchableOpacity> : <TouchableOpacity style={{
+                           </AnimatedTouchable> : <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation
                            }} onPress={() => {
                            }}>
@@ -128,7 +128,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                  onValueChange={toggleSwitch}
                                  value={state.isEnabled}
                              />
-                           </TouchableOpacity>);
+                           </AnimatedTouchable>);
                          }}
                          showsVerticalScrollIndicator={false}
                          renderSectionHeader={({section: {title}}) => (<View style={{
@@ -139,7 +139,6 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                            marginBottom: layoutParams.WINDOW.height * 0.1
                          }}
                          ListFooterComponent={<View style={{paddingBottom: StatusBar.currentHeight}}/>}
-
     />);
   }
 

@@ -1,6 +1,6 @@
-import {CommunicationDateInterface, MessagesData, PopularCarInterface, SectionDateInterface} from "./AppInterfaces";
+import {CommunicationDataProps, MessageTemplate, carData, SectionDateInterface} from "./AppInterfaces";
 
-export const PopularCarData: PopularCarInterface[] = [{
+export const PopularCarData: carData[] = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
     make: "Honda",
     mileage: "20000",
@@ -115,7 +115,7 @@ export const usersD = [{
 }, {
     name: "Laughter", avatar_url: 'https://randomuser.me/api/portraits/men/36.jpg', subtitle: 'Laughter'
 }]
-export const messagesData: MessagesData[] = [{
+export const messagesData: MessageTemplate[] = [{
     from: "Seba",
     lastMessage: "Hey, how are you?",
     messageTime: "2022-09-01",
@@ -159,7 +159,7 @@ export const messagesData: MessagesData[] = [{
     messageTime: "2022-09-18", imageUrl: 'https://randomuser.me/api/portraits/men/36.jpg'
 }]
 
-export const communicationData: CommunicationDateInterface[] = [{
+export const communicationData: CommunicationDataProps[] = [{
     sender: "Mamilioni", message: "Hey man? Good morning bro?", messageTime: "2022-09-18"
 }, {
     sender: "me", message: "Hey man? Good morning bro?", messageTime: "2022-09-18"

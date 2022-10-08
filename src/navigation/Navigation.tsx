@@ -26,7 +26,7 @@ import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
 import {Text, View} from "../components/Widgets";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import LastOrders from "../screens/authenticatedscreens/LastOrders";
+import RecentViews from "../screens/authenticatedscreens/RecentViews";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
 import Messages from "../screens/authenticatedscreens/Messages";
 import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
@@ -301,7 +301,7 @@ function BottomTabNavigator() {
             />
             <HomeBottomTabs.Screen
                 name="RecentlyView"
-                component={LastOrders}
+                component={RecentViews}
                 options={{
                     title: "Recent Views",
                     tabBarLabel: "Recent Views",

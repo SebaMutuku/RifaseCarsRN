@@ -1,7 +1,7 @@
 import {ImageSourcePropType, ImageStyle, ListRenderItem, StyleProp, ViewStyle} from "react-native";
 import React, {Key} from "react";
 
-export interface CarObjectInterface {
+export interface CarItemProps {
     id: string;
     make: string;
     mileage: string;
@@ -9,7 +9,7 @@ export interface CarObjectInterface {
     yom: string;
 }
 
-export interface PopularCarInterface {
+export interface carData {
     id: any;
     make: string | undefined;
     mileage: string | number,
@@ -19,14 +19,14 @@ export interface PopularCarInterface {
     model?: string
 }
 
-export interface MessagesData {
+export interface MessageTemplate {
     from: string;
     lastMessage: string,
     messageTime: string | typeof Date;
     imageUrl: string;
 }
 
-export interface CommunicationDateInterface {
+export interface CommunicationDataProps {
     sender: string;
     message: string;
     messageTime: string | typeof Date;
@@ -52,7 +52,7 @@ export interface flatlistProps {
     ListFooterComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined
     keyExtractor: ((item: ({ id: string, title: string } | undefined), index: number) => string) | undefined;
     key?: Key | null | undefined;
-    extraData: any;
+    extraData?: any;
     horizontal?: boolean;
     columnWrapperStyle?: StyleProp<ViewStyle>;
     contentContainerStyle: StyleProp<ViewStyle>;
@@ -83,3 +83,21 @@ export interface KeyBoardProps {
 export type ThemeProps = {
     lightColor?: string; darkColor?: string;
 };
+export interface CarViewProps {
+    carData: carData;
+    index: number;
+}
+export interface PopularCarListProps {
+    index: number;
+    selectedId: number,
+    objectItem: any;
+    renderCarSpecs: React.ReactNode;
+    onPress: () => void;
+}
+export interface CarBrandsProps {
+    index: number;
+    item: any;
+    onPress: () => void;
+    populaCarData: carData[];
+    brandSelected: number
+}

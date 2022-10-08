@@ -1,5 +1,5 @@
 import React from "react";
-import {Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, TextInput} from "react-native";
+import {Animated, Easing, Image, SafeAreaView, StyleSheet, TextInput} from "react-native";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
@@ -11,6 +11,9 @@ import CircularImage from "../../components/CircularImage";
 import {carBrands, PopularCarData} from "../../utils/Data";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {sharedStyles} from "../../utils/SharedStyles";
+import PopularCarsList from "../../flatlist/PopularCarsList";
+import {CarItemProps} from "../../utils/AppInterfaces";
+import RenderCarsBrandsList from "../../flatlist/RenderCarsBrandsList";
 
 
 export default function Home() {
@@ -24,17 +27,25 @@ export default function Home() {
         recentViews: [] as any
     });
     const navigation = useNavigation<CombinedNavigationProps>();
-    const brandOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
-    const popularCarOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
+    const recentViewOpacity = React.useRef<Animated.Value>(new Animated.Value(0.1)).current;
 
     function getSelectedCar(carYom: string) {
         return state.populaCarData.find(mappedCar => mappedCar.yom === carYom);
     }
 
-    function filterDataByMake(make: string) {
-        return state.populaCarData.filter(item => item.make?.match(make))
-    }
-
+    React.useEffect(() => {
+        Animated.parallel([
+            Animated.timing(translateX, {
+                toValue: 0,
+                duration: 500,
+                easing: Easing.linear,
+                useNativeDriver: true
+            }),
+            Animated.timing(recentViewOpacity, {
+                toValue: 1, duration: 1000, easing: Easing.out(Easing.cubic), useNativeDriver: true,
+            })]).start()
+    }, [])
     const allViewedVehicles = React.useMemo(() => {
         setState(prevState => ({
             ...prevState, recentViews: [...prevState.recentViews, state.populaCarData[state.selectedId]]
@@ -42,22 +53,6 @@ export default function Home() {
         return state.recentViews;
     }, [state.selectedId]);
 
-    React.useEffect(() => {
-        Animated.parallel([
-            Animated.timing(brandOpacity, {
-                toValue: 1, duration: 200, delay: 50, useNativeDriver: true, easing: Easing.linear
-            }),
-            Animated.timing(popularCarOpacity, {
-                toValue: 1,
-                duration: state.populaCarData.length,
-                delay: 400,
-                useNativeDriver: true,
-                easing: Easing.linear
-            })
-        ]).start()
-    }, []);
-
-    const PressableView = Animated.createAnimatedComponent(Pressable);
 
     function loadPopularCars() {
         setState({
@@ -110,27 +105,19 @@ export default function Home() {
     }
 
     function carBrandFlatList() {
-        const renderButton = (index: number, item: any) => (
-            <PressableView style={{
-                ...brandStyles(state.brandSelected, index).brandButton,
-                opacity: brandOpacity
-            }} onPress={() => {
-                setState({
-                    ...state, brandSelected: index
-                })
-                filterDataByMake(item);
-                console.log(filterDataByMake((item)))
-            }} key={index}>
-                <Text style={{
-                    fontSize: 15,
-                    fontWeight: "600",
-                    fontFamily: "WorkSans_500Medium",
-                    color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
-                }}
-                      adjustsFontSizeToFit>{item.charAt(0).toString().toUpperCase() + item.substring(1, item.length)}</Text>
-            </PressableView>)
+        const onBrandPress = (index: number) => {
+            setState({
+                ...state, brandSelected: index
+            })
+        }
+
+
         return (<FlatListView showsHorizontalScrollIndicator={false} data={carBrands} horizontal
-                              renderItem={({item, index}: any) => renderButton(index, item)}
+                              renderItem={({item, index}: any) => <RenderCarsBrandsList
+                                  index={index} item={item}
+                                  onPress={() => onBrandPress(index)}
+                                  populaCarData={state.populaCarData}
+                                  brandSelected={state.brandSelected}/>}
                               ListFooterComponentStyle={null}
                               ListFooterComponent={() => <View style={null}/>}
                               keyExtractor={(item: any, index) => item + index}
@@ -160,65 +147,22 @@ export default function Home() {
         }}>{key}</Text>
     </View>);
 
+
     function renderPopularCars() {
-        const renderItem = (objectItem: any, index: number) => {
-            return (<PressableView style={{
-                ...homeStyles.popularCars,
-                backgroundColor: layoutParams.colors.listColors,
-                elevation: state.selectedId == index ? layoutParams.elevation.elevation : 0,
-                opacity: popularCarOpacity
-            }}
-                                   onPress={() => {
-                                       setState({
-                                           ...state, selectedId: index
-                                       });
-                                       navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
-                                   }}>
-                <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    padding: 10,
-                    resizeMode: "contain",
-                    height: "40%"
-                }}/>
-                <View style={{
-                    marginLeft: 5,
-                    marginRight: 5,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: 'center'
-                }}><Text style={{
-                    textAlign: 'center',
-                    fontSize: 20,
-                    fontFamily: "WorkSans_600SemiBold"
-                }} adjustsFontSizeToFit>{objectItem?.make}</Text>
-                    <Text style={{
-                        color: layoutParams.colors.lighGrey,
-                        fontFamily: "WorkSans_600SemiBold",
-                        fontSize: 18
-                    }} adjustsFontSizeToFit>ksh. {objectItem?.price}</Text>
-                </View>
-                {renderCarSpecs(objectItem?.yom, objectItem?.mileage, objectItem?.model, index)}
-                {/*Horizontal line*/}
-                <View style={{
-                    justifyContent: 'center', alignItems: 'center'
-                }}>
-                    <View style={{
-                        margin: 5, borderBottomWidth: StyleSheet.hairlineWidth, width: "85%"
-                    }}/>
-                </View>
-                <View>
-                    <Text style={{
-                        textAlign: 'center', fontFamily: "WorkSans_600SemiBold",
-                    }} adjustsFontSizeToFit>Show more specs</Text>
-                </View>
-            </PressableView>);
+        const onPressPopularCar = (index: number, objectItem: CarItemProps) => {
+            setState({
+                ...state, selectedId: index
+            });
+            navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
         }
         return <View style={{
             flex: 1.7
         }}>
             <FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
-                          renderItem={({item, index}) => renderItem(item, index)}
+                          renderItem={({item, index}: any) => <PopularCarsList index={index} objectItem={item}
+                                                                               renderCarSpecs={renderCarSpecs(item?.yom, item?.mileage, item?.model, index)}
+                                                                               selectedId={state.selectedId}
+                                                                               onPress={() => onPressPopularCar(index, item)}/>}
                           ListFooterComponentStyle={null}
                           horizontal
                           showsVerticalScrollIndicator={false}
@@ -232,9 +176,11 @@ export default function Home() {
         let viewedCars: any = JSON.parse(JSON.stringify(allViewedVehicles));
         return (
             <>{viewedCars.length > 0 ?
-                <View style={{
+                <Animated.View style={{
                     ...homeStyles.homeFooter,
-                    padding: 5
+                    padding: 5,
+                    translateX,
+                    transform: [{scale: recentViewOpacity}],
                 }}>
                     {/*Image at the start*/}
                     <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
@@ -257,13 +203,15 @@ export default function Home() {
                         {renderCarItem("Year Of Manufacturing : ", viewedCars[viewedCars.length - 1].yom)}
                         {renderCarItem("Mileage : ", viewedCars[viewedCars.length - 1].mileage + " kms")}
                     </View>
-                </View> : <View style={{
+                </Animated.View> : <Animated.View style={{
                     ...homeStyles.homeFooter,
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
+                    translateX,
+                    transform: [{scale: recentViewOpacity}]
                 }}><Text style={{
                     fontFamily: "WorkSans_600SemiBold"
-                }}>No Recently view cars</Text></View>}
+                }}>No Recently view cars</Text></Animated.View>}
             </>)
     };
 
@@ -308,11 +256,11 @@ export default function Home() {
                     <Text style={{
                         fontSize: 22, fontFamily: "WorkSans_600SemiBold"
                     }}>Popular Cars</Text>
-                        <Text style={{
-                            color: layoutParams.colors.deepBlue,
-                            fontFamily: "WorkSans_600SemiBold",
-                            textDecorationLine: "underline"
-                        }}>View All</Text>
+                    <Text style={{
+                        color: layoutParams.colors.deepBlue,
+                        fontFamily: "WorkSans_600SemiBold",
+                        textDecorationLine: "underline"
+                    }}>View All</Text>
                 </View>
             </View>
             {/*All Car Brands*/}
@@ -328,7 +276,7 @@ export default function Home() {
                     fontSize: 20,
                     fontFamily: "WorkSans_600SemiBold"
                 }}>
-                    Recently Added
+                    Recently Viewed
                 </Text>
                 <Text style={{
                     ...homeStyles.footerText, color: layoutParams.colors.deepBlue,
@@ -339,7 +287,6 @@ export default function Home() {
                 </Text>
             </View>
             {renderRecentlyViewed()}
-
         </View>
     </SafeAreaView>);
 
@@ -357,12 +304,6 @@ const homeStyles = StyleSheet.create({
         elevation: layout.elevation.elevation,
     }, circularImage: {
         width: 50, height: 50, borderRadius: 50 / 2
-    }, popularCars: {
-        margin: 3,
-        borderRadius: 10,
-        marginBottom: 30,
-        padding: 5,
-        minWidth: layoutParams.WINDOW.width * .5
     },
     footerText: {
         fontFamily: "WorkSans_600SemiBold", textAlign: 'center'
@@ -391,17 +332,4 @@ const homeStyles = StyleSheet.create({
         ...layoutParams.elevation
     }
 });
-const brandStyles = (brandSelected: number, index: number) => StyleSheet.create({
-    brandButton: {
-        alignItems: 'center',
-        justifyContent: "center",
-        minWidth: layoutParams.WINDOW.width * .2,
-        padding: brandSelected == index ? 10 : 6,
-        backgroundColor: brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
-        borderColor: brandSelected == index ? layout.colors.deepBlue : layout.colors.deepBlue,
-        borderWidth: 0.05,
-        margin: 3,
-        borderRadius: 24,
-        ...layoutParams.elevation
-    }
-});
+
