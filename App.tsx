@@ -6,8 +6,7 @@ import useCachedResources from './src/hooks/useCachedResources';
 import useColorScheme from './src/hooks/useColorScheme';
 import Navigation from './src/navigation/Navigation';
 import layoutParams from "./src/utils/LayoutParams";
-import CustomToast from "./src/components/CustomToast";
-import {toastRef} from "./src/components/Widgets";
+import Toast from './src/components/AnotherToast'
 
 export default function App() {
 
@@ -20,8 +19,8 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <StatusBar translucent={false} animated={true} backgroundColor={layoutParams.colors.black} style="auto" />
-        <Navigation colorScheme={colorScheme}/>
-        <CustomToast {...{ref: toastRef}} />
+          <Navigation colorScheme={colorScheme}/>
+          <Toast/>
       </SafeAreaProvider>
     );
   }

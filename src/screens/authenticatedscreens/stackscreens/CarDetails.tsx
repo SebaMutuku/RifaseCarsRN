@@ -19,6 +19,21 @@ export default function CarDetails() {
         carData: {} as CarItemProps | undefined, appIsReady: false
     })
     const route: any = useRoute<HomeRouteProp>();
+    const buttonAnimation = React.useRef<Animated.AnimatedInterpolation>(new Animated.Value(0)).current;
+    const widthAnim = buttonAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [58, 258],
+    });
+
+    const margin = buttonAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [38, 0],
+    });
+
+    const radiusAnim = buttonAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [40, 8],
+    });
     React.useEffect(() => {
         setState({
             ...state, carData: route.params.cardetails
@@ -65,9 +80,18 @@ export default function CarDetails() {
     }
 
     const lowerSection = () => (<ScrollView>
-        <Text style={{
-            fontSize: 25, fontFamily: "WorkSans_600SemiBold", marginLeft: 30, marginTop: 10
-        }}>Ksh. {route.params.cardetails.price}</Text>
+        <View style={{
+            margin: 20
+        }}>
+            <Text style={{
+                fontFamily: "WorkSans_600SemiBold",
+                color: layoutParams.colors.lighGrey
+            }}>Vehicle Specifications</Text>
+            <Text style={{
+                fontSize: 20, fontFamily: "WorkSans_600SemiBold"
+            }}>Ksh. {route.params.cardetails.price}</Text>
+        </View>
+
         <Animated.View
             style={{
                 flexDirection: 'row', padding: 8, opacity: viewOpacity,
@@ -84,9 +108,6 @@ export default function CarDetails() {
             marginLeft: 10, marginTop: 10,
             opacity: scrollOpacity
         }}>
-            <Text style={{
-                fontSize: 20, fontFamily: "WorkSans_600SemiBold",
-            }}>Specifications</Text>
             {route.params.cardetails.make && <Text style={{
                 ...styles.carDescText
             }}>The Diesel engine is 1968 cc while the Petrol engine is 1395 cc . It is available with Automatic
@@ -108,7 +129,7 @@ export default function CarDetails() {
             <FontAwesome.Button name="phone" style={{
                 ...layoutParams.elevation,
             }} color={layoutParams.colors.white} iconStyle={{
-                margin: 10,
+                margin: layoutParams.WINDOW.height * .011,
                 color: layoutParams.colors.white
             }} onPress={() => {
             }} size={24} backgroundColor={layoutParams.colors.black} borderRadius={15}>

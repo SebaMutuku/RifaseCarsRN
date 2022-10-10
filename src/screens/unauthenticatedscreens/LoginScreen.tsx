@@ -1,31 +1,38 @@
-import {Pressable, SafeAreaView, StyleSheet} from "react-native";
+import {Animated, Easing, Pressable, SafeAreaView, StyleSheet} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
 import React from "react";
-import utils from "../../utils/Utils";
 import displayImage from "../../components/DisplayImage";
-import {ActivityIndicator, KeyboardAvoidingComponent, showToast, Text, View} from "../../components/Widgets";
+import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
 import Toast from "react-native-toast-message";
-import {useToast} from "native-base";
 import TextInputComponent from "../../components/TextInputComponent";
 import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
+import {loginWithUserNameAndPassword} from "../../services/Database";
+import Firebase from "../../utils/Firebase";
+import toast from "../../utils/toast";
 
 export default function LoginScreen() {
-    const toast = useToast();
     const [state, setState] = React.useState({
-        username: "", password: "", token: "", loading: false
+        username: "", password: "", token: "", loading: false, showToast: false, toastMessage: "", toastType: ''
     });
     const navigation = useNavigation<CombinedNavigationProps>();
+    const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
+    const opacity = React.useRef<Animated.Value>(new Animated.Value(0.1)).current;
+    const PressableView = Animated.createAnimatedComponent(Pressable);
 
     function inputsValid() {
-        if (state.username.length == 0) {
-            return false;
-        }
-        return state.password.length > 0 && state.password.length >= 8;
-
+        return state.username.length > 0 && (state.password.length >= 8);
     }
+
+    React.useEffect(() => {
+        Animated.parallel([Animated.timing(translateX, {
+            toValue: 0, duration: 500, easing: Easing.linear, useNativeDriver: true
+        }), Animated.timing(opacity, {
+            toValue: 1, duration: 1000, easing: Easing.out(Easing.cubic), useNativeDriver: true,
+        })]).start()
+    }, [])
 
     function onLogin() {
         if (inputsValid()) {
@@ -33,27 +40,47 @@ export default function LoginScreen() {
                 ...state, loading: true
             });
             setTimeout(() => {
-                setState({
-                    ...state, loading: false
-                });
-                //
-                navigation.navigate("HomeScreen");
                 if (state.username != null && state.password != null) {
-                    const tkn = "seba"
-                    setState({
-                        ...state, token: tkn
-                    });
-                    fetch(utils.appUrl + "/login", {
-                        method: "POST", headers: {
-                            "Content-Type": "application/json"
-                        }, body: JSON.stringify({
-                            username: state.username, pasword: state.password
+                    loginWithUserNameAndPassword(state.username, state.password).then(data => {
+                        let username: string, userId: string;
+                        if (data.docs.length == 0) {
+                            state.toastMessage = "Invalid Username or password"
+                            setState({
+                                ...state, loading: false, showToast: true, toastType: "error"
+                            })
+                            toast.success({
+                                message: "Invalid username or password"
+                            })
+                            return;
+                        }
+                        data.docs.forEach(item => {
+                            username = item.data()['username']
+                            userId = item.data()['user_id']
                         })
-                    }).then(response => response.json()).then(reponseData => {
-                        const response = JSON.parse(JSON.stringify(reponseData));
-                        utils.saveValue("token", response.User.token);
-                        navigation.navigate("HomeScreen");
-                    }).catch(error => showToast(error.message));
+                        data.forEach(d => {
+                            Firebase.firestore().collection("users").doc(d.id).update({
+                                token: "123221"
+                            });
+                            setState({
+                                ...state, token: "122311223331", showToast: true, toastType: "success"
+
+                            })
+                            setState({
+                                ...state,
+                                loading: false,
+                                showToast: true,
+                                toastType: "success",
+                                toastMessage: "Successfully Logged In"
+                            })
+                            toast.success({
+                                message: "Successfully Logged In"
+                            })
+                            navigation.navigate("HomeScreen");
+                        })
+                    })
+                    setState({
+                        ...state, toastType: "", toastMessage: "", showToast: false
+                    })
                 }
             }, 1000);
 
@@ -121,7 +148,7 @@ export default function LoginScreen() {
                         ...buttonStyle(inputsValid()).button
                     }} onPress={() => {
                         onLogin()
-                        showToast("User Logged In")
+                        // showToast("User Logged In")
                     }} disabled={!inputsValid()}>
                         <Text style={{
                             ...styles.buttonText,

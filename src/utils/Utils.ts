@@ -4,7 +4,6 @@ import {PixelRatio} from "react-native";
 
 export const appBaseUrl = "https://heroku";
 export const checkValidMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
 export async function saveValue(key: string, value: any) {
     try {
         await SecureStore.setItemAsync(key, value);
@@ -77,8 +76,24 @@ export function fontSizeNormalized(size: number, multiplier = 2) {
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
 }
 
+export function generateUuid() {
+    let chars = '0123456789abcdef'.split('');
+    let uuid = [], rnd = Math.random, r;
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+    uuid[14] = '4'; // version 4
+    for (let i = 0; i < 36; i++) {
+        if (!uuid[i]) {
+            r = 0 | rnd() * 16;
+            uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
+        }
+    }
+    return uuid.join('');
+}
+export const SHOW_TOAST_MESSAGE = 'SHOW_TOAST_MESSAGE';
+
+
 const utils = {
-    saveValue, getValue, removeValue, appUrl: appBaseUrl, checkValidMail, getData, postData
+    saveValue, getValue, removeValue, appUrl: appBaseUrl, checkValidMail, getData, postData, generateUuid,SHOW_TOAST_MESSAGE
 }
 
 export default utils;

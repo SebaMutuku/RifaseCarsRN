@@ -22,14 +22,14 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
     Animated.parallel([Animated.timing(sectionItemOpacity.current, {
       toValue: 1, duration: 500, delay: 200, useNativeDriver: true,
     }), Animated.timing(profileView.current, {
-      toValue: 1, duration: 500, delay: 600, useNativeDriver: true,
+      toValue: 1, duration: 600, delay: 100, useNativeDriver: true,
     })]).start()
   }, [])
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
   function topScreen() {
     return (<Animated.View style={{
-      alignItems: 'center', opacity: profileView.current
+      alignItems: 'center', transform: [{scale: profileView.current}]
     }}>
       {CircularImage({
         source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
@@ -58,8 +58,8 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                iconName = "heart";
                                color = layoutParams.colors.deepBlue;
                                break
-                             case "New Cars":
-                               iconName = "car";
+                             case "App Currency":
+                               iconName = "money";
                                color = layoutParams.colors.deepBlue;
                                break
                              case "Language":
@@ -153,8 +153,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
       shadowOffset: {width: 1.1, height: 1.1},
       shadowOpacity: 0.2,
       shadowRadius: 10.0,
-      elevation: 16,
-      opacity: sectionItemOpacity.current
+      elevation: 16, // opacity: sectionItemOpacity.current
     }}>
       {scrollSectionList()}
     </Animated.View>

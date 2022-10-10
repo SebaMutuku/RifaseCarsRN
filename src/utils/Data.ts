@@ -187,7 +187,7 @@ export const communicationData: CommunicationDataProps[] = [{
     sender: "me", message: "Hey man? Good morning bro?", messageTime: "2022-09-18"
 }]
 export const sectionData: SectionDateInterface[] = [{
-    title: "Content", data: ["Favourite Cars", "New Cars"]
+    title: "Content", data: ["Favourite Cars", "App Currency"]
 }, {
     title: "Preferences", data: ["Language", "Notifications"]
 }, {

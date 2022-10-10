@@ -1,4 +1,4 @@
-import {carData, CarViewProps} from "../utils/AppInterfaces";
+import {CarViewProps} from "../utils/AppInterfaces";
 import {Animated, Easing, Image, Pressable, StyleSheet} from "react-native";
 import layoutParams from "../utils/LayoutParams";
 import {Text, View} from "../components/Widgets";
@@ -6,7 +6,6 @@ import React from "react";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../navigation/ScreenTypes";
 import {PopularCarData} from "../utils/Data";
-
 
 
 const ViewedCarList = ({...props}: CarViewProps) => {
@@ -23,6 +22,7 @@ const ViewedCarList = ({...props}: CarViewProps) => {
     const [state, setState] = React.useState({
         selectedId: 0,
     });
+
     React.useEffect(() => {
         Animated.parallel([Animated.timing(translateY, {
             toValue: 0, duration: 500, delay: props.index * 100, useNativeDriver: true,

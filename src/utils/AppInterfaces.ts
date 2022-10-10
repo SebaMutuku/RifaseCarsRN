@@ -94,10 +94,23 @@ export interface PopularCarListProps {
     renderCarSpecs: React.ReactNode;
     onPress: () => void;
 }
+
 export interface CarBrandsProps {
     index: number;
     item: any;
     onPress: () => void;
     populaCarData: carData[];
     brandSelected: number
+}
+
+export interface User {
+    user_id: string;
+    username: string;
+    password: string;
+    phoneNumber: string;
+    token?: string;
+    active: boolean;
+    admin: boolean;
+    createdAt: Date;
+
 }
