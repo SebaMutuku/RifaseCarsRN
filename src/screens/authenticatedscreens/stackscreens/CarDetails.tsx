@@ -17,7 +17,7 @@ import React from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import {CarItemProps} from "../../../utils/AppInterfaces";
 import {sharedStyles} from "../../../utils/SharedStyles";
-import {FontAwesome} from "@expo/vector-icons";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 import {reviewArray} from "../../../utils/Data";
 
 
@@ -140,8 +140,13 @@ export default function CarDetails() {
             <Animated.View style={{
                 marginTop: 20,
                 marginRight: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-evenly",
                 transform: [{scale: callButton.current}]
             }}>
+                <Text style={[styles.textStyle, styles.timeBoxTitle, {marginRight: 10}]}>Call
+                    Seller</Text>
                 <TouchableOpacity
                     style={{
                         flexDirection: "row",
@@ -151,12 +156,12 @@ export default function CarDetails() {
                         alignItems: "center",
                         backgroundColor: layoutParams.colors.black,
                         ...layoutParams.elevation,
-                        borderRadius: 20,
-                        width: layoutParams.WINDOW.width * .3
+                        borderRadius: layoutParams.WINDOW.width * .13,
+                        width: layoutParams.WINDOW.width * .13,
+                        height: layoutParams.WINDOW.width * .13
                     }}>
-                    <Text style={[styles.textStyle, styles.timeBoxTitle, {color: layoutParams.colors.white}]}>Call
-                        Seller</Text>
-                    <FontAwesome name="phone" size={layoutParams.WINDOW.width * .08} color={layoutParams.colors.white}/>
+                    <MaterialCommunityIcons name="phone" size={layoutParams.WINDOW.width * .08}
+                                            color={layoutParams.colors.white}/>
                 </TouchableOpacity>
             </Animated.View>
         </Animated.View>
@@ -181,7 +186,7 @@ export default function CarDetails() {
             borderBottomWidth: StyleSheet.hairlineWidth,
         }}/>
         {/*Review Row*/}
-        {reviewArray.map((item, index) => (<>
+        {reviewArray.map((item, index: number) => (<>
                 <Animated.View style={{
                     flexDirection: "row",
                     marginTop: 10,
@@ -195,10 +200,8 @@ export default function CarDetails() {
                         <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewSammury}</Text>
                         <Text style={[styles.textStyle, {fontSize: 14}]}>Rating: {item.rating}</Text>
                     </View>
-                </Animated.View><View style={{
-                marginTop: 10
-            }}>
-                <Text style={[styles.textStyle, {fontSize: 14}]}>{item.comment}
+                </Animated.View><View style={{}}>
+                <Text style={[styles.textStyle, {fontSize: 14, color: layoutParams.colors.black}]}>{item.comment}
                 </Text>
             </View></>)
         )}
