@@ -1,7 +1,16 @@
 import {useRoute} from "@react-navigation/native";
 import {Text, View} from "../../../components/Widgets";
 import {HomeRouteProp} from "../../../navigation/ScreenTypes";
-import {Animated, Easing, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet} from "react-native";
+import {
+    Animated,
+    Easing,
+    ImageBackground,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    TouchableOpacity
+} from "react-native";
 import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
 import React from "react";
@@ -9,12 +18,14 @@ import * as SplashScreen from 'expo-splash-screen';
 import {CarItemProps} from "../../../utils/AppInterfaces";
 import {sharedStyles} from "../../../utils/SharedStyles";
 import {FontAwesome} from "@expo/vector-icons";
+import {reviewArray} from "../../../utils/Data";
 
 
 export default function CarDetails() {
     const viewOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
     const scrollOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
     const buttonTranslateX = React.useRef<Animated.Value>(new Animated.Value(100)).current;
+    const callButton = React.useRef<Animated.Value>(new Animated.Value(0));
     const [state, setState] = React.useState({
         carData: {} as CarItemProps | undefined, appIsReady: false
     })
@@ -53,6 +64,9 @@ export default function CarDetails() {
             Animated.timing(buttonTranslateX, {
                 toValue: 1, duration: 1000, delay: 0, useNativeDriver: true,
                 easing: Easing.linear
+            }),
+            Animated.timing(callButton.current, {
+                toValue: 1, duration: 600, delay: 100, useNativeDriver: true,
             })
         ]).start();
 
@@ -79,7 +93,7 @@ export default function CarDetails() {
         </View>);
     }
 
-    const lowerSection = () => (<ScrollView>
+    const lowerSection = () => (<ScrollView showsVerticalScrollIndicator={false}>
         <View style={{
             margin: 20
         }}>
@@ -120,25 +134,78 @@ export default function CarDetails() {
                 Engine Displacement (cc): 1395</Text>}
         </Animated.View>
         <Animated.View style={{
-            flex: 1,
-            marginTop: 20,
-            marginRight: 10,
-            marginLeft: 10,
-            translateX: buttonTranslateX
+            justifyContent: "flex-end",
+            alignItems: 'flex-end',
         }}>
-            <FontAwesome.Button name="phone" style={{
-                ...layoutParams.elevation,
-            }} color={layoutParams.colors.white} iconStyle={{
-                margin: layoutParams.WINDOW.height * .011,
-                color: layoutParams.colors.white
-            }} onPress={() => {
-            }} size={24} backgroundColor={layoutParams.colors.black} borderRadius={15}>
-                Call the Owner
-            </FontAwesome.Button>
+            <Animated.View style={{
+                marginTop: 20,
+                marginRight: 10,
+                transform: [{scale: callButton.current}]
+            }}>
+                <TouchableOpacity
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        paddingTop: 5,
+                        paddingBottom: 5,
+                        alignItems: "center",
+                        backgroundColor: layoutParams.colors.black,
+                        ...layoutParams.elevation,
+                        borderRadius: 20,
+                        width: layoutParams.WINDOW.width * .3
+                    }}>
+                    <Text style={[styles.textStyle, styles.timeBoxTitle, {color: layoutParams.colors.white}]}>Call
+                        Seller</Text>
+                    <FontAwesome name="phone" size={layoutParams.WINDOW.width * .08} color={layoutParams.colors.white}/>
+                </TouchableOpacity>
+            </Animated.View>
         </Animated.View>
+        {reviews()}
     </ScrollView>)
+    const reviews = () => (<Animated.View style={{
+        ...styles.reviews,
+        opacity: scrollOpacity,
+    }}>
+        <Animated.View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+        }}>
+            <Text style={[styles.textStyle, styles.timeBoxTitle, {fontSize: 18}]}>Reviews</Text>
+            <Text style={[styles.textStyle, {fontSize: 18}]} onPress={() => {
+            }}>See All</Text>
+        </Animated.View>
+        <View style={{
+            borderBottomColor: layoutParams.colors.lighGrey,
+            marginTop: 10,
+            marginBottom: 10,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+        }}/>
+        {/*Review Row*/}
+        {reviewArray.map((item, index) => (<>
+                <Animated.View style={{
+                    flexDirection: "row",
+                    marginTop: 10,
+                    justifyContent: "space-between",
+                }} key={index}>
+                    <View>
+                        <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewer}</Text>
+                        <Text style={[styles.textStyle, {fontSize: 14}]}>{item.date}</Text>
+                    </View>
+                    <View>
+                        <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewSammury}</Text>
+                        <Text style={[styles.textStyle, {fontSize: 14}]}>Rating: {item.rating}</Text>
+                    </View>
+                </Animated.View><View style={{
+                marginTop: 10
+            }}>
+                <Text style={[styles.textStyle, {fontSize: 14}]}>{item.comment}
+                </Text>
+            </View></>)
+        )}
 
-    const infoBox = (text1: string, text2: string, key: number) => (<View style={styles.timeBoxContainer} key={key}>
+    </Animated.View>)
+
+    const infoBox = (text1: string, text2: string, key?: number) => (<View style={styles.timeBoxContainer} key={key}>
         <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
         <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
     </View>);
@@ -196,9 +263,13 @@ const styles = StyleSheet.create({
     }, timeBoxTitle: {
         fontSize: 14, fontFamily: 'WorkSans_600SemiBold', color: layoutParams.colors.black,
     }, textStyle: {
-        fontSize: 22, fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.lighGrey, letterSpacing: 0.27,
+        fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.lighGrey, letterSpacing: 0.27,
     },
     carDescText: {
         fontFamily: "Poppins_500Medium"
+    },
+    reviews: {
+        flex: 1,
+        margin: 10
     }
 })

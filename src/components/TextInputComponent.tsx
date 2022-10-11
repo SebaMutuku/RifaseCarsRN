@@ -17,6 +17,7 @@ interface textInputProps {
     underlineColorAndroid?: ColorValue | undefined;
     value: any;
     iconName: string;
+    onPressIcon?: () => void
     iconSize: number;
     iconColor:string
 }
@@ -36,7 +37,7 @@ const TextInputComponent = ({...props}: textInputProps) => (<View style={[props.
             secureTextEntry={props.secureEntry}
             keyboardType={props.keyboardType}
         />
-        <Icon name={props.iconName} size={props.iconSize} color={props.iconColor}/>
+        <Icon name={props.iconName} size={props.iconSize} color={props.iconColor} onPress={props.onPressIcon}/>
     </View>
 </View>);
 

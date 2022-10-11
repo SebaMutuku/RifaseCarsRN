@@ -24,7 +24,7 @@ import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
-import {Text, View} from "../components/Widgets";
+import {View} from "../components/Widgets";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import RecentViews from "../screens/authenticatedscreens/RecentViews";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
@@ -32,47 +32,41 @@ import Messages from "../screens/authenticatedscreens/Messages";
 import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
 import CircularImage from "../components/CircularImage";
 
-export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
-    const [state, setState] = React.useState({
-        token: "" as any
-    });
-
-    React.useEffect(() => {
-        const fetchToken = async () => {
-            // await utils.saveValue("token", "yayyayayyaass");
-            const savedToken = await utils.getValue("token");
-            console.log("Saved token ", savedToken)
-            if (savedToken != null || savedToken != undefined) {
-                //checkToken here
-                let checkToken: boolean = false;
-                await fetch(utils.appUrl + "/verify").then(resp => resp.json()).then(data => {
-                    const respData = JSON.parse(JSON.stringify(data));
-                    if (respData.message == "success") {
-                        checkToken = true;
-                    }
-                    return checkToken;
-                }).catch(error => console.log(error));
-                if (checkToken) {
-                    setState({
-                        ...state,
-                        token: savedToken
-                    })
-                }
-            }
-
-        }
-        fetchToken();
-    }, [state.token])
-    console.table("token ", state.token)
-    return (
-        <NavigationContainer
-            theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
-            ref={navigationRef}>
-            {state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
-            {/*<HomeStackNavigator/>*/}
-        </NavigationContainer>
-    );
-}
+// export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
+//     const [state, setState] = React.useState({
+//         token: "" as any
+//     });
+//
+//     React.useEffect(() => {
+//         const fetchToken = async () => {
+//             const savedToken = await utils.getValue("token");
+//             console.log("Saved token ", savedToken)
+//             if (savedToken != null || savedToken != undefined) {
+//                 // await fetch(utils.appUrl + "/verify").then(resp => resp.json()).then(data => {
+//                 //     const respData = JSON.parse(JSON.stringify(data));
+//                 //     if (respData.message == "success") {
+//                 //         checkToken = true;
+//                 //     }
+//                 //     return checkToken;
+//                 // }).catch(error => console.log(error));
+//                 setState({
+//                     ...state,
+//                     token: savedToken
+//                 })
+//             }
+//
+//         }
+//         fetchToken();
+//     }, [state.token])
+//     return (
+//         <NavigationContainer
+//             theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
+//             ref={navigationRef}>
+//             {state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
+//             {/*<HomeStackNavigator/>*/}
+//         </NavigationContainer>
+//     );
+// }
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -80,19 +74,7 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
  */
 
 
-
-// const Switch = createAppContainer(createSwitchNavigator(
-//     {
-//         UnAuthenticated: AuthenticationScreen,
-//         Authenticated: UnauthenticatedNavigator
-//     },
-//     {
-//         initialRouteName: 'UnAuthenticated'
-//     }
-// ));
-
-
-function HomeStackNavigator() {
+export function HomeStackNavigator() {
     return (
         <HomeStacks.Navigator initialRouteName='HomeStack' screenOptions={{
             headerStyle: {
@@ -160,7 +142,7 @@ const HomeStacks = createNativeStackNavigator<HomeStackParamList>();
 //     )
 // }
 
-function UnauthenticatedNavigator() {
+export function UnauthenticatedNavigator() {
     const colorScheme = useColorScheme();
     return (
         <LoginStacks.Navigator initialRouteName="Login" screenOptions={{

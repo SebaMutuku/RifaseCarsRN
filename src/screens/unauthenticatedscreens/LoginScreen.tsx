@@ -9,21 +9,28 @@ import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../co
 import Toast from "react-native-toast-message";
 import TextInputComponent from "../../components/TextInputComponent";
 import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
-import {loginWithUserNameAndPassword} from "../../services/Database";
-import Firebase from "../../utils/Firebase";
+import utils from "../../utils/Utils";
+import {UserResponse} from "../../utils/AppInterfaces";
 import toast from "../../utils/toast";
+import {AuthContext} from "../../utils/AuthContext";
 
 export default function LoginScreen() {
     const [state, setState] = React.useState({
-        username: "", password: "", token: "", loading: false, showToast: false, toastMessage: "", toastType: ''
+        username: "",
+        password: "",
+        token: "",
+        loading: false,
+        showToast: false,
+        toastMessage: "",
+        toastType: '',
+        showPassword: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
     const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
     const opacity = React.useRef<Animated.Value>(new Animated.Value(0.1)).current;
-    const PressableView = Animated.createAnimatedComponent(Pressable);
-
+    const {signIn} = React.useContext(AuthContext);
     function inputsValid() {
-        return state.username.length > 0 && (state.password.length >= 8);
+        return state.username.length > 0 && (state.password.length <= 8);
     }
 
     React.useEffect(() => {
@@ -41,43 +48,27 @@ export default function LoginScreen() {
             });
             setTimeout(() => {
                 if (state.username != null && state.password != null) {
-                    loginWithUserNameAndPassword(state.username, state.password).then(data => {
-                        let username: string, userId: string;
-                        if (data.docs.length == 0) {
-                            state.toastMessage = "Invalid Username or password"
-                            setState({
-                                ...state, loading: false, showToast: true, toastType: "error"
-                            })
+                    const data = {
+                        "username": state.username, "password": state.password
+                    }
+                    utils.postData(utils.appUrl + "/users/login", data).then(response => {
+                        let responseData: UserResponse = response
+                        if (responseData.User.token != null) {
+                            utils.saveValue("username", JSON.stringify(responseData.User.username))
+                            utils.saveValue("token", JSON.stringify(responseData.User.token));
+                            utils.saveValue("roleId", JSON.stringify(responseData.User.role));
+                            signIn(responseData.User.token)
                             toast.success({
-                                message: "Invalid username or password"
+                                message: responseData.message
                             })
-                            return;
+                        } else {
+                            toast.success({
+                                message: responseData.message
+                            })
                         }
-                        data.docs.forEach(item => {
-                            username = item.data()['username']
-                            userId = item.data()['user_id']
-                        })
-                        data.forEach(d => {
-                            Firebase.firestore().collection("users").doc(d.id).update({
-                                token: "123221"
-                            });
-                            setState({
-                                ...state, token: "122311223331", showToast: true, toastType: "success"
 
-                            })
-                            setState({
-                                ...state,
-                                loading: false,
-                                showToast: true,
-                                toastType: "success",
-                                toastMessage: "Successfully Logged In"
-                            })
-                            toast.success({
-                                message: "Successfully Logged In"
-                            })
-                            navigation.navigate("HomeScreen");
-                        })
                     })
+
                     setState({
                         ...state, toastType: "", toastMessage: "", showToast: false
                     })
@@ -131,11 +122,15 @@ export default function LoginScreen() {
                     />
                     <TextInputComponent placeholder="password"
                                         onChange={(text) => setState({...state, password: text})}
-                                        secureEntry={true} containerStyles={sharedStyles.searchInputMainContainer}
+                                        secureEntry={state.showPassword}
+                                        containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
                                         searchInput={sharedStyles.searchInput} autoCapitalize="none"
                                         keyboardType="default"
-                                        value={state.password} iconName="lock"
+                                        value={state.password} iconName={state.showPassword ? "eye-off" : "eye"}
+                                        onPressIcon={() => setState({
+                                            ...state, showPassword: !state.showPassword
+                                        })}
                                         iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
                                         iconColor={layoutParams.colors.lighGrey}/>
 

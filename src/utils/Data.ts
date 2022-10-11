@@ -1,4 +1,4 @@
-import {CommunicationDataProps, MessageTemplate, carData, SectionDateInterface} from "./AppInterfaces";
+import {carData, CommunicationDataProps, MessageTemplate, ReviewData, SectionDateInterface} from "./AppInterfaces";
 
 export const PopularCarData: carData[] = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -195,3 +195,25 @@ export const sectionData: SectionDateInterface[] = [{
 }, {
     title: "User Settings", data: ["Change Password", "Dark Theme", "Update App", "Privacy", "Close Account", "Logout"]
 }];
+
+export const reviewArray: ReviewData[] = [{
+    reviewer: "Sebastian",
+    date: new Date().toDateString(),
+    comment: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back,and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment.",
+    reviewSammury: "Very Good",
+    rating: "9.1"
+}, {
+    reviewer: "Seba",
+    date: new Date().toDateString(),
+    comment: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back,and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment.",
+    reviewSammury: "Good service",
+    rating: "8"
+}, {
+    reviewer: "User Tester",
+    date: new Date().toDateString(),
+    comment: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back,and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment.",
+    reviewSammury: "Longer delivery",
+    rating: "2"
+},
+
+]

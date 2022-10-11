@@ -16,7 +16,7 @@ import {User} from "../../utils/AppInterfaces";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
-        username: "", password: "", phoneNumber: "", checkBoxChecked: false
+        username: "", password: "", phoneNumber: "", checkBoxChecked: false, showPassword: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
@@ -110,12 +110,16 @@ export default function SignUpScreen() {
                                         iconColor={layoutParams.colors.lighGrey}/>
                     <TextInputComponent placeholder="Enter a password"
                                         onChange={(text) => setState({...state, password: text})}
-                                        secureEntry={true}
+                                        secureEntry={state.showPassword}
                                         containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
                                         searchInput={sharedStyles.searchInput} autoCapitalize="none"
                                         keyboardType="default"
-                                        value={state.password} iconName="lock"
+                                        value={state.password}
+                                        iconName={state.showPassword ? "eye-off" : "eye"}
+                                        onPressIcon={() => setState({
+                                            ...state, showPassword: !state.showPassword
+                                        })}
                                         iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
                                         iconColor={layoutParams.colors.lighGrey}/>
                     <Checkbox.Item label="Accept terms and conditions here "

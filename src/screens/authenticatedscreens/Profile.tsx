@@ -1,29 +1,32 @@
 import {Animated, SafeAreaView, SectionList, StatusBar, StyleSheet, Switch, TouchableOpacity} from 'react-native';
 
 import {Text, View} from '../../components/Widgets';
-import {HomeBottomTabScreenProps} from "../../navigation/ScreenTypes";
 import layoutParams from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";
 import React from "react";
 import {FontAwesome} from "@expo/vector-icons";
 import {sectionData} from "../../utils/Data";
 import {sharedStyles} from "../../utils/SharedStyles";
+import {BottomSheetProps} from "../../utils/AppInterfaces";
+import CloseAccount from "../../modals/CloseAccountModal";
 
-export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'>) {
+export default function Profile() {
   const [state, setState] = React.useState({
-    selectedSectionList: 0, isEnabled: false
+    selectedSectionList: 0, isEnabled: false, modalVisble: false
   });
   const toggleSwitch = () => setState(prevState => ({
     ...prevState, isEnabled: !state.isEnabled
   }));
   const sectionItemOpacity = React.useRef<Animated.Value>(new Animated.Value(0));
   const profileView = React.useRef<Animated.Value>(new Animated.Value(0));
+  const ref = React.useRef<BottomSheetProps>(null);
   React.useEffect(() => {
     Animated.parallel([Animated.timing(sectionItemOpacity.current, {
       toValue: 1, duration: 500, delay: 200, useNativeDriver: true,
     }), Animated.timing(profileView.current, {
       toValue: 1, duration: 600, delay: 100, useNativeDriver: true,
-    })]).start()
+    })
+    ]).start()
   }, [])
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -47,6 +50,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
       </View>
     </Animated.View>);
   }
+
 
   function scrollSectionList() {
     return (<SectionList sections={sectionData}
@@ -109,6 +113,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                            return (!item.match("Dark Theme") ? <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation
                            }} onPress={() => {
+
                            }}>
                              <FontAwesome name={iconName} size={20}
                                           color={color}/>
@@ -118,7 +123,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
                              }}>{item}</Text>
                            </AnimatedTouchable> : <AnimatedTouchable style={{
-                             ...sectionStyle(index, section).item, ...layoutParams.elevation
+                             ...sectionStyle(index, section).item, ...layoutParams.elevation, padding: 0
                            }} onPress={() => {
                            }}>
                              <Switch
@@ -128,6 +133,9 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
                                  onValueChange={toggleSwitch}
                                  value={state.isEnabled}
                              />
+                             <Text style={{
+                               fontFamily: "WorkSans_500Medium", marginLeft: 10,
+                             }}> {state.isEnabled ? item : "Light Theme"}</Text>
                            </AnimatedTouchable>);
                          }}
                          showsVerticalScrollIndicator={false}
@@ -157,7 +165,7 @@ export default function Profile({navigation}: HomeBottomTabScreenProps<'Profile'
     }}>
       {scrollSectionList()}
     </Animated.View>
-
+    <CloseAccount visible={true} height={300}/>
   </SafeAreaView>);
 }
 const styles = StyleSheet.create({

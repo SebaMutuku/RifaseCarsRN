@@ -1,6 +1,20 @@
 import {ImageSourcePropType, ImageStyle, ListRenderItem, StyleProp, ViewStyle} from "react-native";
 import React, {Key} from "react";
 
+
+export interface AppAuthState {
+    isLoading: boolean;
+    signout: boolean;
+    userToken: undefined | string;
+
+}
+
+export type Action =
+    { type: 'RETRIVE_TOKEN', token: string | undefined }
+    | { type: 'AUTHENTICATED'; token: string | undefined }
+    | { type: 'SIGN_UP'; token: string | undefined }
+    | { type: 'SIGN_OUT', token: string | undefined };
+
 export interface CarItemProps {
     id: string;
     make: string;
@@ -8,6 +22,7 @@ export interface CarItemProps {
     price: string;
     yom: string;
 }
+
 
 export interface carData {
     id: any;
@@ -112,5 +127,23 @@ export interface User {
     active: boolean;
     admin: boolean;
     createdAt: Date;
+}
 
+export interface UserResponse {
+    message: string;
+    User: {
+        token: string; role: number; username: string;
+    }
+}
+
+export type BottomSheetProps = {
+    children?: React.ReactNode; visible: boolean | undefined; height: number;
+};
+
+export interface ReviewData {
+    date: string;
+    reviewer: string;
+    rating: string;
+    reviewSammury: string;
+    comment: string;
 }
