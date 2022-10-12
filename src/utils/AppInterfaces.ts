@@ -129,11 +129,21 @@ export interface User {
     createdAt: Date;
 }
 
-export interface UserResponse {
+export interface LoginResponse {
     message: string;
-    User: {
+    user: {
         token: string; role: number; username: string;
     }
+}
+
+export interface RegisterResponse {
+
+    user: {
+        username: string,
+        user_id: number,
+        role_id: string
+    },
+    message: string
 }
 
 export type BottomSheetProps = {

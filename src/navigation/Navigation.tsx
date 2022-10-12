@@ -7,7 +7,6 @@ import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
 import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
-import {ColorSchemeName} from 'react-native';
 import Profile from '../screens/authenticatedscreens/Profile';
 import {
     HomeBottomTabParamList,
@@ -18,8 +17,6 @@ import {
 import useColorScheme from "../hooks/useColorScheme";
 import LoginScreen from "../screens/unauthenticatedscreens/LoginScreen";
 import SignUpScreen from "../screens/unauthenticatedscreens/SignUpScreen";
-import {navigationRef} from "./RootNavigation";
-import utils from "../utils/Utils";
 import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
@@ -32,41 +29,6 @@ import Messages from "../screens/authenticatedscreens/Messages";
 import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
 import CircularImage from "../components/CircularImage";
 
-// export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
-//     const [state, setState] = React.useState({
-//         token: "" as any
-//     });
-//
-//     React.useEffect(() => {
-//         const fetchToken = async () => {
-//             const savedToken = await utils.getValue("token");
-//             console.log("Saved token ", savedToken)
-//             if (savedToken != null || savedToken != undefined) {
-//                 // await fetch(utils.appUrl + "/verify").then(resp => resp.json()).then(data => {
-//                 //     const respData = JSON.parse(JSON.stringify(data));
-//                 //     if (respData.message == "success") {
-//                 //         checkToken = true;
-//                 //     }
-//                 //     return checkToken;
-//                 // }).catch(error => console.log(error));
-//                 setState({
-//                     ...state,
-//                     token: savedToken
-//                 })
-//             }
-//
-//         }
-//         fetchToken();
-//     }, [state.token])
-//     return (
-//         <NavigationContainer
-//             theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
-//             ref={navigationRef}>
-//             {state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}
-//             {/*<HomeStackNavigator/>*/}
-//         </NavigationContainer>
-//     );
-// }
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.

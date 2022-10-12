@@ -1,4 +1,13 @@
-import {Animated, SafeAreaView, SectionList, StatusBar, StyleSheet, Switch, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  Animated,
+  SafeAreaView,
+  SectionList,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  TouchableOpacity
+} from 'react-native';
 
 import {Text, View} from '../../components/Widgets';
 import layoutParams from "../../utils/LayoutParams";
@@ -9,6 +18,7 @@ import {sectionData} from "../../utils/Data";
 import {sharedStyles} from "../../utils/SharedStyles";
 import {BottomSheetProps} from "../../utils/AppInterfaces";
 import CloseAccount from "../../modals/CloseAccountModal";
+import {AuthContext} from "../../utils/AuthContext";
 
 export default function Profile() {
   const [state, setState] = React.useState({
@@ -20,6 +30,7 @@ export default function Profile() {
   const sectionItemOpacity = React.useRef<Animated.Value>(new Animated.Value(0));
   const profileView = React.useRef<Animated.Value>(new Animated.Value(0));
   const ref = React.useRef<BottomSheetProps>(null);
+  const {signOut} = React.useContext(AuthContext)
   React.useEffect(() => {
     Animated.parallel([Animated.timing(sectionItemOpacity.current, {
       toValue: 1, duration: 500, delay: 200, useNativeDriver: true,
@@ -51,6 +62,24 @@ export default function Profile() {
     </Animated.View>);
   }
 
+
+  const onPress = (item: any) => {
+    switch (item) {
+      case "Logout" || "Close Account":
+        Alert.alert("Message", `Are you sure you want to ${item}?`, [
+          {
+            text: "NO",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          {text: "YES", onPress: () =>signOut()}
+        ])
+        break;
+      default:
+        console.log("Cancel Pressed", item)
+        break
+    }
+  }
 
   function scrollSectionList() {
     return (<SectionList sections={sectionData}
@@ -112,9 +141,7 @@ export default function Profile() {
                            }
                            return (!item.match("Dark Theme") ? <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation
-                           }} onPress={() => {
-
-                           }}>
+                           }} onPress={() => onPress(item)}>
                              <FontAwesome name={iconName} size={20}
                                           color={color}/>
                              <Text style={{
@@ -124,8 +151,7 @@ export default function Profile() {
                              }}>{item}</Text>
                            </AnimatedTouchable> : <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation, padding: 0
-                           }} onPress={() => {
-                           }}>
+                           }} onPress={() => onPress(item)}>
                              <Switch
                                  trackColor={{false: "#767577", true: "#81b0ff"}}
                                  thumbColor={state.isEnabled ? "#f5dd4b" : "#f4f3f4"}

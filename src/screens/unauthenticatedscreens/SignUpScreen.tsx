@@ -6,17 +6,16 @@ import React from "react";
 import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
-import {KeyboardAvoidingComponent, showToast, Text, View} from "../../components/Widgets";
+import {KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
 import TextInputComponent from "../../components/TextInputComponent";
 import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
-import Firebase from "../../utils/Firebase";
-import {insert} from "../../services/Database";
-import {User} from "../../utils/AppInterfaces";
+import {RegisterResponse} from "../../utils/AppInterfaces";
+import toast from "../../utils/toast";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
-        username: "", password: "", phoneNumber: "", checkBoxChecked: false, showPassword: false
+        username: "", password: "", phoneNumber: "", checkBoxChecked: false, showPassword: true, loading: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
@@ -26,35 +25,34 @@ export default function SignUpScreen() {
 
     function onRegister() {
         if (inputsValid()) {
-            if (state.username != null && state.password != null && (state.phoneNumber + "") != null) {
-                const user: User = {
-                    active: false,
-                    admin: false,
-                    createdAt: new Date(),
-                    password: "",
-                    phoneNumber: "",
-                    user_id: "",
-                    username: ""
-                };
-                const user_id = utils.generateUuid();
-                Firebase.firestore().collection("users").where("username", "==", state.username).where("phoneNumber", "==", state.phoneNumber).get().then(data => {
-                    if (data.docs.length > 0) {
-                        showToast('User with details already  exists');
-                        return;
+            setState({
+                ...state, loading: true
+            });
+            setTimeout(() => {
+                if (state.username != null && state.password != null && (state.phoneNumber + "") != null) {
+                    const registrationData = {
+                        "username": state.username, "password": state.password, "phonenumber": state.phoneNumber
                     }
-                    user.phoneNumber = state.phoneNumber;
-                    user.password = state.password;
-                    user.username = state.username;
-                    user.user_id = user_id;
-                    user.active = true;
-                    user.createdAt = new Date();
-                    user.admin = false;
-                    user.token = "";
-                    insert("users", user_id, user);
-                    showToast("User added successfully");
-                    navigation.navigate("Login");
-                });
-            }
+                    utils.postData(utils.appUrl + "/users/register", registrationData).then(response => {
+                        console.log("Response ", response)
+                        let responseData: RegisterResponse = response
+                        if (responseData.user.username != null && responseData.user.user_id != null) {
+                            toast.success({
+                                message: responseData.message
+                            });
+                            navigation.navigate("Login");
+                        } else {
+                            toast.success({
+                                message: responseData.message
+                            })
+                        }
+                    }).catch(error => {
+                        toast.success({
+                            message: error.message
+                        })
+                    })
+                }
+            }, 1000)
         }
         return;
     }

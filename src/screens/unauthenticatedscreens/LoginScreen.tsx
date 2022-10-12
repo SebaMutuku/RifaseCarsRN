@@ -10,7 +10,7 @@ import Toast from "react-native-toast-message";
 import TextInputComponent from "../../components/TextInputComponent";
 import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
-import {UserResponse} from "../../utils/AppInterfaces";
+import {LoginResponse} from "../../utils/AppInterfaces";
 import toast from "../../utils/toast";
 import {AuthContext} from "../../utils/AuthContext";
 
@@ -30,7 +30,7 @@ export default function LoginScreen() {
     const opacity = React.useRef<Animated.Value>(new Animated.Value(0.1)).current;
     const {signIn} = React.useContext(AuthContext);
     function inputsValid() {
-        return state.username.length > 0 && (state.password.length <= 8);
+        return state.username.length > 0 && (state.password.length >= 8);
     }
 
     React.useEffect(() => {
@@ -52,12 +52,12 @@ export default function LoginScreen() {
                         "username": state.username, "password": state.password
                     }
                     utils.postData(utils.appUrl + "/users/login", data).then(response => {
-                        let responseData: UserResponse = response
-                        if (responseData.User.token != null) {
-                            utils.saveValue("username", JSON.stringify(responseData.User.username))
-                            utils.saveValue("token", JSON.stringify(responseData.User.token));
-                            utils.saveValue("roleId", JSON.stringify(responseData.User.role));
-                            signIn(responseData.User.token)
+                        let responseData: LoginResponse = response
+                        if (responseData.user.token != null) {
+                            utils.saveValue("username", JSON.stringify(responseData.user.username))
+                            utils.saveValue("token", JSON.stringify(responseData.user.token));
+                            utils.saveValue("roleId", JSON.stringify(responseData.user.role));
+                            signIn(responseData.user.token)
                             toast.success({
                                 message: responseData.message
                             })
@@ -73,7 +73,7 @@ export default function LoginScreen() {
                         ...state, toastType: "", toastMessage: "", showToast: false
                     })
                 }
-            }, 1000);
+            }, 2000);
 
         }
         return;

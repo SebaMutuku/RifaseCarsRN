@@ -41,9 +41,9 @@ export default function App() {
     isLoading: true, signout: false, userToken: undefined,
   });
 
-  async function getToken() {
+  async function verifyToken() {
     const token = await utils.getValue("token")
-    return token;
+    return token?.toString();
 
   }
 
@@ -74,33 +74,19 @@ export default function App() {
       } else {
         dispatch({type: 'SIGN_OUT', token: ""})
       }
-    }, signUp: async (...data: string[]) => {
-
     },
-
     signOut: async () => {
       let token;
       try {
         token = await utils.getValue("token");
         if (token) {
-          dispatch({type: 'SIGN_OUT', token: token})
-        }
+          await utils.removeValue("token");
+          dispatch({type: 'SIGN_OUT', token: ""})
+        } else dispatch({type: 'SIGN_OUT', token: ""})
       } catch (e) {
         console.log("Exception occurred", e.message);
         return null;
       }
-    }, home: async (data: any) => {
-      let token: any;
-      try {
-        token = utils.getValue("token");
-        if (token) {
-          dispatch({type: 'AUTHENTICATED', token: "15151552"});
-        }
-      } catch (e) {
-        console.log("Exception occurred", e);
-        return null;
-      }
-
     }, toggleTheme: () => {
       //     setIsDarkTheme(isDarkTheme => !isDarkTheme);
     },
@@ -115,7 +101,6 @@ export default function App() {
             ref={navigationRef}>
           {state.userToken != null || state.userToken != undefined ? <HomeStackNavigator/> :
               <UnauthenticatedNavigator/>}
-          {/*<HomeStackNavigator/>*/}
         </NavigationContainer>
         <Toast/>
       </>}
