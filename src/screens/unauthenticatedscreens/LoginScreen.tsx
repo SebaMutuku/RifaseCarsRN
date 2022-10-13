@@ -83,10 +83,14 @@ export default function LoginScreen() {
         {ActivityIndicator(state.loading)}
         <SafeAreaView style={{flex: 1, backgroundColor: layoutParams.colors.backgroundColor}}>
             <View style={{
-                borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, ...layoutParams.elevation
+                justifyContent: 'center',
+                alignItems: "center",
+                borderBottomRightRadius: 30,
+                borderBottomLeftRadius: 30,
+                flex: .5, ...layoutParams.elevation,
             }}>
                 {displayImage({
-                    borderRadii: 30, resizeMode: "contain"
+                    borderRadii: 30, resizeMode: "contain",
                 })}
             </View>
             <View style={{flex: 1}}>

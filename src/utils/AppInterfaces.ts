@@ -138,12 +138,13 @@ export interface LoginResponse {
 
 export interface RegisterResponse {
 
-    user: {
+    user?: {
         username: string,
         user_id: number,
         role_id: string
     },
-    message: string
+    message: string;
+    responseCode: number
 }
 
 export type BottomSheetProps = {

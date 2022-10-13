@@ -10,8 +10,9 @@ import {KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
 import TextInputComponent from "../../components/TextInputComponent";
 import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
-import {RegisterResponse} from "../../utils/AppInterfaces";
 import toast from "../../utils/toast";
+import {RegisterConstants} from "../../utils/AllConstant";
+import {RegisterResponse} from "../../utils/AppInterfaces";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
@@ -34,25 +35,32 @@ export default function SignUpScreen() {
                         "username": state.username, "password": state.password, "phonenumber": state.phoneNumber
                     }
                     utils.postData(utils.appUrl + "/users/register", registrationData).then(response => {
-                        console.log("Response ", response)
                         let responseData: RegisterResponse = response
-                        if (responseData.user.username != null && responseData.user.user_id != null) {
-                            toast.success({
-                                message: responseData.message
-                            });
-                            navigation.navigate("Login");
+                        if (responseData.responseCode === RegisterConstants.SUCCESS_CODE) {
+                            if (responseData.user?.username != null && responseData.user?.user_id != null) {
+                                toast.success({
+                                    message: responseData.message
+                                });
+                                navigation.navigate("Login");
+                            }
+                        } else if (responseData.responseCode === RegisterConstants.EXISTS_CODE) {
+                            toast.danger({
+                                message: response.message
+                            })
                         } else {
-                            toast.success({
-                                message: responseData.message
+
+                            toast.danger({
+                                message: response.message
                             })
                         }
+
                     }).catch(error => {
-                        toast.success({
+                        toast.danger({
                             message: error.message
                         })
                     })
                 }
-            }, 1000)
+            }, 1000, [])
         }
         return;
     }

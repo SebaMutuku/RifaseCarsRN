@@ -1,6 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import layoutParams from "./LayoutParams";
 import {PixelRatio} from "react-native";
+import {showToast} from "../components/Widgets";
 
 export const appBaseUrl = "https://carfueldjango.herokuapp.com/api";
 export const checkValidMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -64,8 +65,8 @@ export async function postData(url: string, ...params: any): Promise<any> {
             "Content-Type": "Application/json",
         }
     }).then(response => response.json()).catch(error => {
+        showToast(error.message)
         console.log(error)
-        return null
     });
     return response;
 }
