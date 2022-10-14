@@ -1,4 +1,4 @@
-import {ImageSourcePropType, ImageStyle, ListRenderItem, StyleProp, ViewStyle} from "react-native";
+import {ImageSourcePropType, ImageStyle, ListRenderItem, StyleProp, TextStyle, ViewStyle} from "react-native";
 import React, {Key} from "react";
 
 
@@ -78,9 +78,11 @@ export interface flatlistProps {
     initialScrollIndex?: number
 }
 
-export interface imageProps {
-    borderRadii: number,
-    resizeMode: any,
+export interface HeaderProps {
+    containerHeaderText?: string;
+    containerHeaderStyle: StyleProp<TextStyle>;
+    actionTextStyle: StyleProp<TextStyle>;
+    actionText: string;
 }
 
 export interface AvatarPropsInterface {

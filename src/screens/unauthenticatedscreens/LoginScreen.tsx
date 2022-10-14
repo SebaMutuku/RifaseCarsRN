@@ -4,7 +4,7 @@ import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
 import React from "react";
-import displayImage from "../../components/DisplayImage";
+import HeaderSection from "../../components/HeaderSection";
 import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
 import Toast from "react-native-toast-message";
 import TextInputComponent from "../../components/TextInputComponent";
@@ -82,27 +82,13 @@ export default function LoginScreen() {
     return (<KeyboardAvoidingComponent>
         {ActivityIndicator(state.loading)}
         <SafeAreaView style={{flex: 1, backgroundColor: layoutParams.colors.backgroundColor}}>
-            <View style={{
-                justifyContent: 'center',
-                alignItems: "center",
-                borderBottomRightRadius: 30,
-                borderBottomLeftRadius: 30,
-                flex: .5, ...layoutParams.elevation,
-            }}>
-                {displayImage({
-                    borderRadii: 30, resizeMode: "contain",
-                })}
-            </View>
+            {HeaderSection({
+                containerHeaderText: "Sign In",
+                actionText: "Access to your account",
+                containerHeaderStyle: sharedStyles.containerHeaderStyle,
+                actionTextStyle: sharedStyles.actionTextStyle
+            })}
             <View style={{flex: 1}}>
-                <Text style={{
-                    marginTop: 10,
-                    color: layoutParams.colors.lighGrey,
-                    fontFamily: "WorkSans_500Medium",
-                    fontSize: 15,
-                    textAlign: "center"
-                }}>
-                    Sign in to you account
-                </Text>
                 <View style={{
                     marginTop: 10
                 }}>

@@ -1,13 +1,4 @@
-import {
-  Alert,
-  Animated,
-  SafeAreaView,
-  SectionList,
-  StatusBar,
-  StyleSheet,
-  Switch,
-  TouchableOpacity
-} from 'react-native';
+import {Animated, SafeAreaView, SectionList, StatusBar, StyleSheet, Switch, TouchableOpacity} from 'react-native';
 
 import {Text, View} from '../../components/Widgets';
 import layoutParams from "../../utils/LayoutParams";
@@ -17,12 +8,12 @@ import {FontAwesome} from "@expo/vector-icons";
 import {sectionData} from "../../utils/Data";
 import {sharedStyles} from "../../utils/SharedStyles";
 import {BottomSheetProps} from "../../utils/AppInterfaces";
-import CloseAccount from "../../modals/CloseAccountModal";
+import CustomModal from "../../modals/CustomModal";
 import {AuthContext} from "../../utils/AuthContext";
 
 export default function Profile() {
   const [state, setState] = React.useState({
-    selectedSectionList: 0, isEnabled: false, modalVisble: false
+    selectedSectionList: 0, isEnabled: false, modalVisble: false, modalHeading: "", modalAcceptString: ""
   });
   const toggleSwitch = () => setState(prevState => ({
     ...prevState, isEnabled: !state.isEnabled
@@ -62,21 +53,47 @@ export default function Profile() {
     </Animated.View>);
   }
 
+  function logoutChildren() {
+    return <View style={{
+      marginTop: 10, flexDirection: "row", justifyContent: "space-evenly"
+    }}>
+      <Text style={{
+        ...styles.modalText, fontSize: 16
+      }} onPress={() => setState({
+        ...state, modalVisble: false,
+      })}>No</Text>
+      <Text style={{
+        ...styles.modalText, fontSize: 16, color: layoutParams.colors.red
+      }} onPress={() => {
+        setState({
+          ...state, modalVisble: false,
+        });
+        signOut()
+      }}>Log out</Text>
+    </View>
+
+  }
+
 
   const onPress = (item: any) => {
     switch (item) {
-      case "Logout" || "Close Account":
-        Alert.alert("Message", `Are you sure you want to ${item}?`, [
-          {
-            text: "NO",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
-          {text: "YES", onPress: () =>signOut()}
-        ])
+      case "Logout" : {
+        setState({
+          ...state, modalVisble: true, modalHeading: "Do you really want to logout?", modalAcceptString: "Log out"
+        })
+      }
+        break;
+      case "Close Account": {
+        setState({
+          ...state,
+          modalVisble: true,
+          modalHeading: "Do you really want to close your account?",
+          modalAcceptString: "Close Account"
+        })
+      }
         break;
       default:
-        console.log("Cancel Pressed", item)
+        console.log("Pressed")
         break
     }
   }
@@ -191,7 +208,8 @@ export default function Profile() {
     }}>
       {scrollSectionList()}
     </Animated.View>
-    <CloseAccount visible={true} height={300}/>
+    <CustomModal visible={state.modalVisble} children={logoutChildren()} modalHeading={state.modalHeading}/>
+
   </SafeAreaView>);
 }
 const styles = StyleSheet.create({
@@ -214,7 +232,9 @@ const styles = StyleSheet.create({
     fontFamily: "WorkSans_600SemiBold", fontSize: 20
   }, title1: {
     fontSize: 24
-  }
+  }, modalText: {
+    textAlign: "center", fontSize: 20, fontFamily: "Poppins_400Regular"
+  },
 });
 
 export const sectionStyle = (index: number, section: any) => StyleSheet.create({
@@ -231,3 +251,4 @@ export const sectionStyle = (index: number, section: any) => StyleSheet.create({
     borderBottomRightRadius: index == section.data.length - 1 ? 16 : 0
   }
 });
+

@@ -1,12 +1,12 @@
 import {Pressable, StyleSheet} from "react-native";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
-import displayImage from "../../components/DisplayImage";
+import HeaderSection from "../../components/HeaderSection";
 import React from "react";
 import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
-import {KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
+import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
 import TextInputComponent from "../../components/TextInputComponent";
 import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
@@ -29,6 +29,7 @@ export default function SignUpScreen() {
             setState({
                 ...state, loading: true
             });
+
             setTimeout(() => {
                 if (state.username != null && state.password != null && (state.phoneNumber + "") != null) {
                     const registrationData = {
@@ -46,9 +47,8 @@ export default function SignUpScreen() {
                         } else if (responseData.responseCode === RegisterConstants.EXISTS_CODE) {
                             toast.danger({
                                 message: response.message
-                            })
+                            });
                         } else {
-
                             toast.danger({
                                 message: response.message
                             })
@@ -60,36 +60,28 @@ export default function SignUpScreen() {
                         })
                     })
                 }
-            }, 1000, [])
+                setState({
+                    ...state, loading: false
+                })
+            }, 2000, [])
         }
         return;
     }
 
 
     return (<KeyboardAvoidingComponent>
+        {ActivityIndicator(state.loading)}
         <View style={{
             flex: 1, justifyContent: "center", backgroundColor: layout.colors.backgroundColor
         }}>
             {/*upperImageView*/}
-            <View style={{
-                borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, elevation: layout.elevation.elevation
-            }}>
-                {displayImage({
-                    borderRadii: 30, resizeMode: "contain"
-                })}
-            </View>
+            {HeaderSection({
+                actionText: "Create an account with us",
+                containerHeaderStyle: sharedStyles.containerHeaderStyle,
+                actionTextStyle: sharedStyles.actionTextStyle
+            })}
             {/*inputs view*/}
             <View style={{flex: 1}}>
-
-                <Text style={{
-                    marginTop: 10,
-                    color: layoutParams.colors.lighGrey,
-                    fontFamily: "WorkSans_500Medium",
-                    fontSize: 15,
-                    textAlign: "center"
-                }}>
-                    Create an account with us
-                </Text>
                 <View style={{
                     marginTop: 10
                 }}>
