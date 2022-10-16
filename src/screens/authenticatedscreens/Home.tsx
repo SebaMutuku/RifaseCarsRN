@@ -199,9 +199,9 @@ export default function Home() {
                         fontFamily: 'WorkSans_600SemiBold'
                     }}>{viewedCars[viewedCars.length - 1].make}</Text>
                         {renderCarItem("Model : ", viewedCars[viewedCars.length - 1].model)}
-                        {renderCarItem("Price : ", "ksh. " + viewedCars[viewedCars.length - 1].price)}
                         {renderCarItem("Year Of Manufacturing : ", viewedCars[viewedCars.length - 1].yom)}
                         {renderCarItem("Mileage : ", viewedCars[viewedCars.length - 1].mileage + " kms")}
+                        {renderCarItem("Price : ", "ksh. " + viewedCars[viewedCars.length - 1].price)}
                     </View>
                 </Animated.View> : <Animated.View style={{
                     ...homeStyles.homeFooter,

@@ -1,15 +1,26 @@
-import {Animated, SafeAreaView, SectionList, StatusBar, StyleSheet, Switch, TouchableOpacity} from 'react-native';
+import {
+  Animated,
+  Pressable,
+  SafeAreaView,
+  SectionList,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  TouchableOpacity
+} from 'react-native';
 
 import {Text, View} from '../../components/Widgets';
 import layoutParams from "../../utils/LayoutParams";
+import layout from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";
 import React from "react";
-import {FontAwesome} from "@expo/vector-icons";
+import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
 import {sectionData} from "../../utils/Data";
 import {sharedStyles} from "../../utils/SharedStyles";
 import {BottomSheetProps} from "../../utils/AppInterfaces";
 import CustomModal from "../../modals/CustomModal";
 import {AuthContext} from "../../utils/AuthContext";
+import toast from "../../utils/toast";
 
 export default function Profile() {
   const [state, setState] = React.useState({
@@ -57,19 +68,26 @@ export default function Profile() {
     return <View style={{
       marginTop: 10, flexDirection: "row", justifyContent: "space-evenly"
     }}>
-      <Text style={{
-        ...styles.modalText, fontSize: 16
-      }} onPress={() => setState({
-        ...state, modalVisble: false,
-      })}>No</Text>
-      <Text style={{
-        ...styles.modalText, fontSize: 16, color: layoutParams.colors.red
-      }} onPress={() => {
-        setState({
-          ...state, modalVisble: false,
-        });
-        signOut()
-      }}>Log out</Text>
+      <Pressable onPress={() => setState({...state, modalVisble: false})
+      } style={styles.logout}>
+        <Text style={{
+          ...styles.modalText, fontSize: 16
+        }}>No</Text>
+      </Pressable>
+      <Pressable onPress={() => {
+        setState({...state, modalVisble: false})
+        setTimeout(() => {
+          signOut()
+          toast.success("Successfully logged out")
+        }, 2000)
+      }} style={{
+        ...styles.logout
+      }}>
+        <Text style={{
+          ...styles.modalText, fontSize: 16, color: layoutParams.colors.red
+        }}>Log out</Text>
+      </Pressable>
+
     </View>
 
   }
@@ -159,13 +177,19 @@ export default function Profile() {
                            return (!item.match("Dark Theme") ? <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation
                            }} onPress={() => onPress(item)}>
-                             <FontAwesome name={iconName} size={20}
-                                          color={color}/>
-                             <Text style={{
-                               fontFamily: "WorkSans_500Medium",
-                               marginLeft: 10,
-                               color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
-                             }}>{item}</Text>
+                             <View style={{
+                               flexDirection: "row",
+                               justifyContent: "flex-start"
+                             }}>
+                               <FontAwesome name={iconName} size={20}
+                                            color={color}/>
+                               <Text style={{
+                                 fontFamily: "WorkSans_500Medium",
+                                 marginLeft: 10,
+                                 color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
+                               }}>{item}</Text>
+                             </View>
+                             <MaterialIcons name="keyboard-arrow-right" size={20} color={layoutParams.colors.lighGrey}/>
                            </AnimatedTouchable> : <AnimatedTouchable style={{
                              ...sectionStyle(index, section).item, ...layoutParams.elevation, padding: 0
                            }} onPress={() => onPress(item)}>
@@ -235,6 +259,18 @@ const styles = StyleSheet.create({
   }, modalText: {
     textAlign: "center", fontSize: 20, fontFamily: "Poppins_400Regular"
   },
+  logout: {
+    alignItems: 'center',
+    justifyContent: "center",
+    minWidth: layoutParams.WINDOW.width * .2,
+    padding: 10,
+    backgroundColor: layout.colors.white,
+    borderColor: layout.colors.deepBlue,
+    borderWidth: 0.05,
+    margin: 3,
+    borderRadius: 24,
+    ...layoutParams.elevation
+  }
 });
 
 export const sectionStyle = (index: number, section: any) => StyleSheet.create({
@@ -242,6 +278,7 @@ export const sectionStyle = (index: number, section: any) => StyleSheet.create({
     flexDirection: "row",
     backgroundColor: layoutParams.colors.white,
     alignItems: 'center',
+    justifyContent: "space-between",
     marginLeft: 10,
     marginRight: 10,
     padding: 15,
@@ -249,6 +286,7 @@ export const sectionStyle = (index: number, section: any) => StyleSheet.create({
     borderTopRightRadius: index === 0 ? 16 : 0,
     borderBottomLeftRadius: index == section.data.length - 1 ? 16 : 0,
     borderBottomRightRadius: index == section.data.length - 1 ? 16 : 0
-  }
+  },
+
 });
 

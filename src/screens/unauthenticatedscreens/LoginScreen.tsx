@@ -23,7 +23,8 @@ export default function LoginScreen() {
         showToast: false,
         toastMessage: "",
         toastType: '',
-        showPassword: false
+        showPassword: false,
+        disabledButton: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
     const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
@@ -44,7 +45,7 @@ export default function LoginScreen() {
     function onLogin() {
         if (inputsValid()) {
             setState({
-                ...state, loading: true
+                ...state, loading: true, disabledButton: true
             });
             setTimeout(() => {
                 if (state.username != null && state.password != null) {
@@ -66,11 +67,10 @@ export default function LoginScreen() {
                                 message: responseData.message
                             })
                         }
-
-                    })
-
-                    setState({
-                        ...state, toastType: "", toastMessage: "", showToast: false
+                    }).finally(() => {
+                        setState({
+                            ...state, toastType: "", toastMessage: "", showToast: false, disabledButton: false
+                        });
                     })
                 }
             }, 2000);
@@ -112,12 +112,12 @@ export default function LoginScreen() {
                     />
                     <TextInputComponent placeholder="password"
                                         onChange={(text) => setState({...state, password: text})}
-                                        secureEntry={state.showPassword}
+                                        secureEntry={!state.showPassword}
                                         containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
                                         searchInput={sharedStyles.searchInput} autoCapitalize="none"
                                         keyboardType="default"
-                                        value={state.password} iconName={state.showPassword ? "eye-off" : "eye"}
+                                        value={state.password} iconName={!state.showPassword ? "eye-off" : "eye"}
                                         onPressIcon={() => setState({
                                             ...state, showPassword: !state.showPassword
                                         })}
@@ -134,7 +134,7 @@ export default function LoginScreen() {
                     }} onPress={() => {
                         onLogin()
                         // showToast("User Logged In")
-                    }} disabled={!inputsValid()}>
+                    }} disabled={!inputsValid() || state.disabledButton}>
                         <Text style={{
                             ...styles.buttonText,
                             color: inputsValid() ? layoutParams.colors.white : layoutParams.colors.black

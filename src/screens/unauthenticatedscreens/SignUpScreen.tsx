@@ -16,7 +16,13 @@ import {RegisterResponse} from "../../utils/AppInterfaces";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
-        username: "", password: "", phoneNumber: "", checkBoxChecked: false, showPassword: true, loading: false
+        username: "",
+        password: "",
+        phoneNumber: "",
+        checkBoxChecked: false,
+        showPassword: true,
+        loading: false,
+        disabledButton: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
@@ -27,7 +33,7 @@ export default function SignUpScreen() {
     function onRegister() {
         if (inputsValid()) {
             setState({
-                ...state, loading: true
+                ...state, loading: true, disabledButton: true
             });
 
             setTimeout(() => {
@@ -58,11 +64,13 @@ export default function SignUpScreen() {
                         toast.danger({
                             message: error.message
                         })
+                    }).finally(() => {
+                        setState({
+                            ...state, loading: false, disabledButton: false
+                        });
                     })
                 }
-                setState({
-                    ...state, loading: false
-                })
+
             }, 2000, [])
         }
         return;
@@ -133,7 +141,7 @@ export default function SignUpScreen() {
                                        ...state, checkBoxChecked: !state.checkBoxChecked
                                    })}
                     />
-                    <Pressable onPress={() => onRegister()} disabled={!inputsValid()} style={{
+                    <Pressable onPress={() => onRegister()} disabled={!inputsValid() || state.disabledButton} style={{
                         ...buttonStyle(inputsValid()).button
                     }}>
                         <Text style={{

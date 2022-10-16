@@ -30,21 +30,6 @@ export default function CarDetails() {
         carData: {} as CarItemProps | undefined, appIsReady: false
     })
     const route: any = useRoute<HomeRouteProp>();
-    const buttonAnimation = React.useRef<Animated.AnimatedInterpolation>(new Animated.Value(0)).current;
-    const widthAnim = buttonAnimation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [58, 258],
-    });
-
-    const margin = buttonAnimation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [38, 0],
-    });
-
-    const radiusAnim = buttonAnimation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [40, 8],
-    });
     React.useEffect(() => {
         setState({
             ...state, carData: route.params.cardetails
@@ -93,7 +78,8 @@ export default function CarDetails() {
         </View>);
     }
 
-    const lowerSection = () => (<ScrollView showsVerticalScrollIndicator={false}>
+    const lowerSection = () => (
+        <ScrollView showsVerticalScrollIndicator={false} key={1}>
         <View style={{
             margin: 20
         }}>
@@ -200,7 +186,8 @@ export default function CarDetails() {
                         <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewSammury}</Text>
                         <Text style={[styles.textStyle, {fontSize: 14}]}>Rating: {item.rating}</Text>
                     </View>
-                </Animated.View><View style={{}}>
+                </Animated.View>
+            <View style={{}}>
                 <Text style={[styles.textStyle, {fontSize: 14, color: layoutParams.colors.black}]}>{item.comment}
                 </Text>
             </View></>)
@@ -208,10 +195,11 @@ export default function CarDetails() {
 
     </Animated.View>)
 
-    const infoBox = (text1: string, text2: string, key?: number) => (<View style={styles.timeBoxContainer} key={key}>
-        <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
-        <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
-    </View>);
+    const infoBox = (text1: string, text2: string, key?: number) => (
+        <View style={styles.timeBoxContainer} key={key}>
+            <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
+            <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
+        </View>);
 
     return (<SafeAreaView style={{
         ...sharedStyles.container, backgroundColor: layoutParams.colors.listColors

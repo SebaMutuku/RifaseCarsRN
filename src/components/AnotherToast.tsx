@@ -140,37 +140,35 @@ const Toast = () => {
             DeviceEventEmitter.removeAllListeners(SHOW_TOAST_MESSAGE);
         };
     }, []);
-
-    if (!message) {
-        return null;
-    }
-
     return (
-        <Animated.View
-            style={[
-                {
-                    position: 'absolute',
-                    bottom: '4%',
-                    left: '4%',
-                    right: '4%',
-                    backgroundColor: "red",
-                    zIndex: 1,
-                    elevation: 1,
-                    borderRadius: 4,
-                },
-            ]}>
-            <TouchableOpacity onPress={closeToast}>
-                <Text
-                    style={{
-                        padding: 14,
-                        color: 'white',
-                        fontSize: 16,
-                        textAlign: 'center',
-                    }}>
-                    {message}
-                </Text>
-            </TouchableOpacity>
-        </Animated.View>
+        <>{message &&
+            <Animated.View
+                style={[
+                    {
+                        position: 'absolute',
+                        bottom: '4%',
+                        left: '4%',
+                        right: '4%',
+                        backgroundColor: "red",
+                        zIndex: 1,
+                        elevation: 1,
+                        borderRadius: 4,
+                    },
+                ]}>
+                <TouchableOpacity onPress={closeToast}>
+                    <Text
+                        style={{
+                            padding: 14,
+                            color: 'white',
+                            fontSize: 16,
+                            textAlign: 'center',
+                        }}>
+                        {message}
+                    </Text>
+                </TouchableOpacity>
+            </Animated.View>
+        }
+        </>
     );
 };
 

@@ -1,11 +1,8 @@
 import layoutParams from "../utils/LayoutParams";
 import {Animated, Easing, Image, Pressable, StyleSheet} from "react-native";
-import {Text, View} from "../components/Widgets";
+import {Text} from "../components/Widgets";
 import React from "react";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import {PopularCarListProps} from "../utils/AppInterfaces";
-
-
 
 
 const PopularCarsList = ({...props}: PopularCarListProps) => {
@@ -47,52 +44,36 @@ const PopularCarsList = ({...props}: PopularCarListProps) => {
         <Image source={require("../../assets/images/mainCarImage.jpg")} style={{
             width: "100%", borderRadius: 10, padding: 10, resizeMode: "contain", height: "40%"
         }}/>
-        <View style={{
-            marginLeft: 5,
-            marginRight: 5,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: 'center'
-        }}><Text style={{
-            textAlign: 'center', fontSize: 20, fontFamily: "WorkSans_600SemiBold"
+        <Text style={{
+            margin: 5, fontSize: 20, fontFamily: "WorkSans_600SemiBold"
         }} adjustsFontSizeToFit>{props.objectItem?.make}</Text>
-            <Text style={{
-                color: layoutParams.colors.lighGrey, fontFamily: "WorkSans_600SemiBold", fontSize: 18
-            }} adjustsFontSizeToFit>ksh. {props.objectItem?.price}</Text>
-        </View>
         {props.renderCarSpecs}
+        <Text style={{
+            textAlign: "right",
+            margin: 5,
+            color: layoutParams.colors.lighGrey, fontFamily: "WorkSans_600SemiBold", fontSize: 18
+        }} adjustsFontSizeToFit>ksh. {props.objectItem?.price}</Text>
         {/*Horizontal line*/}
-        <View style={{
-            justifyContent: 'center', alignItems: 'center'
-        }}>
-            <View style={{
-                margin: 5, borderBottomWidth: StyleSheet.hairlineWidth, width: "85%"
-            }}/>
-        </View>
-        <View>
-            <Text style={{
-                textAlign: 'center', fontFamily: "WorkSans_600SemiBold",
-            }} adjustsFontSizeToFit>Show more specs</Text>
-        </View>
-        <Animated.View
-            style={[
-                popularCarStyles.favoriteIcon,
-                {
-                    transform: [{scale: favIconScale.current}],
-                },
-            ]}
-        >
-            <Icon name="favorite" size={24} color="white"/>
-        </Animated.View>
+        {/*<Animated.View*/}
+        {/*    style={[*/}
+        {/*        popularCarStyles.favoriteIcon,*/}
+        {/*        {*/}
+        {/*            transform: [{scale: favIconScale.current}],*/}
+        {/*        },*/}
+        {/*    ]}*/}
+        {/*>*/}
+        {/*    <Icon name="favorite" size={24} color="white"/>*/}
+        {/*</Animated.View>*/}
     </PressableView>);
 }
 export default PopularCarsList;
 
 const popularCarStyles = StyleSheet.create({
     popularCars: {
+        flex: 1.7,
         margin: 3,
         borderRadius: 10,
-        marginBottom: 30,
+        marginBottom: 20,
         padding: 5,
         minWidth: layoutParams.WINDOW.width * .5
     },
