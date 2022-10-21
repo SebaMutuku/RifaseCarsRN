@@ -30,9 +30,12 @@ export default function Home() {
     const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
     const recentViewOpacity = React.useRef<Animated.Value>(new Animated.Value(0.1)).current;
 
-    function getSelectedCar(carYom: string) {
+    const getSelectedCar = React.useCallback((carYom: string) => {
         return state.populaCarData.find(mappedCar => mappedCar.yom === carYom);
-    }
+    }, []);
+    const getSearchedCar = state.populaCarData.filter(car => {
+        return car.make?.toLowerCase().includes(state.searchedCar.toLowerCase())
+    })
 
     React.useEffect(() => {
         Animated.parallel([
@@ -46,12 +49,11 @@ export default function Home() {
                 toValue: 1, duration: 1000, easing: Easing.out(Easing.cubic), useNativeDriver: true,
             })]).start()
     }, [])
-    const allViewedVehicles = React.useMemo(() => {
+    const addCarToViewedState = React.useCallback((selectedIndex: number) => {
         setState(prevState => ({
-            ...prevState, recentViews: [...prevState.recentViews, state.populaCarData[state.selectedId]]
+            ...prevState, recentViews: [...prevState.recentViews, state.populaCarData[selectedIndex]]
         }));
-        return state.recentViews;
-    }, [state.selectedId]);
+    }, [state.populaCarData, state.selectedId]);
 
 
     function loadPopularCars() {
@@ -94,6 +96,11 @@ export default function Home() {
                         selectionColor="dodgerblue"
                         placeholderTextColor="#B9BABC"
                         placeholder="Search for a car"
+                        onChangeText={(carMake) => setState({
+                            ...state,
+                            searchedCar: carMake
+                        })}
+                        value={state.searchedCar}
                     />
                     <Icon name="search" size={30} color="#B9BABC"/>
                 </View>
@@ -105,11 +112,11 @@ export default function Home() {
     }
 
     function carBrandFlatList() {
-        const onBrandPress = (index: number) => {
-            setState({
-                ...state, brandSelected: index
-            })
-        }
+        const onBrandPress = React.useCallback((index: number) =>
+                setState({
+                    ...state, brandSelected: index
+                })
+            , []);
 
 
         return (<FlatListView showsHorizontalScrollIndicator={false} data={carBrands} horizontal
@@ -149,16 +156,17 @@ export default function Home() {
 
 
     function renderPopularCars() {
-        const onPressPopularCar = (index: number, objectItem: CarItemProps) => {
+        const onPressPopularCar = React.useCallback((index: number, objectItem: CarItemProps) => {
             setState({
                 ...state, selectedId: index
             });
+            addCarToViewedState(index)
             navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
-        }
+        }, []);
         return <View style={{
             flex: 1.7
         }}>
-            <FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
+            <FlatListView showsHorizontalScrollIndicator={false} data={getSearchedCar}
                           renderItem={({item, index}: any) => <PopularCarsList index={index} objectItem={item}
                                                                                renderCarSpecs={renderCarSpecs(item?.yom, item?.mileage, item?.model, index)}
                                                                                selectedId={state.selectedId}
@@ -173,7 +181,7 @@ export default function Home() {
     }
 
     const renderRecentlyViewed = () => {
-        let viewedCars: any = JSON.parse(JSON.stringify(allViewedVehicles));
+        let viewedCars: any = JSON.parse(JSON.stringify(state.recentViews));
         return (
             <>{viewedCars.length > 0 ?
                 <Animated.View style={{

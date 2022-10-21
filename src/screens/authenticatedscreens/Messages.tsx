@@ -67,7 +67,7 @@ export default function Messages() {
         const closeRow = (index: number) => {
             console.log(index)
         };
-        const renderUsers = (item: any, index: number) =>
+        const renderUsers = React.useCallback((item: any, index: number) =>
             <Swipeable renderRightActions={() => renderRightActions()}
                        rightThreshold={-100} onSwipeableOpen={() => closeRow(index)}>
                 <View style={{
@@ -89,7 +89,7 @@ export default function Messages() {
                         ...messageStyles.text
                     }}>{item.name}</Text>
                 </View>
-            </Swipeable>
+            </Swipeable>, []);
         return <FlatListView data={state.usersData as any} renderItem={({item, index}: any) => renderUsers(item, index)
         } keyExtractor={(item: any, index) => item + index}
                              horizontal={true}

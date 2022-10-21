@@ -71,7 +71,7 @@ const ViewedCarList = ({...props}: CarViewProps) => {
     </PressableView>)
 }
 
-export default ViewedCarList;
+export default React.memo(ViewedCarList);
 
 const viewedCarStyles = StyleSheet.create({
     list: {

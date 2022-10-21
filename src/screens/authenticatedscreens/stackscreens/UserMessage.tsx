@@ -18,7 +18,7 @@ export default function UserMessage() {
 
     }, [state.messagesData])
 
-    const sendmessage = () => {
+    const sendmessage = React.useCallback(() => {
         const todayDate = new Date().toISOString();
         const sendMessage: MessageContext = {
             message: state.messageText, messageTime: todayDate, sender: "me"
@@ -27,7 +27,7 @@ export default function UserMessage() {
             ...prevState, messagesData: [...prevState.messagesData, sendMessage], messageText: ""
         }));
         Keyboard.dismiss()
-    }
+    }, []);
 
     function replyInput() {
         return (<View style={{
@@ -59,7 +59,7 @@ export default function UserMessage() {
 
 
     function userMessagesFlatList() {
-        const renderUserMessages = (item: any, index: number) => {
+        const renderUserMessages = React.useCallback((item: any, index: number) => {
             return <View style={{
                 ...userMessageStyles.messageContent,
                 backgroundColor: item.sender === "me" ? layoutParams.colors.listColors : layoutParams.colors.messageColor,
@@ -83,7 +83,7 @@ export default function UserMessage() {
                               color={item.sender === "me" ? layoutParams.colors.lighGrey : layoutParams.colors.deepBlue}/>
                 </View>
             </View>
-        }
+        }, []);
         return <FlatListView data={state.messagesData} renderItem={({item, index}) => renderUserMessages(item, index)}
                              extraData={null}
                              keyExtractor={(item: any, index) => item + index}

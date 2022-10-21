@@ -1,7 +1,7 @@
 import layoutParams from "../utils/LayoutParams";
 import {Animated, Easing, Image, Pressable, StyleSheet} from "react-native";
 import {Text} from "../components/Widgets";
-import React from "react";
+import React, {memo} from "react";
 import {PopularCarListProps} from "../utils/AppInterfaces";
 
 
@@ -66,7 +66,7 @@ const PopularCarsList = ({...props}: PopularCarListProps) => {
         {/*</Animated.View>*/}
     </PressableView>);
 }
-export default PopularCarsList;
+export default memo(PopularCarsList);
 
 const popularCarStyles = StyleSheet.create({
     popularCars: {

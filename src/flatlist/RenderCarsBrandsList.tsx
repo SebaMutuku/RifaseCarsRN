@@ -6,7 +6,7 @@ import {Animated, Easing, Pressable, StyleSheet} from "react-native";
 import {CarBrandsProps} from "../utils/AppInterfaces";
 
 
-export default function RenderCarsBrandsList({...props}: CarBrandsProps) {
+const RenderCarsBrandsList = ({...props}: CarBrandsProps) => {
     const PressableView = Animated.createAnimatedComponent(Pressable);
     const brandOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
     const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
@@ -52,6 +52,7 @@ export default function RenderCarsBrandsList({...props}: CarBrandsProps) {
         </PressableView>)
 
 }
+export default React.memo(RenderCarsBrandsList)
 const brandStyles = (brandSelected: number, index: number) => StyleSheet.create({
     brandButton: {
         alignItems: 'center',
