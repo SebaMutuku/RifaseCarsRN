@@ -25,7 +25,7 @@ export default function CustomModal({...props}: CloseAccountProps) {
                     <Text style={{
                         ...styles.modalText
                     }}>Message</Text>
-                    <Text style={[styles.modalText, {
+                    <Text style={[styles.subtitleText, {
                         fontSize: 16
                     }]}>{props.modalHeading}</Text>
                     {props.children}
@@ -46,6 +46,8 @@ const styles = StyleSheet.create({
     }, buttonClose: {
         backgroundColor: '#2196F3',
     }, modalText: {
-        textAlign: "center", fontSize: 20, fontFamily: "Poppins_400Regular"
+        textAlign: "center", fontSize: 20, fontFamily: "WorkSans_600SemiBold"
+    }, subtitleText: {
+        textAlign: "center", fontFamily: "WorkSans_500Medium"
     },
 });

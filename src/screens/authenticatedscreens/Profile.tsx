@@ -24,11 +24,14 @@ import toast from "../../utils/toast";
 
 export default function Profile() {
   const [state, setState] = React.useState({
-    selectedSectionList: 0, isEnabled: false, modalVisble: false, modalHeading: "", modalAcceptString: ""
+    selectedSectionList: 0, isEnabled: false, modalVisble: false, modalHeading: "Loading...Please wait", modalAcceptString: "yes"
   });
   const toggleSwitch = () => setState(prevState => ({
     ...prevState, isEnabled: !state.isEnabled
   }));
+  const setModalVisible = React.useCallback((visible: boolean) => {
+    setState({...state, modalVisble: visible})
+  }, []);
   const sectionItemOpacity = React.useRef<Animated.Value>(new Animated.Value(0));
   const profileView = React.useRef<Animated.Value>(new Animated.Value(0));
   const ref = React.useRef<BottomSheetProps>(null);
@@ -68,24 +71,24 @@ export default function Profile() {
     return <View style={{
       marginTop: 10, flexDirection: "row", justifyContent: "space-evenly"
     }}>
-      <Pressable onPress={() => setState({...state, modalVisble: false})
+      <Pressable onPress={() => setModalVisible(false)
       } style={styles.logout}>
         <Text style={{
           ...styles.modalText, fontSize: 16
         }}>No</Text>
       </Pressable>
       <Pressable onPress={() => {
-        setState({...state, modalVisble: false})
+        setModalVisible(true)
         setTimeout(() => {
           signOut()
           toast.success("Successfully logged out")
-        }, 2000)
+        }, 1000)
       }} style={{
         ...styles.logout
       }}>
         <Text style={{
           ...styles.modalText, fontSize: 16, color: layoutParams.colors.red
-        }}>Log out</Text>
+        }}>{state.modalAcceptString}</Text>
       </Pressable>
 
     </View>
@@ -97,7 +100,7 @@ export default function Profile() {
     switch (item) {
       case "Logout" : {
         setState({
-          ...state, modalVisble: true, modalHeading: "Do you really want to logout?", modalAcceptString: "Log out"
+          ...state, modalVisble: true, modalHeading: "Do you really wish to logout?", modalAcceptString: "Log out"
         })
       }
         break;
@@ -105,7 +108,7 @@ export default function Profile() {
         setState({
           ...state,
           modalVisble: true,
-          modalHeading: "Do you really want to close your account?",
+          modalHeading: "Do you really wish to close your account?",
           modalAcceptString: "Close Account"
         })
       }
@@ -257,7 +260,7 @@ const styles = StyleSheet.create({
   }, title1: {
     fontSize: 24
   }, modalText: {
-    textAlign: "center", fontSize: 20, fontFamily: "Poppins_400Regular"
+    textAlign: "center", fontSize: 20, fontFamily: "WorkSans_500Medium"
   },
   logout: {
     alignItems: 'center',
@@ -266,10 +269,8 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: layout.colors.white,
     borderColor: layout.colors.deepBlue,
-    borderWidth: 0.05,
     margin: 3,
     borderRadius: 24,
-    ...layoutParams.elevation
   }
 });
 

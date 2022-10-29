@@ -1,16 +1,7 @@
 import {useRoute} from "@react-navigation/native";
 import {Text, View} from "../../../components/Widgets";
 import {HomeRouteProp} from "../../../navigation/ScreenTypes";
-import {
-    Animated,
-    Easing,
-    ImageBackground,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    TouchableOpacity
-} from "react-native";
+import {Animated, Easing, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet} from "react-native";
 import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
 import React from "react";
@@ -25,9 +16,10 @@ export default function CarDetails() {
     const viewOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
     const scrollOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
     const buttonTranslateX = React.useRef<Animated.Value>(new Animated.Value(100)).current;
-    const callButton = React.useRef<Animated.Value>(new Animated.Value(0));
+    const callButtonTranslateX = React.useRef<Animated.Value>(new Animated.Value(0));
     const [state, setState] = React.useState({
-        carData: {} as CarItemProps | undefined, appIsReady: false
+        carData: {} as CarItemProps | undefined, appIsReady: false,
+        buttonVisible: false
     })
     const route: any = useRoute<HomeRouteProp>();
     React.useEffect(() => {
@@ -50,7 +42,7 @@ export default function CarDetails() {
                 toValue: 1, duration: 1000, delay: 0, useNativeDriver: true,
                 easing: Easing.linear
             }),
-            Animated.timing(callButton.current, {
+            Animated.timing(callButtonTranslateX.current, {
                 toValue: 1, duration: 600, delay: 100, useNativeDriver: true,
             })
         ]).start();
@@ -62,11 +54,19 @@ export default function CarDetails() {
         }
 
     }, [state.appIsReady]);
-    React.useMemo(() => Object.entries(route.params.cardetails).filter(row => {
+    React.useMemo(() => Object.entries(route.params.cardetails).filter(() => {
         delete route.params.cardetails['id']
+        delete route.params.cardetails['imageUrl']
         return route.params;
-
     }), [route.params.cardetails]);
+
+
+    const setVisibile = React.useCallback((visible: boolean) => {
+        setState({
+            ...state,
+            buttonVisible: visible
+        });
+    }, [state.buttonVisible])
 
     function carSliderImage() {
         return (<View style={{
@@ -79,80 +79,50 @@ export default function CarDetails() {
     }
 
     const lowerSection = () => (
-        <ScrollView showsVerticalScrollIndicator={false} key={1}>
-        <View style={{
-            margin: 20
-        }}>
-            <Text style={{
-                fontFamily: "WorkSans_600SemiBold",
-                color: layoutParams.colors.lighGrey
-            }}>Vehicle Specifications</Text>
-            <Text style={{
-                fontSize: 20, fontFamily: "WorkSans_600SemiBold"
-            }}>Ksh. {route.params.cardetails.price}</Text>
-        </View>
-
-        <Animated.View
-            style={{
-                flexDirection: 'row', padding: 8, opacity: viewOpacity,
-            }}
-            renderToHardwareTextureAndroid // just to avoid UI glitch when animating view with elevation
-        >
-            <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}>
-                {Object.entries(route.params.cardetails).map((entry: any, index) => (infoBox(entry[1], entry[0], index)))}
-            </ScrollView>
-        </Animated.View>
-        <Animated.View style={{
-            marginLeft: 10, marginTop: 10,
-            opacity: scrollOpacity
-        }}>
-            {route.params.cardetails.make && <Text style={{
-                ...styles.carDescText
-            }}>The Diesel engine is 1968 cc while the Petrol engine is 1395 cc . It is available with Automatic
-                transmission. Depending upon the variant and fuel type the A3 has a mileage of 19.2 to 20.38 kmpl &
-                Ground
-                clearance of A3 is 165mm. The A3 is a 5 seater 4 cylinder car.
-                Fuel Type: Petrol
-                Fuel Tank Capacity: 50.0
-                Body Type: Sedan
-                Engine Displacement (cc): 1395</Text>}
-        </Animated.View>
-        <Animated.View style={{
-            justifyContent: "flex-end",
-            alignItems: 'flex-end',
-        }}>
-            <Animated.View style={{
-                marginTop: 20,
-                marginRight: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-evenly",
-                transform: [{scale: callButton.current}]
+        <ScrollView showsVerticalScrollIndicator={false} key={1} onScroll={() => setVisibile(false)}
+                    onScrollEndDrag={() => setVisibile(true)} onScrollToTop={() => setVisibile(true)}
+                    onMomentumScrollEnd={() => setVisibile(true)}>
+            <View style={{
+                margin: 20
             }}>
-                <Text style={[styles.textStyle, styles.timeBoxTitle, {marginRight: 10}]}>Call
-                    Seller</Text>
-                <TouchableOpacity
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-around",
-                        paddingTop: 5,
-                        paddingBottom: 5,
-                        alignItems: "center",
-                        backgroundColor: layoutParams.colors.black,
-                        ...layoutParams.elevation,
-                        borderRadius: layoutParams.WINDOW.width * .13,
-                        width: layoutParams.WINDOW.width * .13,
-                        height: layoutParams.WINDOW.width * .13
-                    }}>
-                    <MaterialCommunityIcons name="phone" size={layoutParams.WINDOW.width * .08}
-                                            color={layoutParams.colors.white}/>
-                </TouchableOpacity>
+                <Text style={{
+                    fontFamily: "WorkSans_600SemiBold",
+                    color: layoutParams.colors.lighGrey
+                }}>Vehicle Specifications</Text>
+                <Text style={{
+                    fontSize: 20, fontFamily: "WorkSans_600SemiBold"
+                }}>Ksh. {route.params.cardetails.price}</Text>
+            </View>
+
+            <Animated.View
+                style={{
+                    flexDirection: 'row', padding: 8, opacity: viewOpacity,
+                }}
+                renderToHardwareTextureAndroid // just to avoid UI glitch when animating view with elevation
+            >
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}>
+                    {Object.entries(route.params.cardetails).map((entry: any, index) => (infoBox(entry[1], entry[0], index)))}
+                </ScrollView>
             </Animated.View>
-        </Animated.View>
-        {reviews()}
-    </ScrollView>)
+            <Animated.View style={{
+                marginLeft: 10, marginTop: 10,
+                opacity: scrollOpacity
+            }}>
+                {route.params.cardetails.make && <Text style={{
+                    ...styles.carDescText
+                }}>The Diesel engine is 1968 cc while the Petrol engine is 1395 cc . It is available with Automatic
+                    transmission. Depending upon the variant and fuel type the A3 has a mileage of 19.2 to 20.38 kmpl &
+                    Ground
+                    clearance of A3 is 165mm. The A3 is a 5 seater 4 cylinder car.
+                    Fuel Type: Petrol
+                    Fuel Tank Capacity: 50.0
+                    Body Type: Sedan
+                    Engine Displacement (cc): 1395</Text>}
+            </Animated.View>
+            {reviews()}
+        </ScrollView>)
     const reviews = () => (<Animated.View style={{
         ...styles.reviews,
         opacity: scrollOpacity,
@@ -200,6 +170,29 @@ export default function CarDetails() {
             <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
             <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
         </View>);
+    const callButton = () => (
+        <Animated.View style={{
+            justifyContent: "center",
+            alignItems: 'center',
+        }}>
+            <Animated.View style={{
+                position: "absolute",
+                bottom: 2,
+                margin: 4,
+                width: "96%",
+                transform: [{scale: callButtonTranslateX.current}]
+            }}>
+                <MaterialCommunityIcons.Button name="phone" size={30}
+                                               style={{
+                                                   padding: 12,
+                                                   alignItems: "center",
+                                                   backgroundColor: layoutParams.colors.black
+                                               }}>
+                    Call Seller
+                </MaterialCommunityIcons.Button>
+            </Animated.View>
+        </Animated.View>
+    )
 
     return (<SafeAreaView style={{
         ...sharedStyles.container, backgroundColor: layoutParams.colors.listColors
@@ -217,6 +210,7 @@ export default function CarDetails() {
                 {lowerSection()}
             </View>
         </View>
+        {state.buttonVisible ? callButton() : null}
     </SafeAreaView>);
 }
 const styles = StyleSheet.create({

@@ -81,11 +81,11 @@ export default function App() {
         token = await utils.getValue("token");
         if (token) {
           await utils.removeValue("token");
+          await utils.removeValue("username");
           dispatch({type: 'SIGN_OUT', token: ""})
         } else dispatch({type: 'SIGN_OUT', token: ""})
       } catch (e) {
         console.log("Exception occurred", e.message);
-        return null;
       }
     }, toggleTheme: () => {
       //     setIsDarkTheme(isDarkTheme => !isDarkTheme);

@@ -36,8 +36,6 @@ const PopularCarsList = ({...props}: PopularCarListProps) => {
 
     return (<PressableView style={{
         ...popularCarStyles.popularCars,
-        backgroundColor: layoutParams.colors.listColors,
-        elevation: props.selectedId == props.index ? layoutParams.elevation.elevation : 0,
         opacity: popularCarOpacity,
         translateY
     }} onPress={() => props.onPress()}>
@@ -45,13 +43,13 @@ const PopularCarsList = ({...props}: PopularCarListProps) => {
             width: "100%", borderRadius: 10, padding: 10, resizeMode: "contain", height: "40%"
         }}/>
         <Text style={{
-            margin: 5, fontSize: 20, fontFamily: "WorkSans_600SemiBold"
+            margin: 5, fontSize: 24, fontFamily: "WorkSans_600SemiBold"
         }} adjustsFontSizeToFit>{props.objectItem?.make}</Text>
         {props.renderCarSpecs}
         <Text style={{
-            textAlign: "right",
+            textAlign: "left",
             margin: 5,
-            color: layoutParams.colors.lighGrey, fontFamily: "WorkSans_600SemiBold", fontSize: 18
+            color: layoutParams.colors.black, fontFamily: "WorkSans_700Bold", fontSize: 16
         }} adjustsFontSizeToFit>ksh. {props.objectItem?.price}</Text>
         {/*Horizontal line*/}
         {/*<Animated.View*/}
@@ -70,11 +68,9 @@ export default memo(PopularCarsList);
 
 const popularCarStyles = StyleSheet.create({
     popularCars: {
-        flex: 1.7,
         margin: 3,
         borderRadius: 10,
         marginBottom: 20,
-        padding: 5,
         minWidth: layoutParams.WINDOW.width * .5
     },
     favoriteIcon: {

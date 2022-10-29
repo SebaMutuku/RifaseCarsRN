@@ -54,10 +54,9 @@ export default function LoginScreen() {
                     }
                     utils.postData(utils.appUrl + "/users/login", data).then(response => {
                         let responseData: LoginResponse = response
-                        if (responseData.user.token != null) {
+                        if (responseData.user != null && responseData.user.token != null) {
                             utils.saveValue("username", JSON.stringify(responseData.user.username))
                             utils.saveValue("token", JSON.stringify(responseData.user.token));
-                            utils.saveValue("roleId", JSON.stringify(responseData.user.role));
                             signIn(responseData.user.token)
                             toast.success({
                                 message: responseData.message
@@ -88,12 +87,13 @@ export default function LoginScreen() {
                 containerHeaderStyle: sharedStyles.containerHeaderStyle,
                 actionTextStyle: sharedStyles.actionTextStyle
             })}
+
             <View style={{flex: 1}}>
                 <View style={{
                     marginTop: 10
                 }}>
                     <TextInputComponent placeholder="username"
-                                        onChange={(text) => setState({...state, username: text})}
+                                        onChange={(text) => setState({...state, username: text.trim()})}
                                         secureEntry={false} containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
                                         searchInput={sharedStyles.searchInput} autoCapitalize="none"
@@ -111,13 +111,13 @@ export default function LoginScreen() {
                         onShow={() => <View><Text>Loading....</Text></View>}
                     />
                     <TextInputComponent placeholder="password"
-                                        onChange={(text) => setState({...state, password: text})}
+                                        onChange={(text) => setState({...state, password: text.trim()})}
                                         secureEntry={!state.showPassword}
                                         containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
                                         searchInput={sharedStyles.searchInput} autoCapitalize="none"
                                         keyboardType="default"
-                                        value={state.password} iconName={!state.showPassword ? "eye-off" : "eye"}
+                                        value={state.password.trim()} iconName={!state.showPassword ? "eye-off" : "eye"}
                                         onPressIcon={() => setState({
                                             ...state, showPassword: !state.showPassword
                                         })}
@@ -145,7 +145,6 @@ export default function LoginScreen() {
                     }}>Not a Member? <Text style={{
                         fontSize: 18, color: layout.colors.deepBlue, fontFamily: "WorkSans_500Medium"
                     }} onPress={() => navigation.navigate("SignUp")}>Register</Text></Text>
-
                 </View>
             </View>
         </SafeAreaView>

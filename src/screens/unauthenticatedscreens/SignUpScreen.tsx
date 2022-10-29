@@ -94,7 +94,7 @@ export default function SignUpScreen() {
                     marginTop: 10
                 }}>
                     <TextInputComponent placeholder="Enter phone number starting with 07"
-                                        onChange={(value) => setState({...state, phoneNumber: value})}
+                                        onChange={(value) => setState({...state, phoneNumber: value.trim()})}
                                         secureEntry={false}
                                         containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
@@ -105,7 +105,7 @@ export default function SignUpScreen() {
                                         iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
                                         iconColor={layoutParams.colors.lighGrey}/>
                     <TextInputComponent placeholder="Enter a username"
-                                        onChange={(text) => setState({...state, username: text})}
+                                        onChange={(text) => setState({...state, username: text.trim()})}
                                         secureEntry={false}
                                         containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}
@@ -115,7 +115,7 @@ export default function SignUpScreen() {
                                         iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
                                         iconColor={layoutParams.colors.lighGrey}/>
                     <TextInputComponent placeholder="Enter a password"
-                                        onChange={(text) => setState({...state, password: text})}
+                                        onChange={(text) => setState({...state, password: text.trim()})}
                                         secureEntry={state.showPassword}
                                         containerStyles={sharedStyles.searchInputMainContainer}
                                         inputView={sharedStyles.searchInputContainer}

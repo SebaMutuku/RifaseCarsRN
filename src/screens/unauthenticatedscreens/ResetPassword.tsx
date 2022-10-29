@@ -10,11 +10,11 @@ import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 
 export default function ResetPassword() {
     const [state, setState] = React.useState({
-        email: ""
+        username: ""
     });
 
     function validateUserTextFields() {
-        if (state.email.length == 0 || !state.email.toLowerCase().match(utils.checkValidMail)) {
+        if (state.username.length == 0 || !state.username.toLowerCase().match(utils.checkValidMail)) {
             return true;
         }
         return false;
@@ -34,12 +34,12 @@ export default function ResetPassword() {
                 flex: 1
             }}>
                 <TextInputComponent placeholder="password"
-                                    onChange={(text) => setState({...state, email: text})}
+                                    onChange={(text) => setState({...state, username: text.trim()})}
                                     secureEntry={false} containerStyles={sharedStyles.searchInputMainContainer}
                                     inputView={sharedStyles.searchInputContainer}
                                     searchInput={sharedStyles.searchInput} autoCapitalize="none"
-                                    keyboardType="email-address"
-                                    value={state.email} iconName="email"
+                                    keyboardType="default"
+                                    value={state.username} iconName="user"
                                     iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
                                     iconColor={layoutParams.colors.lighGrey}/>
 

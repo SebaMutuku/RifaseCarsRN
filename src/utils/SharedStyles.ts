@@ -17,9 +17,8 @@ export const sharedStyles = StyleSheet.create({
         backgroundColor: layoutParams.colors.searchInput,
         borderRadius: 13,
         alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: layoutParams.colors.backgroundColor,
-        ...layoutParams.elevation
+        borderWidth: 0.4,
+        borderColor: layoutParams.colors.grey,
 
     }, searchInput: {
         flex: 1,
@@ -43,7 +42,7 @@ export const buttonStyle = (validatedInput: boolean) => StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: "center",
-        padding: 13,
+        padding: 15,
         backgroundColor: validatedInput ? layout.colors.black : layout.colors.grey,
         borderWidth: 0.5,
         borderColor: layoutParams.colors.grey,

@@ -14,6 +14,7 @@ import {sharedStyles} from "../../utils/SharedStyles";
 import PopularCarsList from "../../flatlist/PopularCarsList";
 import {CarItemProps} from "../../utils/AppInterfaces";
 import RenderCarsBrandsList from "../../flatlist/RenderCarsBrandsList";
+import utils from "../../utils/Utils";
 
 
 export default function Home() {
@@ -24,7 +25,8 @@ export default function Home() {
         selectedId: 0,
         loading: false,
         populaCarData: PopularCarData,
-        recentViews: [] as any
+        recentViews: [] as any,
+        loggedInUser: ""
     });
     const navigation = useNavigation<CombinedNavigationProps>();
     const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
@@ -35,7 +37,16 @@ export default function Home() {
     }, []);
     const getSearchedCar = state.populaCarData.filter(car => {
         return car.make?.toLowerCase().includes(state.searchedCar.toLowerCase())
-    })
+    });
+    const getUser = () => {
+        utils.getValue("username").then(user => {
+            if (typeof user === "string") {
+                setState({
+                    ...state, loggedInUser: JSON.parse(user)
+                })
+            }
+        })
+    }
 
     React.useEffect(() => {
         Animated.parallel([
@@ -48,6 +59,7 @@ export default function Home() {
             Animated.timing(recentViewOpacity, {
                 toValue: 1, duration: 1000, easing: Easing.out(Easing.cubic), useNativeDriver: true,
             })]).start()
+        getUser()
     }, [])
     const addCarToViewedState = React.useCallback((selectedIndex: number) => {
         setState(prevState => ({
@@ -223,80 +235,91 @@ export default function Home() {
             </>)
     };
 
-    return (<SafeAreaView style={{
-        ...sharedStyles.container
+    const topSection = () => (<View style={{
+        justifyContent: "space-between", margin: 5
     }}>
-        <View style={sharedStyles.container}>
-            {/*top view with avatar*/}
+        <View style={{
+            flexDirection: "row", justifyContent: "space-between", alignItems: 'center'
+        }}>
             <View style={{
-                flexDirection: "row", justifyContent: "space-between", margin: 5
-            }}>
-                <View style={{flex: 1}}>
-                    <Text style={homeStyles.headerTextNormal}>Let's find the</Text>
-                    <Text style={homeStyles.headerTextBold}>Ideal car for you</Text>
-                </View>
-
-                <View style={{
-                    flexDirection: "row", justifyContent: "space-between", alignItems: 'center'
-                }}>
-                    <FontAwesome name="bell" size={30} color={layoutParams.colors.deepBlue}
-                                 style={{marginRight: 20}}/>
-                    {CircularImage({
-                        source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
-                        size: layoutParams.WINDOW.height * .07,
-                        rounded: true,
-                        onPress: onPressimage
-                    })}
-                </View>
-            </View>
-            {searchInput()}
-            <View style={{
-                margin: 5
-            }}>
-                <Text style={{
-                    fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold", margin: 8
-                }}>Choose a brand</Text>
-                {/*brandsFlatList*/}
-                {carBrandFlatList()}
-                <View style={{
-                    justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
-                }}>
-                    <Text style={{
-                        fontSize: 22, fontFamily: "WorkSans_600SemiBold"
-                    }}>Popular Cars</Text>
-                    <Text style={{
-                        color: layoutParams.colors.deepBlue,
-                        fontFamily: "WorkSans_600SemiBold",
-                        textDecorationLine: "underline"
-                    }}>View All</Text>
-                </View>
-            </View>
-            {/*All Car Brands*/}
-            {renderPopularCars()}
-            <View style={{
-                marginRight: 10,
-                marginLeft: 10,
-                marginTop: 10,
                 flexDirection: "row",
-                justifyContent: "space-between"
+                justifyContent: "space-between", alignItems: 'center',
+
             }}>
+                {CircularImage({
+                    source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
+                    size: layoutParams.WINDOW.height * .05,
+                    rounded: true,
+                    onPress: onPressimage
+                })}
                 <Text style={{
-                    fontSize: 20,
-                    fontFamily: "WorkSans_600SemiBold"
-                }}>
-                    Recently Viewed
-                </Text>
-                <Text style={{
-                    ...homeStyles.footerText, color: layoutParams.colors.deepBlue,
-                    textDecorationLine: "underline",
-                    fontFamily: "WorkSans_600SemiBold"
-                }}>
-                    View All
-                </Text>
+                    marginLeft: 10,
+                    fontSize: 18,
+                    fontFamily: "Poppins_500Medium"
+                }}>{state.loggedInUser}</Text>
             </View>
-            {renderRecentlyViewed()}
+            <FontAwesome name="bell-o" size={24} style={{marginRight: 10}}
+                         color={layoutParams.colors.black}/>
         </View>
-    </SafeAreaView>);
+        <Text style={homeStyles.headerTextBold}>Let's find the</Text>
+        <Text style={homeStyles.headerTextBold}>Ideal car for you</Text>
+    </View>);
+
+    return (
+        <SafeAreaView style={{
+            ...sharedStyles.container
+        }}>
+            <View style={sharedStyles.container}>
+                {/*top view with avatar*/}
+                {topSection()}
+                {searchInput()}
+                <View style={{
+                    margin: 5
+                }}>
+                    {/*<Text style={{*/}
+                    {/*    fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold", margin: 8*/}
+                    {/*}}>View by  brand</Text>*/}
+                    {/*brandsFlatList*/}
+                    {carBrandFlatList()}
+                    <View style={{
+                        justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
+                    }}>
+                        <Text style={{
+                            fontSize: 22, fontFamily: "WorkSans_600SemiBold"
+                        }}>Popular Cars</Text>
+                        <Text style={{
+                            color: layoutParams.colors.deepBlue,
+                            fontFamily: "WorkSans_600SemiBold",
+                            textDecorationLine: "underline"
+                        }}>View All</Text>
+                    </View>
+                </View>
+                {/*All Car Brands*/}
+                {renderPopularCars()}
+                <View style={{
+                    marginRight: 10,
+                    marginLeft: 10,
+                    marginTop: 10,
+                    flexDirection: "row",
+                    justifyContent: "space-between"
+                }}>
+                    <Text style={{
+                        fontSize: 20,
+                        fontFamily: "WorkSans_600SemiBold"
+                    }}>
+                        Recently Viewed
+                    </Text>
+                    <Text style={{
+                        ...homeStyles.footerText, color: layoutParams.colors.deepBlue,
+                        textDecorationLine: "underline",
+                        fontFamily: "WorkSans_600SemiBold"
+                    }}>
+                        View All
+                    </Text>
+                </View>
+                {renderRecentlyViewed()}
+            </View>
+        </SafeAreaView>);
 
 }
 const homeStyles = StyleSheet.create({

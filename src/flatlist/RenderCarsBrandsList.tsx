@@ -34,22 +34,24 @@ const RenderCarsBrandsList = ({...props}: CarBrandsProps) => {
     }, [props.index]);
 
     return (
-        <PressableView style={{
-            ...brandStyles(props.brandSelected, props.index).brandButton,
+        <Animated.View style={{
             opacity: brandOpacity,
-            translateX
-        }} onPress={() => {
-            props.onPress();
-            filterDataByMake(props.item);
-        }} key={props.index}>
+            transform: [{translateX}]
+        }}>
             <Text style={{
-                fontSize: 15,
-                fontWeight: "600",
-                fontFamily: "WorkSans_500Medium",
-                color: props.brandSelected === props.index ? layoutParams.colors.white : layout.colors.black
+                fontSize: 20,
+                marginLeft: 10,
+                marginRight: 10,
+                marginBottom: 20,
+                marginTop: 20,
+                fontFamily: "WorkSans_600SemiBold",
+                color: props.brandSelected === props.index ? layoutParams.colors.black : layout.colors.grey
             }}
-                  adjustsFontSizeToFit>{props.item.charAt(0).toString().toUpperCase() + props.item.substring(1, props.item.length)}</Text>
-        </PressableView>)
+                  adjustsFontSizeToFit onPress={() => {
+                props.onPress();
+                filterDataByMake(props.item);
+            }}>{props.item.charAt(0).toString().toUpperCase() + props.item.substring(1, props.item.length)}</Text>
+        </Animated.View>)
 
 }
 export default React.memo(RenderCarsBrandsList)
