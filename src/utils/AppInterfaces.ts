@@ -1,4 +1,4 @@
-import {ImageSourcePropType, ImageStyle, ListRenderItem, StyleProp, TextStyle, ViewStyle} from "react-native";
+import {ImageSourcePropType, ImageStyle, StyleProp, TextStyle, ViewStyle} from "react-native";
 import React, {Key} from "react";
 
 
@@ -135,7 +135,7 @@ export interface User {
 export interface LoginResponse {
     message: string;
     user: {
-        token: string; role: number; username: string;
+        token: string; role_id: number; username: string;
     }
 }
 
@@ -146,6 +146,14 @@ export interface RegisterResponse {
         user_id: number,
         role_id: string
     },
+    message: string;
+    responseCode: number
+}
+
+export interface GeneralResponse {
+    detail: string;
+}
+export interface GetUserresponse {
     message: string;
     responseCode: number
 }

@@ -57,6 +57,7 @@ export default function LoginScreen() {
                         if (responseData.user != null && responseData.user.token != null) {
                             utils.saveValue("username", JSON.stringify(responseData.user.username))
                             utils.saveValue("token", JSON.stringify(responseData.user.token));
+                            utils.saveValue("role_id", JSON.stringify(responseData.user.role_id));
                             signIn(responseData.user.token)
                             toast.success({
                                 message: responseData.message
