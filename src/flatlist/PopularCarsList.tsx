@@ -34,6 +34,7 @@ const PopularCarsList = ({...props}: PopularCarListProps) => {
         ]).start()
     }, [props.index]);
 
+
     return (<PressableView style={{
         ...popularCarStyles.popularCars,
         opacity: popularCarOpacity,

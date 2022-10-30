@@ -3,18 +3,19 @@ import {carData, CommunicationDataProps, MessageTemplate, ReviewData, SectionDat
 export const PopularCarData: carData[] = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
     make: "Honda",
+    model: "Fit",
     mileage: "20000",
     yom: "1999",
     price: "900,000",
     imageUrl: "../../../assets/images/mainCarImage.jpg",
-    model: "Fit"
+
 }, {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
     make: "Audi",
+    model: "A3",
     mileage: "21000",
     yom: "2000",
     price: "951,000",
-    model: "A3",
     imageUrl: '../../../assets/images/mainCarImage.jpg'
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",

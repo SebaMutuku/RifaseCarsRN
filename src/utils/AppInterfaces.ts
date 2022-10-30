@@ -27,11 +27,12 @@ export interface CarItemProps {
 export interface carData {
     id: any;
     make: string | undefined;
+    model?: string
     mileage: string | number,
     yom: string
     price: string;
     imageUrl: string | undefined;
-    model?: string
+
 }
 
 export interface MessageTemplate {
@@ -62,7 +63,7 @@ export interface flatlistProps {
     showsVerticalScrollIndicator?: boolean,
     showsHorizontalScrollIndicator?: boolean,
     data: any [];
-    renderItem: ListRenderItem<{ id: string, title: string } | undefined> | null | undefined;
+    renderItem: any;
     ListFooterComponentStyle?: StyleProp<ViewStyle>;
     ListFooterComponent?: React.ComponentType<any> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | null | undefined
     keyExtractor: ((item: ({ id: string, title: string } | undefined), index: number) => string) | undefined;

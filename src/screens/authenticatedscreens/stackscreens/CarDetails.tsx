@@ -86,8 +86,7 @@ export default function CarDetails() {
                 margin: 20
             }}>
                 <Text style={{
-                    fontFamily: "WorkSans_600SemiBold",
-                    color: layoutParams.colors.lighGrey
+                    fontFamily: "WorkSans_600SemiBold"
                 }}>Vehicle Specifications</Text>
                 <Text style={{
                     fontSize: 20, fontFamily: "WorkSans_600SemiBold"
@@ -142,12 +141,13 @@ export default function CarDetails() {
             borderBottomWidth: StyleSheet.hairlineWidth,
         }}/>
         {/*Review Row*/}
-        {reviewArray.map((item, index: number) => (<>
+        {reviewArray.map((item, index: number) => (
+            <View key={index}>
                 <Animated.View style={{
                     flexDirection: "row",
                     marginTop: 10,
                     justifyContent: "space-between",
-                }} key={index}>
+                }}>
                     <View>
                         <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewer}</Text>
                         <Text style={[styles.textStyle, {fontSize: 14}]}>{item.date}</Text>
@@ -157,16 +157,15 @@ export default function CarDetails() {
                         <Text style={[styles.textStyle, {fontSize: 14}]}>Rating: {item.rating}</Text>
                     </View>
                 </Animated.View>
-            <View style={{}}>
                 <Text style={[styles.textStyle, {fontSize: 14, color: layoutParams.colors.black}]}>{item.comment}
                 </Text>
-            </View></>)
+            </View>)
         )}
 
     </Animated.View>)
 
     const infoBox = (text1: string, text2: string, key?: number) => (
-        <View style={styles.timeBoxContainer} key={key}>
+        <View style={styles.carSpecsBox} key={key}>
             <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
             <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
         </View>);
@@ -187,8 +186,8 @@ export default function CarDetails() {
                                                    padding: 12,
                                                    alignItems: "center",
                                                    backgroundColor: layoutParams.colors.black
-                                               }}>
-                    Call Seller
+                                               }}  allowFontScaling={true} >
+                    call seller
                 </MaterialCommunityIcons.Button>
             </Animated.View>
         </Animated.View>
@@ -230,16 +229,13 @@ const styles = StyleSheet.create({
         padding: 6,
         height: layout.WINDOW.height * .07
     }, secondView: {
-        flex: 3,
+        flex: 2.5,
         backgroundColor: layoutParams.colors.white,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
-        shadowOffset: {width: 1.1, height: 1.1},
-        shadowOpacity: 0.2,
-        shadowRadius: 10.0,
-        elevation: 16,
-    }, timeBoxContainer: {
-        backgroundColor: layoutParams.colors.white,
+        ...layoutParams.elevation
+    }, carSpecsBox: {
+        backgroundColor: layoutParams.colors.listColors,
         borderRadius: 16,
         alignItems: 'center',
         margin: 8,
