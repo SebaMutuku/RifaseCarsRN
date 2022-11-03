@@ -17,10 +17,11 @@ import useColorScheme from "../hooks/useColorScheme";
 import layoutParams from "../utils/LayoutParams";
 import React from "react";
 import {KeyBoardProps, ThemeProps} from "../utils/AppInterfaces";
+import Colors from "../constants/Colors";
 
 export function useThemeColor(
     props: { light?: string; dark?: string },
-    colorName: any
+    colorName: keyof typeof Colors.light & keyof typeof Colors.dark
 ) {
     const theme = useColorScheme();
     const colorFromProps = props[theme];
@@ -42,20 +43,19 @@ export const toastRef = React.createRef<any>();
 export function Text(props: TextProps) {
     const {style, lightColor, darkColor, ...otherProps} = props;
     const color = useThemeColor({light: lightColor, dark: darkColor}, 'text');
-
-    return <DefaultText style={[style]} {...otherProps} allowFontScaling={true} adjustsFontSizeToFit={true} />;
+    return <DefaultText style={[{color}, style]} {...otherProps} allowFontScaling={true} adjustsFontSizeToFit={true}/>;
 }
 
 export function View(props: ViewProps) {
     const {style, lightColor, darkColor, ...otherProps} = props;
-    const backgroundColor = useThemeColor({light: lightColor, dark: darkColor}, layoutParams.colors.backgroundColor);
-    return <DefaultView style={style} {...otherProps} />;
+    const backgroundColor = useThemeColor({light: lightColor, dark: darkColor}, 'background');
+    return <DefaultView style={[{backgroundColor}, style]} {...otherProps} />;
 }
 
 export function TextInput(props: TextInputProps) {
     const {style, lightColor, darkColor, ...otherProps} = props;
-    const backgroundColor = useThemeColor({light: lightColor, dark: darkColor}, layoutParams.colors.backgroundColor);
-    return <DefaultTextInput style={style} {...otherProps} />;
+    const backgroundColor = useThemeColor({light: lightColor, dark: darkColor}, 'background');
+    return <DefaultTextInput style={[{backgroundColor}, style]} {...otherProps} />;
 }
 
 export function ActivityIndicator(visible: boolean) {

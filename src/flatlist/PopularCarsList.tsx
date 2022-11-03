@@ -38,7 +38,8 @@ const PopularCarsList = ({...props}: PopularCarListProps) => {
     return (<PressableView style={{
         ...popularCarStyles.popularCars,
         opacity: popularCarOpacity,
-        translateY
+        translateY,
+        backgroundColor:layoutParams.colors.listColors
     }} onPress={() => props.onPress()}>
         <Image source={require("../../assets/images/mainCarImage.jpg")} style={{
             width: "100%", borderRadius: 10, padding: 10, resizeMode: "contain", height: "40%"

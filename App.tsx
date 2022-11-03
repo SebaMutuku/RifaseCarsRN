@@ -1,21 +1,20 @@
-import {StatusBar} from 'expo-status-bar';
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import useCachedResources from './src/hooks/useCachedResources';
-import useColorScheme from './src/hooks/useColorScheme';
 import {HomeStackNavigator, UnauthenticatedNavigator} from './src/navigation/Navigation';
-import layoutParams from "./src/utils/LayoutParams";
 import Toast from './src/components/AnotherToast'
 import {Action, AppAuthState} from "./src/utils/AppInterfaces";
 import utils from "./src/utils/Utils";
 import {AuthContext} from "./src/utils/AuthContext";
 import {DarkTheme, DefaultTheme, NavigationContainer} from "@react-navigation/native";
 import {navigationRef} from "./src/navigation/RootNavigation";
+import {StatusBar} from "react-native";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+  const [isDarkTheme, setIsDarkTheme] = React.useState(false);
+  const theme = isDarkTheme ? DarkTheme : DefaultTheme;
 
   const [state, dispatch] = React.useReducer<React.Reducer<AppAuthState, Action>>((prevState, action) => {
     switch (action.type) {
@@ -88,16 +87,17 @@ export default function App() {
         console.log("Exception occurred", e.message);
       }
     }, toggleTheme: () => {
-      //     setIsDarkTheme(isDarkTheme => !isDarkTheme);
+      setIsDarkTheme(isDarkTheme => !isDarkTheme)
+
     },
 
   }), []);
   return (<SafeAreaProvider>
     <AuthContext.Provider value={authContext}>
       {isLoadingComplete && <>
-        <StatusBar translucent={false} animated={true} backgroundColor={layoutParams.colors.black} style="auto"/>
+        <StatusBar translucent={false} animated={true} barStyle={theme.dark ? "light-content" : "dark-content"}/>
         <NavigationContainer
-            theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
+            theme={theme}
             ref={navigationRef}>
           {state.userToken != null || state.userToken != undefined ? <HomeStackNavigator/> :
               <UnauthenticatedNavigator/>}

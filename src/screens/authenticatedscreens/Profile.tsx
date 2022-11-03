@@ -1,15 +1,6 @@
-import {
-  Animated,
-  Pressable,
-  SafeAreaView,
-  SectionList,
-  StatusBar,
-  StyleSheet,
-  Switch,
-  TouchableOpacity
-} from 'react-native';
+import {Animated, Pressable, SafeAreaView, SectionList, StatusBar, StyleSheet} from 'react-native';
 
-import {Text, View} from '../../components/Widgets';
+import {Text, useThemeColor, View} from '../../components/Widgets';
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";
@@ -21,14 +12,25 @@ import {BottomSheetProps} from "../../utils/AppInterfaces";
 import CustomModal from "../../modals/CustomModal";
 import {AuthContext} from "../../utils/AuthContext";
 import toast from "../../utils/toast";
+import {useTheme} from "@react-navigation/native";
 
 export default function Profile() {
   const [state, setState] = React.useState({
-    selectedSectionList: 0, isEnabled: false, modalVisble: false, modalHeading: "Loading...Please wait", modalAcceptString: "yes"
+    selectedSectionList: 0,
+    isEnabled: false,
+    modalVisble: false,
+    modalHeading: "Loading...Please wait",
+    modalAcceptString: "yes"
   });
-  const toggleSwitch = () => setState(prevState => ({
-    ...prevState, isEnabled: !state.isEnabled
-  }));
+  const {toggleTheme} = React.useContext(AuthContext);
+  const backgroundColor = useThemeColor({
+    light: "rgba(0,0,0,0.05)", dark: " rgba(255,255,255,0.05)"
+  }, 'background');
+  const color = useThemeColor({
+    light: "rgba(0,0,0,0.8)", dark: "rgba(255,255,255,0.8)"
+  }, 'text');
+  const theme = useTheme()
+
   const setModalVisible = React.useCallback((visible: boolean) => {
     setState({...state, modalVisble: visible})
   }, []);
@@ -44,11 +46,11 @@ export default function Profile() {
     })
     ]).start()
   }, [])
-  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+  const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
   function topScreen() {
     return (<Animated.View style={{
-      alignItems: 'center', transform: [{scale: profileView.current}]
+      alignItems: 'center', transform: [{scale: profileView.current}], backgroundColor
     }}>
       {CircularImage({
         source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
@@ -62,7 +64,7 @@ export default function Profile() {
               style={[styles.profileText, {
                 fontSize: 22, fontFamily: "WorkSans_600SemiBold", color: layoutParams.colors.textLightColor,
               }]}>Sebastian</Text>
-        <Text style={styles.profileText}>abc@gmail.com</Text>
+        <Text style={[styles.profileText, {color}]}>abc@gmail.com</Text>
       </View>
     </Animated.View>);
   }
@@ -71,8 +73,7 @@ export default function Profile() {
     return <View style={{
       marginTop: 10, flexDirection: "row", justifyContent: "space-evenly"
     }}>
-      <Pressable onPress={() => setModalVisible(false)
-      } style={styles.logout}>
+      <Pressable onPress={() => setModalVisible(false)} style={{...styles.logout, backgroundColor}}>
         <Text style={{
           ...styles.modalText, fontSize: 16
         }}>No</Text>
@@ -90,7 +91,6 @@ export default function Profile() {
           ...styles.modalText, fontSize: 16, color: layoutParams.colors.red
         }}>{state.modalAcceptString}</Text>
       </Pressable>
-
     </View>
 
   }
@@ -113,6 +113,9 @@ export default function Profile() {
         })
       }
         break;
+      case "Change theme":
+        toggleTheme();
+        break
       default:
         console.log("Pressed")
         break
@@ -123,96 +126,83 @@ export default function Profile() {
     return (<SectionList sections={sectionData}
                          keyExtractor={(item, index) => item + index}
                          renderItem={({item, index, section}) => {
-                           let iconName: any = "", color = "";
+                           let iconName: any = "";
                            switch (item) {
                              case "Favourite Cars":
                                iconName = "heart";
-                               color = layoutParams.colors.deepBlue;
                                break
                              case "App Currency":
                                iconName = "money";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
                              case "Language":
                                iconName = "language";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
                              case "Notifications":
                                iconName = "bell";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
                              case "Terms":
                                iconName = "book";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
                              case "FAQ":
                                iconName = "question-circle";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
                              case "About App":
                                iconName = "book";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
                              case "Change Password":
                                iconName = "pencil";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break
-                             case "Dark Theme":
-                               iconName = "toggle-off";
-                               color = layoutParams.colors.deepBlue;
+                             case "Change theme":
+                               iconName = "moon-o";
+                               // color = layoutParams.colors.black;
                                break;
                              case "Update App":
                                iconName = "cloud-upload";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break;
                              case "Privacy":
                                iconName = "user-secret";
-                               color = layoutParams.colors.deepBlue;
+                               // color = layoutParams.colors.black;
                                break;
                              case "Close Account":
                                iconName = "times-circle";
-                               color = layoutParams.colors.red;
+                               // color = layoutParams.colors.red;
                                break;
                              default:
                                iconName = "sign-out"
-                               color = layoutParams.colors.red;
+                               // color = layoutParams.colors.red;
                            }
-                           return (!item.match("Dark Theme") ? <AnimatedTouchable style={{
-                             ...sectionStyle(index, section).item, ...layoutParams.elevation
+                           return (<AnimatedTouchable style={{
+                             ...sectionStyle(index, section).item, backgroundColor
                            }} onPress={() => onPress(item)}>
                              <View style={{
-                               flexDirection: "row",
-                               justifyContent: "flex-start"
+                               flexDirection: "row", justifyContent: "flex-start"
                              }}>
                                <FontAwesome name={iconName} size={20}
-                                            color={color}/>
+                                            color={theme.dark ? layoutParams.colors.white : layoutParams.colors.black}/>
                                <Text style={{
                                  fontFamily: "WorkSans_500Medium",
                                  marginLeft: 10,
-                                 color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : layoutParams.colors.black
+                                 color: item.match("Close Account") || item.match("Logout") ? layoutParams.colors.red : theme.dark ? layoutParams.colors.white : layoutParams.colors.black
                                }}>{item}</Text>
                              </View>
                              <MaterialIcons name="keyboard-arrow-right" size={20} color={layoutParams.colors.lighGrey}/>
-                           </AnimatedTouchable> : <AnimatedTouchable style={{
-                             ...sectionStyle(index, section).item, ...layoutParams.elevation, padding: 0
-                           }} onPress={() => onPress(item)}>
-                             <Switch
-                                 trackColor={{false: "#767577", true: "#81b0ff"}}
-                                 thumbColor={state.isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                                 ios_backgroundColor="#3e3e3e"
-                                 onValueChange={toggleSwitch}
-                                 value={state.isEnabled}
-                             />
-                             <Text style={{
-                               fontFamily: "WorkSans_500Medium", marginLeft: 10,
-                             }}> {state.isEnabled ? item : "Light Theme"}</Text>
                            </AnimatedTouchable>);
                          }}
                          showsVerticalScrollIndicator={false}
                          renderSectionHeader={({section: {title}}) => (<View style={{
                            margin: 10, padding: 5
                          }}>
-                           <Text style={styles.header}>{title}</Text></View>)}
+                           <Text style={{
+                             ...styles.header, color: theme.dark ? layoutParams.colors.white : layoutParams.colors.black
+                           }}>{title}</Text></View>)}
                          ListFooterComponentStyle={{
                            marginBottom: layoutParams.WINDOW.height * 0.1
                          }}
@@ -220,21 +210,21 @@ export default function Profile() {
     />);
   }
 
-  return (<SafeAreaView style={sharedStyles.container}>
+  return (<SafeAreaView style={{...sharedStyles.container, backgroundColor}}>
     {/*TopImage Screen*/}
     {topScreen()}
     <Animated.View style={{
       marginTop: 20,
-      backgroundColor: layoutParams.colors.white,
+      backgroundColor,
       borderTopLeftRadius: 32,
       borderTopRightRadius: 32,
       shadowOffset: {width: 1.1, height: 1.1},
       shadowOpacity: 0.2,
-      shadowRadius: 10.0,
-      elevation: 16, // opacity: sectionItemOpacity.current
+      shadowRadius: 10.0, // elevation:  16, // opacity: sectionItemOpacity.current
     }}>
       {scrollSectionList()}
     </Animated.View>
+
     <CustomModal visible={state.modalVisble} children={logoutChildren()} modalHeading={state.modalHeading}/>
 
   </SafeAreaView>);

@@ -194,7 +194,7 @@ export const sectionData: SectionDateInterface[] = [{
 }, {
     title: "App Features", data: ["Terms", "FAQ", "About App"]
 }, {
-    title: "User Settings", data: ["Change Password", "Dark Theme", "Update App", "Privacy", "Close Account", "Logout"]
+    title: "User Settings", data: ["Change Password", "Change theme", "Update App", "Privacy", "Close Account", "Logout"]
 }];
 
 export const reviewArray: ReviewData[] = [{

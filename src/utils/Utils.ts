@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import layoutParams from "./LayoutParams";
 import {PixelRatio} from "react-native";
 import {showToast} from "../components/Widgets";
+import useColorScheme from "../hooks/useColorScheme";
 
 export const appBaseUrl = "https://carfueldjango.herokuapp.com/api";
 export const checkValidMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -92,9 +93,23 @@ export function generateUuid() {
 }
 export const SHOW_TOAST_MESSAGE = 'SHOW_TOAST_MESSAGE';
 
+export function changeBackgroundColor() {
+    const colorScheme = useColorScheme();
+    return colorScheme == "light" ? layoutParams.colors.backgroundColor : layoutParams.colors.white;
+}
+
 
 const utils = {
-    saveValue, getValue, removeValue, appUrl: appBaseUrl, checkValidMail, getData, postData, generateUuid,SHOW_TOAST_MESSAGE
+    saveValue,
+    getValue,
+    removeValue,
+    appUrl: appBaseUrl,
+    checkValidMail,
+    getData,
+    postData,
+    generateUuid,
+    SHOW_TOAST_MESSAGE,
+    changeBackgroundColor
 }
 
 export default utils;

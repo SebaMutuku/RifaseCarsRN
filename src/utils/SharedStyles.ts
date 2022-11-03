@@ -14,11 +14,10 @@ export const sharedStyles = StyleSheet.create({
     }, searchInputContainer: {
         padding: 13,
         flexDirection: 'row',
-        backgroundColor: layoutParams.colors.searchInput,
         borderRadius: 13,
         alignItems: 'center',
-        borderWidth: 0.4,
-        borderColor: layoutParams.colors.grey,
+        borderWidth: 0.5,
+        borderColor: layoutParams.colors.black,
 
     }, searchInput: {
         flex: 1,

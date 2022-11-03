@@ -4,7 +4,6 @@
  *
  */
 import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
-import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
 import Profile from '../screens/authenticatedscreens/Profile';
@@ -37,6 +36,7 @@ import CircularImage from "../components/CircularImage";
 
 
 export function HomeStackNavigator() {
+    const theme = useColorScheme()
     return (
         <HomeStacks.Navigator initialRouteName='HomeStack' screenOptions={{
             headerStyle: {
@@ -188,7 +188,7 @@ function BottomTabNavigator() {
                     fontFamily:"WorkSans_500Medium"
                 },
                 headerStyle: {
-                    backgroundColor: layoutParams.colors.backgroundColor
+                    // backgroundColor: colorScheme === "light" ? layoutParams.colors.backgroundColor :"rgba(255,255,255,0.05)"
                 },
                 headerTitleStyle: {
                     fontSize: 20,
@@ -198,7 +198,6 @@ function BottomTabNavigator() {
                 headerTitleAlign: "center",
                 tabBarAllowFontScaling: true,
                 tabBarStyle: {
-                    backgroundColor: layoutParams.colors.backgroundColor,
                     borderTopRightRadius: 20,
                     borderTopLeftRadius: 20,
                 },

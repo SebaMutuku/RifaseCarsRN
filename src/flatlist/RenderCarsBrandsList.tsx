@@ -7,7 +7,6 @@ import {CarBrandsProps} from "../utils/AppInterfaces";
 
 
 const RenderCarsBrandsList = ({...props}: CarBrandsProps) => {
-    const PressableView = Animated.createAnimatedComponent(Pressable);
     const brandOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
     const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
 
@@ -45,7 +44,7 @@ const RenderCarsBrandsList = ({...props}: CarBrandsProps) => {
                 marginBottom: 20,
                 marginTop: 20,
                 fontFamily: "WorkSans_600SemiBold",
-                color: props.brandSelected === props.index ? layoutParams.colors.black : layout.colors.grey
+                color: props.brandSelected === props.index ? layoutParams.colors.black : layout.colors.selectedColor
             }}
                   adjustsFontSizeToFit onPress={() => {
                 props.onPress();
