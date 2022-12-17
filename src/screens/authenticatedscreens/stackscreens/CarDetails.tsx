@@ -1,27 +1,26 @@
 import {useRoute} from "@react-navigation/native";
-import {Text, View} from "../../../components/Themed";
+import {Text, View} from "../../../components/Widgets";
 import {HomeRouteProp} from "../../../navigation/ScreenTypes";
-import {Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from "react-native";
+import {Animated, Easing, ImageBackground, SafeAreaView, ScrollView, StatusBar, StyleSheet} from "react-native";
 import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
 import React from "react";
 import * as SplashScreen from 'expo-splash-screen';
-import {Entypo} from "@expo/vector-icons";
+import {CarItemProps} from "../../../utils/AppInterfaces";
+import {sharedStyles} from "../../../utils/SharedStyles";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
+import {reviewArray} from "../../../utils/Data";
 
-SplashScreen.preventAutoHideAsync();
+
 export default function CarDetails() {
-    interface carObject {
-        id: string,
-        make: string,
-        mileage: string,
-        price: string,
-        yom: string
-    }
-
+    const viewOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const scrollOpacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const buttonTranslateX = React.useRef<Animated.Value>(new Animated.Value(100)).current;
+    const callButtonTranslateX = React.useRef<Animated.Value>(new Animated.Value(0));
     const [state, setState] = React.useState({
-        carData: {} as carObject, appIsReady: false
+        carData: {} as CarItemProps | undefined, appIsReady: false,
+        buttonVisible: false
     })
-
     const route: any = useRoute<HomeRouteProp>();
     React.useEffect(() => {
         setState({
@@ -32,83 +31,190 @@ export default function CarDetails() {
                 ...state, appIsReady: true
             })
         }
+        Animated.parallel([
+            Animated.timing(viewOpacity, {
+                toValue: 1, duration: 500, delay: 200, useNativeDriver: true, easing: Easing.bounce
+            }), Animated.timing(scrollOpacity, {
+                toValue: 1, duration: 600, delay: 400, useNativeDriver: true,
+                easing: Easing.linear
+            }),
+            Animated.timing(buttonTranslateX, {
+                toValue: 1, duration: 1000, delay: 0, useNativeDriver: true,
+                easing: Easing.linear
+            }),
+            Animated.timing(callButtonTranslateX.current, {
+                toValue: 1, duration: 600, delay: 100, useNativeDriver: true,
+            })
+        ]).start();
+
     }, [route.params]);
     const onLayoutRootView = React.useCallback(async () => {
         if (state.appIsReady) {
             await SplashScreen.hideAsync();
-
         }
 
     }, [state.appIsReady]);
+    React.useMemo(() => Object.entries(route.params.cardetails).filter(() => {
+        delete route.params.cardetails['id']
+        delete route.params.cardetails['imageUrl']
+        return route.params;
+    }), [route.params.cardetails]);
+
+
+    const setVisibile = React.useCallback((visible: boolean) => {
+        setState({
+            ...state,
+            buttonVisible: visible
+        });
+    }, [state.buttonVisible])
 
     function carSliderImage() {
         return (<View style={{
             ...styles.carSliderView
         }}>
-            <Image source={require("../../../../assets/images/mainCarImage.jpg")} style={{
-                height: "70%", width: "95%", borderRadius: 10, resizeMode: "contain", marginTop: 20
+            <ImageBackground source={require("../../../../assets/images/mainCarImage.jpg")} style={{
+                height: "70%", width: "95%", borderRadius: 10, marginTop: 20
             }}/>
-            <Text style={{
-                fontSize: 25, fontWeight: "bold"
-            }}> {route.params.cardetails != undefined || route.params.cardetails != null ? route.params.cardetails.make : "Loading details"}</Text>
         </View>);
     }
 
-    return state.appIsReady ? (<SafeAreaView style={{...styles.container}}>
-        {carSliderImage()}
-        <View style={{
-            margin: 5, flex: 1
-        }}>
-            <Text style={{
-                fontWeight: "bold", fontSize: 18
-            }}>Car desciption</Text>
-            <ScrollView style={{
-                marginTop: 10
+    const lowerSection = () => (
+        <ScrollView showsVerticalScrollIndicator={false} key={1} onScroll={() => setVisibile(false)}
+                    onScrollEndDrag={() => setVisibile(true)} onScrollToTop={() => setVisibile(true)}
+                    onMomentumScrollEnd={() => setVisibile(true)}>
+            <View style={{
+                margin: 20
             }}>
                 <Text style={{
-                    fontSize: 16
-                }}>When/where was the car built?
-                    Do you know what production number your car is?
-                    Can you determine ownership history? Include any noteworthy or celebrity owners, if any.
-                    What original parts does it have? If you purchased the car and were told it has “matching numbers,”
-                    which means the car carries the original engine and other mechanical components, it is important to
-                    consider getting that verified by an expert.
-                    Include all the specifications of the vehicle that you can: engine, intake, transmission, brakes,
-                    wheels/tires, interior features, etc.
-                    Was the car restored? If so, who restored it? When was it restored?
-                    Do you have the restoration photos and/or receipts? Not only should these be scanned and sent along
-                    with
-                    your consignment application, you may want to consider including them with the sale.
-                    Has the car been customized? What custom elements are on the vehicle?
-                    Has the vehicle won awards? Summarize those and indicate if awards (or copies of them) will be
-                    included
-                    with the sale. Be sure to scan or photograph and send copies of awards with your consignment
-                    application.
-                    Has the car been featured in any prominent publications? Will copies of the publication be included
-                    with
-                    the sale?</Text>
-                <TouchableOpacity style={{
-                    ...styles.callerButton
-                }} onPress={() => {
+                    fontFamily: "WorkSans_600SemiBold"
+                }}>Vehicle Specifications</Text>
+                <Text style={{
+                    fontSize: 20, fontFamily: "WorkSans_600SemiBold"
+                }}>Ksh. {route.params.cardetails.price}</Text>
+            </View>
+
+            <Animated.View
+                style={{
+                    flexDirection: 'row', padding: 8, opacity: viewOpacity,
+                }}
+                renderToHardwareTextureAndroid // just to avoid UI glitch when animating view with elevation
+            >
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}>
+                    {Object.entries(route.params.cardetails).map((entry: any, index) => (infoBox(entry[1], entry[0], index)))}
+                </ScrollView>
+            </Animated.View>
+            <Animated.View style={{
+                marginLeft: 10, marginTop: 10,
+                opacity: scrollOpacity
+            }}>
+                {route.params.cardetails.make && <Text style={{
+                    ...styles.carDescText
+                }}>The Diesel engine is 1968 cc while the Petrol engine is 1395 cc . It is available with Automatic
+                    transmission. Depending upon the variant and fuel type the A3 has a mileage of 19.2 to 20.38 kmpl &
+                    Ground
+                    clearance of A3 is 165mm. The A3 is a 5 seater 4 cylinder car.
+                    Fuel Type: Petrol
+                    Fuel Tank Capacity: 50.0
+                    Body Type: Sedan
+                    Engine Displacement (cc): 1395</Text>}
+            </Animated.View>
+            {reviews()}
+        </ScrollView>)
+    const reviews = () => (<Animated.View style={{
+        ...styles.reviews,
+        opacity: scrollOpacity,
+    }}>
+        <Animated.View style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+        }}>
+            <Text style={[styles.textStyle, styles.timeBoxTitle, {fontSize: 18}]}>Reviews</Text>
+            <Text style={[styles.textStyle, {fontSize: 18}]} onPress={() => {
+            }}>See All</Text>
+        </Animated.View>
+        <View style={{
+            borderBottomColor: layoutParams.colors.lighGrey,
+            marginTop: 10,
+            marginBottom: 10,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+        }}/>
+        {/*Review Row*/}
+        {reviewArray.map((item, index: number) => (
+            <View key={index}>
+                <Animated.View style={{
+                    flexDirection: "row",
+                    marginTop: 10,
+                    justifyContent: "space-between",
                 }}>
-                    <Text style={{
-                        color: layoutParams.colors.white, fontSize: 18, fontWeight: "bold"
-                    }}>Call Seller</Text>
-                </TouchableOpacity>
-            </ScrollView>
+                    <View>
+                        <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewer}</Text>
+                        <Text style={[styles.textStyle, {fontSize: 14}]}>{item.date}</Text>
+                    </View>
+                    <View>
+                        <Text style={[styles.textStyle, styles.timeBoxTitle]}>{item.reviewSammury}</Text>
+                        <Text style={[styles.textStyle, {fontSize: 14}]}>Rating: {item.rating}</Text>
+                    </View>
+                </Animated.View>
+                <Text style={[styles.textStyle, {fontSize: 14, color: layoutParams.colors.black}]}>{item.comment}
+                </Text>
+            </View>)
+        )}
+
+    </Animated.View>)
+
+    const infoBox = (text1: string, text2: string, key?: number) => (
+        <View style={styles.carSpecsBox} key={key}>
+            <Text style={[styles.textStyle, styles.timeBoxTitle]}>{text1}</Text>
+            <Text style={[styles.textStyle, {fontSize: 14}]}>{text2}</Text>
+        </View>);
+    const callButton = () => (
+        <Animated.View style={{
+            justifyContent: "center",
+            alignItems: 'center',
+        }}>
+            <Animated.View style={{
+                position: "absolute",
+                bottom: 2,
+                margin: 4,
+                width: "96%",
+                transform: [{scale: callButtonTranslateX.current}]
+            }}>
+                <MaterialCommunityIcons.Button name="phone" size={30}
+                                               style={{
+                                                   padding: 12,
+                                                   alignItems: "center",
+                                                   backgroundColor: layoutParams.colors.black
+                                               }}  allowFontScaling={true} >
+                    call seller
+                </MaterialCommunityIcons.Button>
+            </Animated.View>
+        </Animated.View>
+    )
+
+    return (<SafeAreaView style={{
+        ...sharedStyles.container, backgroundColor: layoutParams.colors.listColors
+    }}>
+        <View style={{flex: 1}}>
+            <StatusBar backgroundColor="transparent" barStyle="dark-content"/>
+            <View style={{
+                flex: 1
+            }}>
+                {carSliderImage()}
+            </View>
+            <View style={{
+                ...styles.secondView
+            }}>
+                {lowerSection()}
+            </View>
         </View>
-    </SafeAreaView>) : <View
-        style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
-        onLayout={onLayoutRootView}>
-        <Text>SplashScreen Demo! 👋</Text>
-        <Entypo name="rocket" size={30}/>
-    </View>;
+        {state.buttonVisible ? callButton() : null}
+    </SafeAreaView>);
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, backgroundColor: layoutParams.colors.backgroundColor
-    }, carSliderView: {
-        flex: 2,
+    carSliderView: {
+        flex: 1,
         backgroundColor: layoutParams.colors.white, ...layoutParams.elevation,
         margin: 5,
         borderRadius: 10,
@@ -122,5 +228,29 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 6,
         height: layout.WINDOW.height * .07
+    }, secondView: {
+        flex: 2.5,
+        backgroundColor: layoutParams.colors.white,
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        ...layoutParams.elevation
+    }, carSpecsBox: {
+        backgroundColor: layoutParams.colors.listColors,
+        borderRadius: 16,
+        alignItems: 'center',
+        margin: 8,
+        paddingHorizontal: 18,
+        paddingVertical: 12, ...layoutParams.elevation
+    }, timeBoxTitle: {
+        fontSize: 14, fontFamily: 'WorkSans_600SemiBold', color: layoutParams.colors.black,
+    }, textStyle: {
+        fontFamily: 'WorkSans_500Medium', color: layoutParams.colors.lighGrey, letterSpacing: 0.27,
+    },
+    carDescText: {
+        fontFamily: "Poppins_500Medium"
+    },
+    reviews: {
+        flex: 1,
+        margin: 10
     }
 })

@@ -21,9 +21,9 @@ export default function AuthenticationScreen() {
         let savedToken = await utils.getValue("token");
         console.log("Saved token ....", savedToken);
         if (savedToken != undefined || savedToken != null) {
-            navigate("HomeScreen", "");
+            navigation.navigate("HomeScreen")
         } else {
-            navigate("Login", "");
+            navigation.navigate("Login")
         }
     }
     useEffect(() => {

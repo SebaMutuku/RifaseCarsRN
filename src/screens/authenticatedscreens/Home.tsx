@@ -1,60 +1,74 @@
 import React from "react";
-import {Image, Pressable, SafeAreaView, StyleSheet} from "react-native";
+import {Alert, Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, TextInput} from "react-native";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import {useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
-import {Text, TextInput, View} from "../../components/Themed";
+import {KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
 import {FontAwesome} from "@expo/vector-icons";
-import CircularImage from "../../components/CircularImage";
 import FlatListView from "../../components/FlatListView";
+import CircularImage from "../../components/CircularImage";
+import {carBrands, PopularCarData} from "../../utils/Data";
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {sharedStyles} from "../../utils/SharedStyles";
+import PopularCarsList from "../../flatlist/PopularCarsList";
+import {CarItemProps} from "../../utils/AppInterfaces";
+import RenderCarsBrandsList from "../../flatlist/RenderCarsBrandsList";
+import utils from "../../utils/Utils";
+import RenderSingleItem from "../../flatlist/RenderSingleItem";
 
 
 export default function Home() {
-    const DATA: any [] = [{
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba", make: "Honda Fit", mileage: "20000", yom: "1999", price: "900k"
-    }, {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63", make: "Audi A3", mileage: "21000", yom: "2000", price: "951k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72", make: "Suzuki Swift", mileage: "22000", yom: "2001", price: "550k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d73", make: "BMW I320", mileage: "23000", yom: "2002", price: "2.1M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d74", make: "Toyota Mark X", mileage: "24000", yom: "2003", price: "2,3M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d75", make: "Lexus C5", mileage: "25000", yom: "2004", price: "2.8M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d76", make: "Mazda C6", mileage: "26000", yom: "2005", price: "760k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d77", make: "Mercedes E5", mileage: "27000", yom: "2006", price: "2.7M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d78", make: "RangeRover L2", mileage: "28000", yom: "2007", price: "4.5M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d79", make: "Nissan Murano", mileage: "20000", yom: "2010", price: "940k"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d80", make: "Volvo V1", mileage: "29000", yom: "2008", price: "1.4M"
-    }, {
-        id: "58694a0f-3da1-471f-bd96-145571e29d81",
-        make: "Subaru Impreza",
-        mileage: "30000",
-        yom: "2009",
-        price: "1.41M"
-    }];
-    const carBrands: any [] = ["audi", "bmw", "honda", "lexus", "mazda", "mercedes", "nissan", "rangerover", "subaru", "suzuki", "toyota", "volvo"];
     const [state, setState] = React.useState({
         username: "",
         searchedCar: "",
         brandSelected: 0,
         selectedId: 0,
         loading: false,
-        populaCarData: DATA,
+        populaCarData: PopularCarData,
+        recentViews: [] as any,
+        loggedInUser: ""
     });
     const navigation = useNavigation<CombinedNavigationProps>();
+    const translateX = React.useRef<Animated.Value>(new Animated.Value(50)).current;
+    const recentViewOpacity = React.useRef<Animated.Value>(new Animated.Value(0.1)).current;
+    const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-    function getSelectedCar(carYom: string) {
+    const getSelectedCar = React.useCallback((carYom: string) => {
         return state.populaCarData.find(mappedCar => mappedCar.yom === carYom);
+    }, []);
+    const getSearchedCar = state.populaCarData.filter(car => {
+        return car.make?.toLowerCase().includes(state.searchedCar.toLowerCase())
+    });
+    const loadLoggedInUser = () => {
+        utils.getValue("username").then(user => {
+            if (typeof user === "string") {
+                setState({
+                    ...state, loggedInUser: JSON.parse(user)
+                })
+            }
+        })
     }
-    // React.useEffect(() => loadPopularCars(), [state.populaCarData]);
+
+    React.useEffect(() => {
+        Animated.parallel([
+            Animated.timing(translateX, {
+                toValue: 0,
+                duration: 500,
+                easing: Easing.linear,
+                useNativeDriver: true
+            }),
+            Animated.timing(recentViewOpacity, {
+                toValue: 1, duration: 1000, easing: Easing.out(Easing.cubic), useNativeDriver: true,
+            })]).start()
+        loadLoggedInUser()
+    }, [])
+    const addCarToViewedState = React.useCallback((selectedIndex: number) => {
+        setState(prevState => ({
+            ...prevState, recentViews: [...prevState.recentViews, state.populaCarData[selectedIndex]]
+        }));
+    }, [state.populaCarData, state.selectedId]);
+
 
     function loadPopularCars() {
         setState({
@@ -65,6 +79,10 @@ export default function Home() {
             //Sending the currect offset with get request
             .then((response) => response.json())
             .then((responseJson) => {
+                setState(prevState => ({
+                    ...prevState,
+                    populaCarData: [...prevState.populaCarData, responseJson]
+                }))
                 setState({
                     ...state
                 });
@@ -80,194 +98,123 @@ export default function Home() {
 
 
     function searchInput() {
-        return (<View style={{
-            alignItems: "center"
-        }}>
-            <TextInput placeholder="Search for a car"
-                       autoCapitalize="none"
-                       blurOnSubmit={true}
-                       keyboardType="default"
-                       style={{...homeStyles.textInput}}
-                       inlineImageLeft="magnifying-glass"
-                       underlineColorAndroid="transparent"
-                       onChangeText={(text) => setState({...state, searchedCar: text})}
-                       value={state.searchedCar}/>
-        </View>);
+        return (
+            <View style={[sharedStyles.searchInputMainContainer]}>
+                <View style={sharedStyles.searchInputContainer}>
+                    <TextInput
+                        style={[
+                            sharedStyles.searchInput,
+                            !layoutParams.platform.isAndroid && {paddingVertical: 16},
+                        ]}
+                        autoCapitalize="none"
+                        selectionColor="dodgerblue"
+                        placeholderTextColor="#B9BABC"
+                        placeholder="Search for a car"
+                        onChangeText={(carMake) => setState({
+                            ...state,
+                            searchedCar: carMake
+                        })}
+                        value={state.searchedCar}
+                    />
+                    <Icon name="search" size={30} color="#B9BABC"/>
+                </View>
+            </View>);
     }
 
-    function onPressimage() {
-        console.log("Pressed")
-        navigation.navigate("Profile")
+    const onPressSingleFlatList = (objectItem: CarItemProps) => {
+        navigation.navigate("CarDetails", {cardetails: getSelectedCar(objectItem.yom)});
+    };
+    
+    const onPressPopularCar = React.useCallback((index: number, objectItem: CarItemProps) => {
+        setState({
+            ...state, selectedId: index
+        });
+        addCarToViewedState(index)
+        onPressSingleFlatList(objectItem)
+    }, []);
 
+
+    function onPressimage() {
+        navigation.navigate("Profile");
     }
 
     function carBrandFlatList() {
+        const onBrandPress = React.useCallback((index: number) =>
+                setState({
+                    ...state, brandSelected: index
+                })
+            , []);
+
+
         return (<FlatListView showsHorizontalScrollIndicator={false} data={carBrands} horizontal
-                              renderItem={({item, index}: any) => <Pressable style={{
-                                  elevation: state.brandSelected == index ? 1 : 0,
-                                  alignItems: 'center',
-                                  justifyContent: "center",
-                                  minWidth: 70,
-                                  padding: state.brandSelected == index ? 12 : 6,
-                                  backgroundColor: state.brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
-                                  margin: 3,
-                                  borderRadius: 10
-                              }} onPress={() => {
-                                  setState({
-                                      ...state, brandSelected: index
-                                  })
-                              }} key={index}>
-                                  <Text style={{
-                                      fontSize: 15,
-                                      fontWeight: "600",
-                                      fontFamily: "Roboto_500Medium",
-                                      color: state.brandSelected === index ? layoutParams.colors.white : layout.colors.black
-                                  }}
-                                        adjustsFontSizeToFit>{item.charAt(0).toString().toUpperCase() + item.substring(1, item.length)}</Text>
-                              </Pressable>} ListFooterComponentStyle={null}
+                              renderItem={({item, index}: any) => <RenderCarsBrandsList
+                                  index={index} item={item}
+                                  onPress={() => onBrandPress(index)}
+                                  populaCarData={state.populaCarData}
+                                  brandSelected={state.brandSelected}/>}
+                              ListFooterComponentStyle={null}
                               ListFooterComponent={() => <View style={null}/>}
                               keyExtractor={(item: any, index) => item + index}
                               key={'_'}
                               extraData={state.brandSelected} contentContainerStyle={null} numColumns={1}/>);
     }
 
-    function renderCarSpecs(yom: number, mileage: number, index: number) {
+    function renderCarSpecs(yom: string, mileage: string, model: string, index: number) {
         return (<View style={{
-            marginLeft: 10
+            marginLeft: 5
         }} key={index}>
-            <View style={{
-                flexDirection: "row", alignItems: 'center'
-            }}>
-                <Text style={{
-                    fontWeight: "bold", textAlign: 'center', fontSize: 14
-                }}>Y.O.M:</Text>
-                <Text style={{
-                    fontWeight: "bold",
-                    textAlign: 'center',
-                    margin: 3,
-                    color: layoutParams.colors.lighGrey,
-                    fontSize: 15
-                }} adjustsFontSizeToFit>{yom}</Text>
-            </View>
-            <View style={{
-                flexDirection: "row", alignItems: 'center'
-            }}>
-                <Text style={{
-                    fontWeight: "bold", textAlign: 'center', margin: 3, fontSize: 15
-                }}>Mileage:</Text>
-                <Text style={{
-                    textAlign: 'center', margin: 3, color: layoutParams.colors.lighGrey, fontWeight: "bold"
-                }} adjustsFontSizeToFit>{mileage} kms</Text>
-            </View>
+            {renderCarItem("Model : ", model)}
+            {renderCarItem("Y.O.M : ", yom)}
+            {renderCarItem("Mileage : ", mileage + " kms")}
         </View>);
     }
 
-    function popularCars() {
-        function renderItem(item: any, index: number) {
-            const backgroundColor = index === state.selectedId ? layoutParams.colors.white : layoutParams.colors.grey;
-            return (<Pressable style={{
-                ...homeStyles.flatview, backgroundColor: backgroundColor, ...layoutParams.elevation
-            }}
-                               onPress={() => {
-                                   setState({
-                                       ...state, selectedId: index
-                                   });
-                                   navigation.navigate("CarDetails", {cardetails: getSelectedCar(item.yom)});
-                               }}>
-                <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
-                    flex: 1, width: layoutParams.WINDOW.width * .5, borderRadius: 10, resizeMode: "contain",
-                }}/>
-                <View style={{
-                    marginLeft: 10, marginRight: 10, flexDirection: "row", justifyContent: "space-between"
-                }}><Text style={{
-                    textAlign: 'center', fontWeight: "bold",
-                    fontSize: 25,
-                    fontFamily: "Poppins_600SemiBold"
-                }} adjustsFontSizeToFit>{item?.make}</Text>
-                    <Text style={{
-                        color: layoutParams.colors.lighGrey,
-                        fontWeight: "bold", fontFamily: "Poppins_500Medium", textAlign: 'center', fontSize: 20
-                    }} adjustsFontSizeToFit>{item?.price}</Text>
-                </View>
-                {renderCarSpecs(item.yom, item.mileage, index)}
-                {/*Horizontal line*/}
-                <View style={{
-                    justifyContent: 'center', alignItems: 'center'
-                }}>
-                    <View style={{
-                        margin: 5, borderBottomWidth: StyleSheet.hairlineWidth, width: "85%"
-                    }}/>
-                </View>
-                <View>
-                    <Text style={{
-                        textAlign: 'center', fontFamily: "Poppins_700Bold", margin: 10
-                    }} adjustsFontSizeToFit>Show more details</Text>
-                </View>
-            </Pressable>);
-        }
+    const renderCarItem = (item: string, key: string) => (<View style={{
+        flexDirection: "row",
+    }}>
+        <Text style={{
+            fontFamily: "WorkSans_600SemiBold",
+            color: layoutParams.colors.lighGrey
+        }} adjustsFontSizeToFit>{item}</Text>
+        <Text style={{
+            fontFamily: "WorkSans_500Medium",
+        }}>{key}</Text>
+    </View>);
 
-        // const renderPopularCarsFooter = () => {
-        //     return (<View style={homeStyles.footer}>
-        //         <TouchableOpacity
-        //             style={{
-        //                 alignItems: "center",
-        //                 justifyContent: 'center',
-        //                 backgroundColor: layoutParams.colors.deepBlue,
-        //                 elevation: 2,
-        //                 padding: 8,
-        //                 borderRadius: 10
-        //             }}
-        //             onPress={loadPopularCars}
-        //         >
-        //             <Text style={{fontSize: 20, fontWeight: "bold", color: layout.colors.white}}>Load More</Text>
-        //         </TouchableOpacity>
-        //     </View>);
-        // };
+
+    function renderPopularCars() {
         return <View style={{
-            flex: 2
-        }}><FlatListView showsHorizontalScrollIndicator={false} data={state.populaCarData}
-                         renderItem={({item, index}) => renderItem(item, index)}
-                         ListFooterComponentStyle={null}
-                         horizontal
-                         showsVerticalScrollIndicator={false}
-                         ListFooterComponent={null}
-                         keyExtractor={(item: any, index) => item.make + index}
-                         key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}/>
+            flex: 1.7
+        }}>
+            {getSearchedCar.length > 1 ?
+                <FlatListView showsHorizontalScrollIndicator={false} data={getSearchedCar}
+                              renderItem={({item, index}: any) => <PopularCarsList index={index} objectItem={item}
+                                                                                   renderCarSpecs={renderCarSpecs(item?.yom, item?.mileage, item?.model, index)}
+                                                                                   selectedId={state.selectedId}
+                                                                                   onPress={() => onPressPopularCar(index, item)}/>}
+                              ListFooterComponentStyle={null}
+                              horizontal
+                              showsVerticalScrollIndicator={false}
+                              ListFooterComponent={() => <View style={{marginLeft: 10}}/>}
+                              keyExtractor={(item: any, index) => item.make + index}
+                              key={'_'} extraData={state.selectedId} contentContainerStyle={{margin: 5}}/> :
+                <RenderSingleItem carObject={getSearchedCar} scale={recentViewOpacity}
+                                  translatedX={translateX}
+                                  onPress={() => onPressSingleFlatList(JSON.parse(JSON.stringify(getSearchedCar))[0])}/>
+            }
         </View>;
     }
 
-    function renderRecentlyViewed() {
+    const renderRecentlyViewed = () => {
+        let viewedCars: any = JSON.parse(JSON.stringify(state.recentViews));
         return (
-            <View style={{...homeStyles.homeFooter}}>
-                <View style={{
-                    marginRight: 10,
-                    marginLeft: 10,
-                    marginTop: 10,
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                }}>
-                    <Text style={{
-                        ...homeStyles.footerText,
-                        fontWeight: "bold"
-                    }}>
-                        Recently Added
-                    </Text>
-                    <Text style={{
-                        ...homeStyles.footerText,
-                        color: layoutParams.colors.deepBlue,
-                        textDecorationLine: "underline"
-                    }}>
-                        View All
-                    </Text>
-                </View>
-                <View style={{
-                    flex: 1,
-                    margin: 5,
-                    borderRadius: 10,
-                    flexDirection: "row",
-                    backgroundColor: layoutParams.colors.white,
-                    ...layoutParams.elevation
-                }}>
+            <>{viewedCars.length > 0 ?
+                <AnimatedPressable style={{
+                    ...homeStyles.homeFooter,
+                    padding: 5,
+                    translateX,
+                    transform: [{scale: recentViewOpacity}],
+                }} onPress={() => onPressSingleFlatList(JSON.parse(JSON.stringify(getSearchedCar))[0])}>
                     {/*Image at the start*/}
                     <Image source={require("../../../assets/images/mainCarImage.jpg")} style={{
                         justifyContent: "flex-start",
@@ -279,108 +226,163 @@ export default function Home() {
                     <View style={{
                         flex: 1,
                         marginLeft: 5
-                    }}><Text style={{...homeStyles.footerText, fontSize: 30}}>Audi</Text>
-                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Price : 951k</Text>
-                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Year Of Manufacturing :2021</Text>
-                        <Text style={{...homeStyles.carDetailsText, fontSize: 15}}> Mileage : 5000kms</Text>
+                    }}><Text style={{
+                        fontSize: 20,
+                        marginTop: 5,
+                        fontFamily: 'WorkSans_600SemiBold'
+                    }}>{viewedCars[viewedCars.length - 1].make}</Text>
+                        {renderCarItem("Model : ", viewedCars[viewedCars.length - 1].model)}
+                        {renderCarItem("Year Of Manufacturing : ", viewedCars[viewedCars.length - 1].yom)}
+                        {renderCarItem("Mileage : ", viewedCars[viewedCars.length - 1].mileage + " kms")}
+                        {renderCarItem("Price : ", "ksh. " + viewedCars[viewedCars.length - 1].price)}
                     </View>
-                </View>
-            </View>)
-    }
+                </AnimatedPressable> : <AnimatedPressable style={{
+                    ...homeStyles.homeFooter,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    translateX,
+                    transform: [{scale: recentViewOpacity}]
+                }}
+                                                          onPress={() => Alert.alert("Message", "Please view vehicles to add them to the recently viewed list")}><Text
+                    style={{
+                        fontFamily: "WorkSans_600SemiBold"
+                    }}>No Recently view cars</Text></AnimatedPressable>}
+            </>)
+    };
 
-    return (<SafeAreaView style={{
-        ...homeStyles.container
+    const topSection = () => (<View style={{
+        justifyContent: "space-between", margin: 5
     }}>
-        <View style={homeStyles.container}>
-            {/*top view with avatar*/}
+        <View style={{
+            flexDirection: "row", justifyContent: "space-between", alignItems: 'center'
+        }}>
             <View style={{
-                flexDirection: "row", justifyContent: "space-between", margin: 5
-            }}>
-                <Text style={{
-                    fontSize: 25, fontFamily: "Poppins_500Medium"
-                }}>Let's find the Ideal {'\n'}Car for you</Text>
-                <View style={{
-                    flexDirection: "row", justifyContent: "space-between", alignItems: 'center'
-                }}>
-                    <FontAwesome name="bell" size={30} color={layoutParams.colors.deepBlue}
-                                 style={{marginRight: 20}}/>
-                    {CircularImage({
-                        source: require('../../../assets/images/human-male.jpg'),
-                        style: {...homeStyles.circularImage},
-                        onPress: () => onPressimage
-                    })}
-                </View>
-            </View>
-            {searchInput()}
-            <View style={{
-                margin: 5
-            }}>
-                <Text style={{
-                    fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular", margin: 8
-                }}>Choose a brand</Text>
-                {/*brandsFlatList*/}
-                {carBrandFlatList()}
-                <View style={{
-                    justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
-                }}>
-                    <Text style={{
-                        fontSize: 20, fontWeight: "normal", fontFamily: "Poppins_400Regular"
-                    }}>Popular Cars</Text>
+                flexDirection: "row",
+                justifyContent: "space-between", alignItems: 'center',
 
-                        <Text style={{
-                            fontSize: 15,
-                            fontWeight: "bold",
-                            color: layoutParams.colors.deepBlue,
-                            fontFamily: "Poppins_400Regular",
-                            textDecorationLine: "underline"
-                        }}>View All</Text>
-                </View>
-                <View style={{
-                    marginTop: 10
-                }}/>
+            }}>
+                {CircularImage({
+                    source: {uri: 'https://randomuser.me/api/portraits/men/36.jpg'},
+                    size: layoutParams.WINDOW.height * .05,
+                    rounded: true,
+                    onPress: onPressimage
+                })}
+                <Text style={{
+                    marginLeft: 10,
+                    fontSize: 18,
+                    fontFamily: "Poppins_500Medium"
+                }}>{state.loggedInUser}</Text>
             </View>
-            {/*All Car Brands*/}
-            {popularCars()}
-            {renderRecentlyViewed()}
+            <FontAwesome name="bell-o" size={24} style={{marginRight: 10}}
+                         color={layoutParams.colors.black}/>
         </View>
-    </SafeAreaView>);
+        <Text style={homeStyles.headerTextBold}>Let's find the</Text>
+        <Text style={homeStyles.headerTextBold}>Ideal car for you</Text>
+    </View>);
+
+    return (
+
+        <SafeAreaView style={{
+            ...sharedStyles.container
+        }}>
+            <KeyboardAvoidingComponent>
+                <View style={sharedStyles.container}>
+                    {/*top view with avatar*/}
+                    {topSection()}
+                    {searchInput()}
+                    <View style={{
+                        margin: 5
+                    }}>
+                        {/*<Text style={{*/}
+                        {/*    fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold", margin: 8*/}
+                        {/*}}>View by  brand</Text>*/}
+                        {/*brandsFlatList*/}
+                        {carBrandFlatList()}
+                        <View style={{
+                            justifyContent: "space-between", flexDirection: "row", alignItems: 'center', margin: 5
+                        }}>
+                            <Text style={{
+                                fontSize: 22, fontFamily: "WorkSans_600SemiBold"
+                            }}>Popular Cars</Text>
+                            <Text style={{
+                                color: layoutParams.colors.deepBlue,
+                                fontFamily: "WorkSans_600SemiBold",
+                                textDecorationLine: "underline"
+                            }}>View All</Text>
+                        </View>
+                    </View>
+                    {/*All Car Brands*/}
+                    {renderPopularCars()}
+                    <View style={{
+                        marginRight: 10,
+                        marginLeft: 10,
+                        marginTop: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}>
+                        <Text style={{
+                            fontSize: 20,
+                            fontFamily: "WorkSans_600SemiBold"
+                        }}>
+                            Recently Viewed
+                        </Text>
+                        <Text style={{
+                            ...homeStyles.footerText, color: layoutParams.colors.deepBlue,
+                            textDecorationLine: "underline",
+                            fontFamily: "WorkSans_600SemiBold"
+                        }}>
+                            View All
+                        </Text>
+                    </View>
+                    {renderRecentlyViewed()}
+                </View>
+            </KeyboardAvoidingComponent>
+        </SafeAreaView>
+
+    );
 
 }
 const homeStyles = StyleSheet.create({
-    container: {
-        flex: 1, backgroundColor: layoutParams.colors.backgroundColor,
-    }, textInput: {
+    textInput: {
         width: layout.WINDOW.width * .95,
+        borderColor: layoutParams.colors.backgroundColor,
         height: layout.WINDOW.height * .05,
         borderBottomColor: '#B3CCD3',//if we want only bottom line
         backgroundColor: layout.colors.white,
         fontSize: 20,
         borderRadius: 10,
         padding: 10,
-        elevation: layout.elevation.elevation
+        elevation: layout.elevation.elevation,
     }, circularImage: {
         width: 50, height: 50, borderRadius: 50 / 2
-    }, flatview: {
-        margin: 3, borderRadius: 10, marginBottom: 10,
-    }, itemKeytext: {
-        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular", color: layoutParams.colors.disabledTextColor
-    }, itemValueText: {
-        fontSize: 15, fontWeight: "bold", fontFamily: "Roboto_400Regular"
-    }, footer: {
-        padding: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row',
-    },
-    homeFooter: {
-        flex: 1, marginRight: 5, marginLeft: 5,
-        ...layoutParams.elevation, backgroundColor: layoutParams.colors.backgroundColor,
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10
     },
     footerText: {
-        fontFamily: "Poppins_500Medium", textAlign: 'center'
+        fontFamily: "WorkSans_600SemiBold", textAlign: 'center'
     },
     carDetailsText: {
         fontSize: 15,
         // fontWeight:"bold",
         fontFamily: "Roboto_500Medium"
+    },
+    headerTextNormal: {
+        color: 'grey',
+        fontFamily: 'WorkSans_600SemiBold',
+        letterSpacing: 0.2,
+        fontSize: 15
+    },
+    headerTextBold: {
+        fontSize: 25,
+        fontFamily: 'WorkSans_500Medium',
+
+        letterSpacing: 0.25
+    },
+    homeFooter: {
+        flex: 0.7,
+        margin: 5,
+        borderRadius: 10,
+        flexDirection: "row",
+        backgroundColor: layoutParams.colors.searchInput,
+        ...layoutParams.elevation
     }
-})
+});
+

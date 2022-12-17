@@ -4,12 +4,9 @@
  *
  */
 import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
-import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
-import {ColorSchemeName} from 'react-native';
 import Profile from '../screens/authenticatedscreens/Profile';
-import TabTwoScreen from '../screens/TabTwoScreen';
 import {
     HomeBottomTabParamList,
     HomeBottomTabScreenProps,
@@ -19,58 +16,18 @@ import {
 import useColorScheme from "../hooks/useColorScheme";
 import LoginScreen from "../screens/unauthenticatedscreens/LoginScreen";
 import SignUpScreen from "../screens/unauthenticatedscreens/SignUpScreen";
-import {navigationRef} from "./RootNavigation";
-import utils from "../utils/Utils";
 import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
 import {Avatar} from "react-native-paper";
-import {Text, View} from "../components/Themed";
+import {View} from "../components/Widgets";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import LastOrders from "../screens/authenticatedscreens/LastOrders";
+import RecentViews from "../screens/authenticatedscreens/RecentViews";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
+import Messages from "../screens/authenticatedscreens/Messages";
+import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
+import CircularImage from "../components/CircularImage";
 
-export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName }) {
-    const [state, setState] = React.useState({
-        token: "" as any
-    });
-
-    React.useEffect(() => {
-        const fetchToken = async () => {
-            // await utils.saveValue("token", "yayyayayyaass");
-            const savedToken = await utils.getValue("token");
-            console.log("Saved token ", savedToken)
-            if (savedToken != null || savedToken != undefined) {
-                //checkToken here
-                let checkToken: boolean = false;
-                await fetch(utils.appUrl + "/verify").then(resp => resp.json()).then(data => {
-                    const respData = JSON.parse(JSON.stringify(data));
-                    if (respData.message == "success") {
-                        checkToken = true;
-                    }
-                    return checkToken;
-                }).catch(error => console.log(error));
-                if (checkToken) {
-                    setState({
-                        ...state,
-                        token: savedToken
-                    })
-                }
-            }
-
-        }
-        fetchToken();
-    }, [state.token])
-    console.table("token ", state.token)
-    return (
-        <NavigationContainer
-            theme={colorScheme === 'light' ? DarkTheme : DefaultTheme}
-            ref={navigationRef}>
-            {/*{state.token == null || state.token.length <= 0 ? <UnauthenticatedNavigator/> : <HomeStackNavigator/>}*/}
-            <HomeStackNavigator/>
-        </NavigationContainer>
-    );
-}
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -78,38 +35,25 @@ export default function Navigation({colorScheme}: { colorScheme: ColorSchemeName
  */
 
 
-
-// const Switch = createAppContainer(createSwitchNavigator(
-//     {
-//         UnAuthenticated: AuthenticationScreen,
-//         Authenticated: UnauthenticatedNavigator
-//     },
-//     {
-//         initialRouteName: 'UnAuthenticated'
-//     }
-// ));
-
-
-function HomeStackNavigator() {
+export function HomeStackNavigator() {
+    const theme = useColorScheme()
     return (
         <HomeStacks.Navigator initialRouteName='HomeStack' screenOptions={{
             headerStyle: {
                 backgroundColor: layoutParams.colors.backgroundColor,
             },
-            headerShadowVisible:false,
+            headerShadowVisible: false,
             headerShown: true,
             animation: "fade_from_bottom",
             headerTitleStyle: {
                 color: "black",
-                fontFamily: "Poppins_500Medium",
-                fontWeight: "bold",
-                fontSize: 25
+                fontFamily: "WorkSans_600SemiBold",
+                fontSize: 20
             },
             headerTintColor: "black",
             headerBackVisible: true,
             headerBackTitleStyle: {
                 fontSize: 20,
-                fontFamily: "Poppins_500Medium"
             }
         }}>
             <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
@@ -118,6 +62,25 @@ function HomeStackNavigator() {
                                options={({route}: any) => ({title: route.params.cardetails != undefined || route.params.cardetails != null ? route.params?.cardetails.make : "Select a Car"})}/>
             <HomeStacks.Group screenOptions={{presentation: 'modal'}}>
                 <HomeStacks.Screen name="Wallet" component={Profile}/>
+                <HomeStacks.Screen name="UserMessage" component={UserMessage}
+                                   options={({route}: any) => (
+                                       {
+                                           title: route.params.fromUser != undefined || route.params.fromUser != null ? route.params?.fromUser : "UserMessage",
+                                           headerLeft: () => <View style={{
+                                               margin: 5
+                                           }}>
+                                               <CircularImage
+                                                   source={{uri: route.params.fromUserImage}}
+                                                   size={45} rounded/></View>,
+                                           // headerSearchBarOptions: {
+                                           //     autoCapitalize: "none",
+                                           //     shouldShowHintSearchIcon: true,
+                                           //     inputType: "text",
+                                           //     placeholder: "Enter your values"
+                                           // }
+                                       })
+                                   }
+                />
             </HomeStacks.Group>
         </HomeStacks.Navigator>
     );
@@ -130,8 +93,18 @@ function HomeStackNavigator() {
 const HomeBottomTabs = createBottomTabNavigator<HomeBottomTabParamList>();
 const LoginStacks = createNativeStackNavigator<UnauthenticatedParamList>();
 const HomeStacks = createNativeStackNavigator<HomeStackParamList>();
+// const SharedElementStack = createSharedElementStackNavigator<SharedElementParamList>();
 
-function UnauthenticatedNavigator() {
+// function createSharedElements() {
+//     return (
+//         <SharedElementStack.Navigator initialRouteName="HomeStack">
+//             <SharedElementStack.Screen component={}
+//
+//         </SharedElementStack.Navigator>
+//     )
+// }
+
+export function UnauthenticatedNavigator() {
     const colorScheme = useColorScheme();
     return (
         <LoginStacks.Navigator initialRouteName="Login" screenOptions={{
@@ -152,10 +125,8 @@ function UnauthenticatedNavigator() {
                 title: "Login Page",
                 headerTitleStyle: {
                     color: layoutParams.colors.black,
-                    fontFamily: "Poppins_500Medium",
-                    fontSize: 25,
-                    fontWeight: "bold",
-
+                    fontFamily: "WorkSans_600SemiBold",
+                    fontSize: 20
                 }
             }}/>
             <LoginStacks.Screen name="SignUp" component={SignUpScreen}
@@ -165,15 +136,14 @@ function UnauthenticatedNavigator() {
                                     animation: "fade_from_bottom",
                                     headerTitleStyle: {
                                         color: "black",
-                                        fontFamily: "Poppins_500Medium",
-                                        fontWeight: "bold",
+                                        fontFamily: "WorkSans_600SemiBold",
                                         fontSize: 20
                                     },
                                     headerTintColor: "black",
                                     headerBackVisible: true,
                                     headerBackTitleStyle: {
                                         fontSize: 20,
-                                        fontFamily: "Poppins_500Medium"
+                                        fontFamily: "WorkSans_600SemiBold"
                                     }
 
                                 }}/>
@@ -181,11 +151,10 @@ function UnauthenticatedNavigator() {
                                 options={{
                                     headerShown: true,
                                     animation: "fade_from_bottom",
-                                    title: "Password Reset Page",
+                                    title: "Reset password",
                                     headerTitleStyle: {
                                         color: "black",
-                                        fontFamily: "Poppins_500Medium",
-                                        fontWeight: "bold",
+                                        fontFamily: "WorkSans_600SemiBold",
                                         fontSize: 20
                                     },
                                     headerTintColor: "black",
@@ -216,24 +185,21 @@ function BottomTabNavigator() {
                 },
                 tabBarLabelStyle: {
                     fontSize: 14,
-                    fontWeight: "bold",
+                    fontFamily:"WorkSans_500Medium"
                 },
                 headerStyle: {
-                    backgroundColor: layoutParams.colors.backgroundColor
+                    // backgroundColor: colorScheme === "light" ? layoutParams.colors.backgroundColor :"rgba(255,255,255,0.05)"
                 },
                 headerTitleStyle: {
-                    fontSize: 25,
-                    fontFamily: "Poppins_400Regular"
+                    fontSize: 20,
+                    fontFamily: "WorkSans_600SemiBold",
                 },
                 tabBarLabelPosition: "beside-icon",
                 headerTitleAlign: "center",
                 tabBarAllowFontScaling: true,
                 tabBarStyle: {
-                    backgroundColor: layoutParams.colors.backgroundColor,
-                    borderRadius: 5,
-                    marginBottom: 4,
-                    marginLeft: 10,
-                    marginRight: 10,
+                    borderTopRightRadius: 20,
+                    borderTopLeftRadius: 20,
                 },
                 headerTitleAllowFontScaling: true,
                 unmountOnBlur: true,
@@ -271,32 +237,26 @@ function BottomTabNavigator() {
                         height: 55,
                         backgroundColor: layoutParams.colors.backgroundColor
                     },
-                    headerLeft: () => (
-                        <View>
-                            <Text style={{
-                                fontSize: 20, fontFamily: "Poppins_500Medium"
-                            }}>Let's find the Ideal {'\n'}Car for you</Text>
-                        </View>),
                     headerShown: false,
                     headerTitleStyle: false,
                     headerTitleAllowFontScaling: true
                 })}
             />
             <HomeBottomTabs.Screen
-                name="LastOrders"
-                component={LastOrders}
+                name="RecentlyView"
+                component={RecentViews}
                 options={{
-                    title: "Latest Purchases",
-                    tabBarLabel: "Purchases",
+                    title: "Recent Views",
+                    tabBarLabel: "Recent Views",
                     tabBarIcon: ({color}) => <TabBarIcon name="cart" color={color} size={25}/>,
                 }}
             />
             <HomeBottomTabs.Screen
-                name="Settings"
-                component={TabTwoScreen}
+                name="Messages"
+                component={Messages}
                 options={{
-                    tabBarLabel: "Settings",
-                    tabBarIcon: ({color}) => <TabBarIcon name="wrench" color={color} size={25}/>,
+                    tabBarLabel: "Messages",
+                    tabBarIcon: ({color}) => <TabBarIcon name="comment-multiple" color={color} size={25}/>,
                 }}
             />
             <HomeBottomTabs.Screen

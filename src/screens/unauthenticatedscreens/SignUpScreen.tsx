@@ -1,159 +1,168 @@
-import {Pressable, StatusBar, StyleSheet} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 import layout from "../../utils/LayoutParams";
 import layoutParams from "../../utils/LayoutParams";
-import displayImage from "../../utils/DisplayImage";
+import HeaderSection from "../../components/HeaderSection";
 import React from "react";
-import utils from "../../utils/Utils";
 import {DarkTheme, useNavigation} from "@react-navigation/native";
 import {CombinedNavigationProps} from "../../navigation/ScreenTypes";
 import {Checkbox} from 'react-native-paper';
-import {SafeAreaProvider} from "react-native-safe-area-context";
-import {Text, TextInput, View} from "../../components/Themed";
+import {ActivityIndicator, KeyboardAvoidingComponent, Text, View} from "../../components/Widgets";
+import TextInputComponent from "../../components/TextInputComponent";
+import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
+import utils from "../../utils/Utils";
+import toast from "../../utils/toast";
+import {RegisterConstants} from "../../utils/AllConstant";
+import {RegisterResponse} from "../../utils/AppInterfaces";
 
 export default function SignUpScreen() {
     const [state, setState] = React.useState({
-        username: "", password: "", email: "", checkBoxChecked: false
+        username: "",
+        password: "",
+        phoneNumber: "",
+        checkBoxChecked: false,
+        showPassword: true,
+        loading: false,
+        disabledButton: false
     });
     const navigation = useNavigation<CombinedNavigationProps>();
 
-    function validateUserTextFields() {
-        if (state.email.length <= 0 || !state.email.toLowerCase().match(utils.checkValidMail)) {
-            return true;
-        }
-        if (state.password.length <= 0 || state.password.length < 8) {
-            return true;
-        }
-        return !state.checkBoxChecked
+    function inputsValid() {
+        return (state.phoneNumber.length > 0 && state.phoneNumber.length < 14) && (state.username.length > 0) && (state.password.length >= 8) && (state.checkBoxChecked);
     }
 
     function onRegister() {
-        if (!validateUserTextFields()) {
-            if (state.username != null && state.password != null && state.email != null) {
-                fetch(utils.appUrl + "/register", {
-                    method: "POST", headers: {
-                        "Content-Type": "application/json"
-                    }, body: JSON.stringify({
-                        username: state.username, pasword: state.password
+        if (inputsValid()) {
+            setState({
+                ...state, loading: true, disabledButton: true
+            });
+
+            setTimeout(() => {
+                if (state.username != null && state.password != null && (state.phoneNumber + "") != null) {
+                    const registrationData = {
+                        "username": state.username, "password": state.password, "phonenumber": state.phoneNumber
+                    }
+                    utils.postData(utils.appUrl + "/users/register", registrationData).then(response => {
+                        let responseData: RegisterResponse = response
+                        if (responseData.responseCode === RegisterConstants.SUCCESS_CODE) {
+                            if (responseData.user?.username != null && responseData.user?.user_id != null) {
+                                toast.success({
+                                    message: responseData.message
+                                });
+                                navigation.navigate("Login");
+                            }
+                        } else if (responseData.responseCode === RegisterConstants.EXISTS_CODE) {
+                            toast.danger({
+                                message: response.message
+                            });
+                        } else {
+                            toast.danger({
+                                message: response.message
+                            })
+                        }
+
+                    }).catch(error => {
+                        toast.danger({
+                            message: error.message
+                        })
+                    }).finally(() => {
+                        setState({
+                            ...state, loading: false, disabledButton: false
+                        });
                     })
-                }).then(response => response.json()).then(reponseData => {
-                    const response = JSON.parse(JSON.stringify(reponseData));
-                    utils.saveValue("token", response.User.token);
-                }).catch(error => console.log(error));
-            }
+                }
+
+            }, 2000, [])
         }
         return;
     }
 
-    return (<SafeAreaProvider><View style={{
-        flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: layout.colors.backgroundColor
-    }}>
-        {/*upperImageView*/}
+
+    return (<KeyboardAvoidingComponent>
+        {ActivityIndicator(state.loading)}
         <View style={{
-            borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, elevation: layout.elevation.elevation
+            flex: 1, justifyContent: "center", backgroundColor: layout.colors.backgroundColor
         }}>
-            {displayImage({
-                borderRadii: 30, resizeMode: "contain"
+            {/*upperImageView*/}
+            {HeaderSection({
+                actionText: "Create an account with us",
+                containerHeaderStyle: sharedStyles.containerHeaderStyle,
+                actionTextStyle: sharedStyles.actionTextStyle
             })}
-        </View>
-        {/*inputs view*/}
-        <View style={{flex: 1}}>
-            <Text style={{
-                fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
-            }}>
-                Rifasa Cars
-            </Text>
-            <Text style={{
-                textAlign: "center", fontSize: 15, color: layoutParams.colors.lighGrey, fontFamily: "Poppins_500Medium", // justifyContent: "center"
-            }}>
-                Create an account with us
-            </Text>
-            <View style={{
-                marginTop: 10, alignItems: 'center'
-            }}>
-                <TextInput placeholder="abc@mail.com"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="email-address"
-                           style={{...registerStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           onChangeText={(text) => setState({...state, email: text})}
-                           value={state.email}
-                />
-                <TextInput placeholder="Enter a username"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="default"
-                           style={{...registerStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           onChangeText={(text) => setState({...state, username: text})}
-                           value={state.username}
-                />
-                <TextInput placeholder="Enter a password"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="default"
-                           style={{...registerStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           secureTextEntry={true}
-                           onChangeText={(text) => setState({...state, password: text})}
-                           value={state.password}
-                />
-                <Checkbox.Item label="Accept terms and condtions here "
-                               status={state.checkBoxChecked ? 'checked' : 'unchecked'}
-                               position={"leading"}
-                               color={layout.colors.black}
-                               labelStyle={{
-                                   fontSize: 20, color: layout.colors.black
-                               }}
-                               uncheckedColor={layout.colors.selectedColor}
-                               theme={DarkTheme}
-                               onPress={() => setState({
-                                   ...state, checkBoxChecked: !state.checkBoxChecked
-                               })}
-                />
-                <Pressable style={({pressed}) => [{
-                    marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
-                    elevation: layout.elevation.elevation,
-                    justifyContent: "center",
-                    alignItems: 'center'
-                }, registerStyles.wrapperCustom]} onPress={() => onRegister()} disabled={validateUserTextFields()}>
-                    <Text style={{
-                        marginTop: 10,
-                        fontFamily: "Poppins_500Medium",
-                        color: validateUserTextFields() ? layout.colors.grey : layout.colors.white,
-                        fontSize: 20,
-                        textAlign: "center", // justifyContent: "center"
+            {/*inputs view*/}
+            <View style={{flex: 1}}>
+                <View style={{
+                    marginTop: 10
+                }}>
+                    <TextInputComponent placeholder="Enter phone number starting with 07"
+                                        onChange={(value) => setState({...state, phoneNumber: value.trim()})}
+                                        secureEntry={false}
+                                        containerStyles={sharedStyles.searchInputMainContainer}
+                                        inputView={sharedStyles.searchInputContainer}
+                                        searchInput={sharedStyles.searchInput} autoCapitalize="none"
+                                        keyboardType="number-pad"
+                                        value={state.phoneNumber}
+                                        iconName="phone"
+                                        iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                        iconColor={layoutParams.colors.lighGrey}/>
+                    <TextInputComponent placeholder="Enter a username"
+                                        onChange={(text) => setState({...state, username: text.trim()})}
+                                        secureEntry={false}
+                                        containerStyles={sharedStyles.searchInputMainContainer}
+                                        inputView={sharedStyles.searchInputContainer}
+                                        searchInput={sharedStyles.searchInput} autoCapitalize="none"
+                                        keyboardType="default"
+                                        value={state.username} iconName="account"
+                                        iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                        iconColor={layoutParams.colors.lighGrey}/>
+                    <TextInputComponent placeholder="Enter a password"
+                                        onChange={(text) => setState({...state, password: text.trim()})}
+                                        secureEntry={state.showPassword}
+                                        containerStyles={sharedStyles.searchInputMainContainer}
+                                        inputView={sharedStyles.searchInputContainer}
+                                        searchInput={sharedStyles.searchInput} autoCapitalize="none"
+                                        keyboardType="default"
+                                        value={state.password}
+                                        iconName={state.showPassword ? "eye-off" : "eye"}
+                                        onPressIcon={() => setState({
+                                            ...state, showPassword: !state.showPassword
+                                        })}
+                                        iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                        iconColor={layoutParams.colors.lighGrey}/>
+                    <Checkbox.Item label="Accept terms and conditions here "
+                                   status={state.checkBoxChecked ? 'checked' : 'unchecked'}
+                                   position={"leading"}
+                                   color={layout.colors.black}
+                                   labelStyle={{
+                                       color: layout.colors.black, fontFamily: "WorkSans_500Medium"
+                                   }}
+                                   uncheckedColor={layout.colors.selectedColor}
+                                   theme={DarkTheme}
+                                   onPress={() => setState({
+                                       ...state, checkBoxChecked: !state.checkBoxChecked
+                                   })}
+                    />
+                    <Pressable onPress={() => onRegister()} disabled={!inputsValid() || state.disabledButton} style={{
+                        ...buttonStyle(inputsValid()).button
                     }}>
-                        Sign Up
-                    </Text>
-                </Pressable>
-                <Text style={{
-                    margin: 10, fontSize: 18, textAlign: "center"
-                }}>Already have an account? <Text style={{
-                    fontSize: 18, fontWeight: "bold", color: layout.colors.deepBlue
-                }} onPress={() => navigation.navigate("Login")}>Login</Text></Text>
+                        <Text style={{
+                            ...registerStyles.buttonText,
+                            color: inputsValid() ? layoutParams.colors.white : layoutParams.colors.black
+                        }}>Sign Up</Text>
+                    </Pressable>
+                    <Text style={{
+                        margin: 10, textAlign: "center", fontFamily: "WorkSans_500Medium"
+                    }}>Already have an account? <Text style={{
+                        fontSize: 18, color: layout.colors.deepBlue, fontFamily: "WorkSans_500Medium"
+                    }} onPress={() => navigation.navigate("Login")}>Login</Text></Text>
+                </View>
             </View>
-        </View>
-    </View>
-    </SafeAreaProvider>);
+                </View>
+            </KeyboardAvoidingComponent>);
 }
 const registerStyles = StyleSheet.create({
-    textInput: {
-        // backgroundColor: "#DBE0E6",
-        width: layout.WINDOW.width * .95,
-        height: layout.WINDOW.height * .062,
-        borderBottomColor: '#B3CCD3',//if we want only bottom line
-        backgroundColor: layout.colors.textInputColor,
-        fontSize: 20,
-        borderRadius: StatusBar.currentHeight,
-        margin: 5,
-        padding: 10,
-    }, wrapperCustom: {
-        alignItems: "center",
-        width: layout.WINDOW.width * .95,
-        borderRadius: StatusBar.currentHeight,
-        padding: 6,
-        height: layout.WINDOW.height * .062,
-    },
+    buttonText: {
+        fontFamily: "Poppins_500Medium", fontSize: 20, textAlign: "center",
+    }
 })
+
+

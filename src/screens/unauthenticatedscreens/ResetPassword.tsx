@@ -1,99 +1,122 @@
 import React from "react";
-import {Pressable, StatusBar, StyleSheet} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import layoutParams from "../../utils/LayoutParams";
-import layout from "../../utils/LayoutParams";
-import displayImage from "../../utils/DisplayImage";
+import HeaderSection from "../../components/HeaderSection";
+import {ActivityIndicator, KeyboardAvoidingComponent, showToast, Text, View} from "../../components/Widgets";
+import TextInputComponent from "../../components/TextInputComponent";
+import {buttonStyle, sharedStyles} from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
-import {Text, TextInput, View} from "../../components/Themed";
+import {GetUserresponse} from "../../utils/AppInterfaces";
+import toast from "../../utils/toast";
+
 
 export default function ResetPassword() {
     const [state, setState] = React.useState({
-        email: ""
+        username: "", password: "", showPassword: false, passFieldVisible: false, loading: false,
     });
 
-    function validateUserTextFields() {
-        if (state.email.length == 0 || !state.email.toLowerCase().match(utils.checkValidMail)) {
-            return true;
-        }
-        return false;
+    function inputsValid() {
+        return state.username.length > 0;
     }
+
+    React.useEffect(()=>{
+        console.log(state.passFieldVisible)
+    },[state.passFieldVisible])
 
     function onResetPass() {
+        if (inputsValid()) {
+            setState({
+                ...state, loading: true
+            });
+        }
+        setTimeout(() => {
+            if (state.username != null) {
+                const data = {
+                    "username": state.username
+                }
+                utils.postData(utils.appUrl + "/users/getUser", data).then(response => {
+                    let responseData: GetUserresponse = response
+                    if (responseData.responseCode == 200) {
+                        setState({
+                            ...state,
+                            passFieldVisible: true
+                        });
+
+                    } else {
+                        toast.success({
+                            message: responseData.message
+                        })
+                    }
+                }).catch(error => showToast(error.message)).finally(() => {
+                    setState({
+                        ...state,
+                        loading: false
+                    });
+                })
+            }
+        }, 2000);
+        return
+
     }
 
-    return (<SafeAreaProvider>
-        <View style={resetPassStyles.container}>
-            <View style={{
-                borderBottomRightRadius: 30, borderBottomLeftRadius: 30, flex: .5, elevation: layout.elevation.elevation
-            }}>
-                {displayImage({
-                    borderRadii: 30, resizeMode: "contain"
+    return (<KeyboardAvoidingComponent>
+        <SafeAreaProvider>
+            {ActivityIndicator(state.loading)}
+            <View style={sharedStyles.container}>
+                {HeaderSection({
+                    actionText: "Recover your account",
+                    containerHeaderStyle: sharedStyles.containerHeaderStyle,
+                    actionTextStyle: sharedStyles.actionTextStyle
                 })}
+                <View style={{
+                    flex: 1
+                }}>
+                    <TextInputComponent placeholder="Enter your username or phonenumber"
+                                        onChange={(text) => setState({...state, username: text.trim()})}
+                                        secureEntry={false} containerStyles={sharedStyles.searchInputMainContainer}
+                                        inputView={sharedStyles.searchInputContainer}
+                                        searchInput={sharedStyles.searchInput} autoCapitalize="none"
+                                        keyboardType="default"
+                                        value={state.username} iconName="account"
+                                        iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                        iconColor={layoutParams.colors.lighGrey}/>
+                    {state.passFieldVisible ?
+                        <TextInputComponent placeholder="password"
+                                            onChange={(text) => setState({...state, password: text.trim()})}
+                                            secureEntry={!state.showPassword}
+                                            containerStyles={sharedStyles.searchInputMainContainer}
+                                            inputView={sharedStyles.searchInputContainer}
+                                            searchInput={sharedStyles.searchInput} autoCapitalize="none"
+                                            keyboardType="default"
+                                            value={state.password.trim()}
+                                            iconName={!state.showPassword ? "eye-off" : "eye"}
+                                            onPressIcon={() => setState({
+                                                ...state, showPassword: !state.showPassword
+                                            })}
+                                            iconSize={25} underlineColorAndroid="transparent" blurOnSubmit={true}
+                                            iconColor={layoutParams.colors.lighGrey}/> : null}
+
+
+                    <Pressable style={{
+                        ...buttonStyle(inputsValid()).button
+                    }} onPress={() => onResetPass()} disabled={!inputsValid()}>
+                        <Text style={{
+                            ...resetPassStyles.buttonText,
+                            color: inputsValid() ? layoutParams.colors.white : layoutParams.colors.black
+                        }}>
+                            Reset Password
+                        </Text>
+                    </Pressable>
+
+                </View>
             </View>
-            <View style={{
-                flex: 1
-            }}>
-                <Text style={{
-                    fontFamily: "Poppins_600SemiBold", fontSize: StatusBar.currentHeight, textAlign: "center", // justifyContent: "center"
-                }}> Rifasa Cars </Text>
-                <Text style={{
-                    textAlign: "center",
-                    fontSize: 15,
-                    color: layoutParams.colors.lighGrey,
-                    fontFamily: "Poppins_500Medium",
-                }}> Reset your account</Text>
-                <TextInput placeholder="abc@mail.com"
-                           autoCapitalize="none"
-                           blurOnSubmit={true}
-                           keyboardType="email-address"
-                           style={{...resetPassStyles.textInput}}
-                           underlineColorAndroid="transparent"
-                           onChangeText={(text) => setState({...state, email: text})}
-                           value={state.email}
-                />
-                <Pressable style={({pressed}) => [{
-                    marginTop: 10,
-                    backgroundColor: validateUserTextFields() ? layout.colors.selectedColor : layout.colors.black,
-                    elevation: layout.elevation.elevation,
-                    justifyContent: "center",
-                    alignItems: 'center'
-                }, resetPassStyles.wrapperCustom]} onPress={() => onResetPass()} disabled={validateUserTextFields()}>
-                    <Text style={{
-                        marginTop: 10,
-                        fontFamily: "Poppins_500Medium",
-                        color: validateUserTextFields() ? layout.colors.disabledTextColor : layout.colors.white,
-                        fontSize: 20,
-                        textAlign: "center", // justifyContent: "center"
-                    }}>
-                        Reset Password
-                    </Text>
-                </Pressable>
-            </View>
-        </View>
-    </SafeAreaProvider>);
+        </SafeAreaProvider>
+    </KeyboardAvoidingComponent>);
 }
 const resetPassStyles = StyleSheet.create({
-    container: {
-        flex: 1, backgroundColor: layoutParams.colors.backgroundColor, alignItems: 'center'
-    }, textInput: {
-        width: layout.WINDOW.width * .95,
-        height: layout.WINDOW.height * .062,
-        marginTop: 20,
-        borderBottomColor: '#B3CCD3',//if we want only bottom line
-        backgroundColor: layout.colors.white,
+    buttonText: {
+        fontFamily: "Poppins_500Medium",
         fontSize: 20,
-        borderRadius: StatusBar.currentHeight,
-        margin: 5,
-        padding: 10,
-        elevation: layout.elevation.elevation
-    }, wrapperCustom: {
-        elevation: layout.elevation.elevation,
-        alignItems: "center",
-        marginTop: 30,
-        width: layout.WINDOW.width * .95,
-        borderRadius: StatusBar.currentHeight,
-        padding: 6,
-        height: layout.WINDOW.height * .062,
-    },
+    }
 })

@@ -7,6 +7,7 @@ import {CompositeNavigationProp, CompositeScreenProps, RouteProp} from '@react-n
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackNavigationProp, StackScreenProps} from "@react-navigation/stack";
 import {BottomTabNavigationProp, BottomTabScreenProps} from "@react-navigation/bottom-tabs";
+import {CarItemProps} from "../utils/AppInterfaces";
 
 declare global {
   namespace ReactNavigation {
@@ -23,18 +24,19 @@ declare global {
 
 export type HomeBottomTabParamList = {
   HomeTab: StackScreenProps<HomeStackParamList>;
-  LastOrders: undefined;
+  RecentlyView: undefined;
   Profile: undefined
-  Settings: undefined
+  Messages: undefined
 };
 
 export type RootStackScreenProps<screen extends keyof HomeBottomTabParamList> = NativeStackScreenProps<HomeBottomTabParamList,
     screen>;
 
 export type HomeStackParamList = {
-  HomeStack:  undefined;
-  CarDetails: { cardetails: {} } | undefined
-  Wallet: undefined
+  HomeStack: undefined;
+  CarDetails: any
+  Wallet: undefined,
+  UserMessage: { fromUser: string, fromUserImage: any } | undefined
 
 };
 export type UnauthenticatedParamList = {
