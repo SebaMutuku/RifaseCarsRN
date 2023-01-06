@@ -23,7 +23,7 @@ interface textInputProps {
   keyboardType: KeyboardTypeOptions | undefined;
   underlineColorAndroid?: ColorValue | undefined;
   value: any;
-  iconName: string;
+  iconName?: string;
   onPressIcon?: () => void;
   iconSize: number;
   label?: string;
@@ -80,7 +80,7 @@ const TextInputComponent = ({ ...props }: textInputProps) => {
           accessibilityLabel={props.label}
         />
         <Icon
-          name={props.iconName}
+          name={props.iconName as string}
           size={props.iconSize}
           color={layoutParams.colors.grey}
           onPress={props.onPressIcon}

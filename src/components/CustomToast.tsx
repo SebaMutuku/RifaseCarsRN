@@ -2,6 +2,7 @@ import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {Animated, Platform, StyleSheet, Text, ToastAndroid, useWindowDimensions, View,} from 'react-native';
 import {AntDesign} from "@expo/vector-icons";
 import layoutParams from "../utils/LayoutParams";
+import { appFonts } from '../utils/AllConstant';
 
 interface Props {
 }
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#f8f8f8',
         textAlign: 'center',
-        fontFamily: "WorkSans_600SemiBold",
+        fontFamily: appFonts.WorkSans_600SemiBold,
         paddingHorizontal: 8,
         paddingVertical: 4,
     },

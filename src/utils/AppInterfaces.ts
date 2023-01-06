@@ -11,14 +11,14 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 export interface AppAuthState {
   isLoading: boolean;
   signout: boolean;
-  userToken: undefined | string;
+  userToken: string | any;
 }
 
 export type Action =
-  | { type: "RETRIVE_TOKEN"; token: string | undefined }
-  | { type: "AUTHENTICATED"; token: string | undefined }
-  | { type: "SIGN_UP"; token: string | undefined }
-  | { type: "SIGN_OUT"; token: string | undefined };
+  | { type: "RETRIVE_TOKEN"; token: string | null }
+  | { type: "AUTHENTICATED"; token: string | null }
+  | { type: "SIGN_UP"; token: string | null }
+  | { type: "SIGN_OUT"; token: string | null };
 
 export interface CarItemProps {
   id: string;

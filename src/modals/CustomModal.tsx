@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   modalText: {
     textAlign: "center",
     fontSize: 20,
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
   },
   subtitleText: {
     textAlign: "center",

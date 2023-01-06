@@ -238,7 +238,7 @@ export default function SignUpScreen() {
 }
 const registerStyles = StyleSheet.create({
   buttonText: {
-    fontFamily: "Poppins_500Medium",
+    fontFamily: appFonts.Poppins_500Medium,
     textAlign: "center",
   },
 });

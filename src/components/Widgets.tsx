@@ -57,7 +57,7 @@ export function CheckBox({ ...props }: AppCheckBoxProps) {
       fillColor={layoutParams.colors.primaryColor}
       textStyle={{
         color: layoutParams.colors.black,
-        fontFamily: appFonts.WorkSans_400Regular,
+        fontFamily: appFonts.WorkSans_500Medium,
       }}
       unfillColor={layoutParams.colors.backgroundColor}
       disableBuiltInState

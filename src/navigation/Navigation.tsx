@@ -48,13 +48,13 @@ export function HomeStackNavigator() {
         animation: "fade_from_bottom",
         headerTitleStyle: {
           color: "black",
-          fontFamily: "WorkSans_600SemiBold",
-          fontSize: 20,
+          fontFamily: appFonts.WorkSans_600SemiBold,
         },
         headerTintColor: "black",
         headerBackVisible: true,
         headerBackTitleStyle: {
           fontSize: 20,
+          fontFamily: appFonts.WorkSans_600SemiBold,
         },
       }}
     >
@@ -147,6 +147,9 @@ export function UnauthenticatedNavigator() {
           backgroundColor: layoutParams.colors.backgroundColor,
         },
         headerTitleAlign: "center",
+        headerBackTitleStyle: {
+          fontFamily: appFonts.WorkSans_600SemiBold,
+        },
       }}
     >
       <LoginStacks.Screen
@@ -157,7 +160,7 @@ export function UnauthenticatedNavigator() {
           title: "Login Page",
           headerTitleStyle: {
             color: layoutParams.colors.black,
-            fontFamily: "WorkSans_600SemiBold",
+            fontFamily: appFonts.WorkSans_600SemiBold,
             fontSize: 20,
           },
         }}
@@ -230,7 +233,7 @@ function BottomTabNavigator() {
         },
         headerTitleStyle: {
           fontSize: 20,
-          fontFamily: "WorkSans_600SemiBold",
+          fontFamily: appFonts.WorkSans_600SemiBold,
         },
         tabBarLabelPosition: "beside-icon",
         headerTitleAlign: "center",

@@ -207,7 +207,7 @@ const userMessageStyles = StyleSheet.create({
   },
   sender: {
     fontSize: 15,
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
     textTransform: "capitalize",
   },
   messageTime: {

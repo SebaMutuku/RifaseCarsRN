@@ -38,7 +38,7 @@ const RenderSingleItem = ({ ...props }: SingleCarProps) => {
       <Text
         style={{
           fontSize: 16,
-          fontFamily: "WorkSans_600SemiBold",
+          fontFamily: appFonts.WorkSans_600SemiBold,
           color: layoutParams.colors.lighGrey,
         }}
         adjustsFontSizeToFit
@@ -105,22 +105,40 @@ const RenderSingleItem = ({ ...props }: SingleCarProps) => {
               style={{
                 fontSize: 20,
                 marginTop: 5,
-                fontFamily: "WorkSans_600SemiBold",
+                fontFamily: appFonts.WorkSans_600SemiBold,
+                color: layoutParams.colors.primaryColor,
               }}
             >
-              {state.carItem.make}
+              {state.carItem.make} {""}
+              {state.carItem.model},{state.carItem.yom}
             </Text>
-            <View
+            <Text
               style={{
-                flexDirection: "column",
-                justifyContent: "center",
+                textDecorationLine: "underline",
+                fontFamily: appFonts.WorkSans_600SemiBold,
+                color: layoutParams.colors.primaryColor,
               }}
             >
-              {renderCarItem("Model : ", state.carItem.model)}
-              {renderCarItem("Year Of Manufacturing : ", state.carItem.yom)}
-              {renderCarItem("Mileage : ", state.carItem.mileage + " kms")}
-              {renderCarItem("Price : ", "ksh. " + state.carItem.price)}
-            </View>
+              Car Description
+            </Text>
+            <Text style={{ fontFamily: appFonts.WorkSans_500Medium }}>
+              Red {state.carItem.make} {""}
+              {state.carItem.model}, {"\n"}Mileage {""}
+              {state.carItem.mileage}, {"\n"}year of manuafacturing{" "}
+              {state.carItem.yom}
+            </Text>
+            <Text
+              style={{
+                textAlign: "left",
+                marginTop: 5,
+                color: layoutParams.colors.primaryColor,
+                fontFamily: "WorkSans_700Bold",
+                fontSize: 16,
+              }}
+              adjustsFontSizeToFit
+            >
+              Price Ksh. {state.carItem.price}
+            </Text>
           </View>
         </AnimatedPressable>
       )}

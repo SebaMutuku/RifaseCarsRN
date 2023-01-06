@@ -99,7 +99,7 @@ export default function Profile() {
               styles.profileText,
               {
                 fontSize: 22,
-                fontFamily: "WorkSans_600SemiBold",
+                fontFamily: appFonts.WorkSans_600SemiBold,
                 color: layoutParams.colors.textLightColor,
               },
             ]}
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   },
   profileText: {
     fontSize: 14,
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
   },
   scrollView: {
     borderTopLeftRadius: 20,
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   header: {
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
     fontSize: 20,
   },
   title1: {

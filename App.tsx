@@ -70,8 +70,9 @@ export default function App() {
   React.useEffect(() => {
     const bootstrapAsync = async () => {
       try {
-        // const userToken = await utils.getValue('token');
-        const userToken: any = null;
+        let userToken = await utils.getValue("token");
+        userToken = "hahaaha";
+        console.log("Token ", userToken);
         if (userToken !== null || userToken !== undefined) {
           dispatch({ type: "AUTHENTICATED", token: userToken });
         } else {
@@ -87,7 +88,19 @@ export default function App() {
 
   const authContext = React.useMemo(
     () => ({
-      retrieveToken: async (data: any) => {},
+      retrieveToken: async (data: any) => {
+        fetch("urls", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((resp) => resp.json())
+          .then((response) => {
+            console.table(response);
+          });
+      },
       signIn: async (token: string) => {
         if (token) {
           dispatch({ type: "AUTHENTICATED", token: token });

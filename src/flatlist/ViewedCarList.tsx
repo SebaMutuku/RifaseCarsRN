@@ -49,7 +49,7 @@ const ViewedCarList = ({ ...props }: CarViewProps) => {
     >
       <Text
         style={{
-          fontFamily: "WorkSans_600SemiBold",
+          fontFamily: appFonts.WorkSans_600SemiBold,
           color: layoutParams.colors.lighGrey,
         }}
         adjustsFontSizeToFit
@@ -105,7 +105,7 @@ const ViewedCarList = ({ ...props }: CarViewProps) => {
           style={{
             fontSize: 20,
             marginTop: 5,
-            fontFamily: "WorkSans_600SemiBold",
+            fontFamily: appFonts.WorkSans_600SemiBold,
           }}
         >
           {props.carData.make}
