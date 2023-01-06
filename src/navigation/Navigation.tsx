@@ -3,15 +3,15 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import {FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import * as React from 'react';
-import Profile from '../screens/authenticatedscreens/Profile';
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as React from "react";
+import Profile from "../screens/authenticatedscreens/Profile";
 import {
-    HomeBottomTabParamList,
-    HomeBottomTabScreenProps,
-    HomeStackParamList,
-    UnauthenticatedParamList
+  HomeBottomTabParamList,
+  HomeBottomTabScreenProps,
+  HomeStackParamList,
+  UnauthenticatedParamList,
 } from "./ScreenTypes";
 import useColorScheme from "../hooks/useColorScheme";
 import LoginScreen from "../screens/unauthenticatedscreens/LoginScreen";
@@ -19,71 +19,96 @@ import SignUpScreen from "../screens/unauthenticatedscreens/SignUpScreen";
 import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
-import {Avatar} from "react-native-paper";
-import {View} from "../components/Widgets";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import { Avatar } from "react-native-paper";
+import { View } from "../components/Widgets";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import RecentViews from "../screens/authenticatedscreens/RecentViews";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
 import Messages from "../screens/authenticatedscreens/Messages";
 import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
 import CircularImage from "../components/CircularImage";
-
+import { appFonts } from "../utils/AllConstant";
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
  * https://reactnavigation.org/docs/modal
  */
 
-
 export function HomeStackNavigator() {
-    const theme = useColorScheme()
-    return (
-        <HomeStacks.Navigator initialRouteName='HomeStack' screenOptions={{
-            headerStyle: {
-                backgroundColor: layoutParams.colors.backgroundColor,
-            },
-            headerShadowVisible: false,
-            headerShown: true,
-            animation: "fade_from_bottom",
-            headerTitleStyle: {
-                color: "black",
-                fontFamily: "WorkSans_600SemiBold",
-                fontSize: 20
-            },
-            headerTintColor: "black",
-            headerBackVisible: true,
-            headerBackTitleStyle: {
-                fontSize: 20,
-            }
-        }}>
-            <HomeStacks.Screen name="HomeStack" component={BottomTabNavigator}
-                               options={{headerShown: false}}/>
-            <HomeStacks.Screen name="CarDetails" component={CarDetails}
-                               options={({route}: any) => ({title: route.params.cardetails != undefined || route.params.cardetails != null ? route.params?.cardetails.make : "Select a Car"})}/>
-            <HomeStacks.Group screenOptions={{presentation: 'modal'}}>
-                <HomeStacks.Screen name="Wallet" component={Profile}/>
-                <HomeStacks.Screen name="UserMessage" component={UserMessage}
-                                   options={({route}: any) => (
-                                       {
-                                           title: route.params.fromUser != undefined || route.params.fromUser != null ? route.params?.fromUser : "UserMessage",
-                                           headerLeft: () => <View style={{
-                                               margin: 5
-                                           }}>
-                                               <CircularImage
-                                                   source={{uri: route.params.fromUserImage}}
-                                                   size={45} rounded/></View>,
-                                           // headerSearchBarOptions: {
-                                           //     autoCapitalize: "none",
-                                           //     shouldShowHintSearchIcon: true,
-                                           //     inputType: "text",
-                                           //     placeholder: "Enter your values"
-                                           // }
-                                       })
-                                   }
+  const theme = useColorScheme();
+  return (
+    <HomeStacks.Navigator
+      initialRouteName="HomeStack"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: layoutParams.colors.backgroundColor,
+        },
+        headerShadowVisible: false,
+        headerShown: true,
+        animation: "fade_from_bottom",
+        headerTitleStyle: {
+          color: "black",
+          fontFamily: "WorkSans_600SemiBold",
+          fontSize: 20,
+        },
+        headerTintColor: "black",
+        headerBackVisible: true,
+        headerBackTitleStyle: {
+          fontSize: 20,
+        },
+      }}
+    >
+      <HomeStacks.Screen
+        name="HomeStack"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
+      <HomeStacks.Screen
+        name="CarDetails"
+        component={CarDetails}
+        options={({ route }: any) => ({
+          title:
+            route.params.cardetails != undefined ||
+            route.params.cardetails != null
+              ? route.params?.cardetails.make
+              : "Select a Car",
+        })}
+      />
+      <HomeStacks.Group screenOptions={{ presentation: "modal" }}>
+        <HomeStacks.Screen name="Wallet" component={Profile} />
+        <HomeStacks.Screen
+          name="UserMessage"
+          component={UserMessage}
+          options={({ route }: any) => ({
+            title:
+              route.params.fromUser != undefined ||
+              route.params.fromUser != null
+                ? route.params?.fromUser
+                : "UserMessage",
+            headerLeft: () => (
+              <View
+                style={{
+                  margin: 5,
+                }}
+              >
+                <CircularImage
+                  source={{ uri: route.params.fromUserImage }}
+                  size={45}
+                  rounded
                 />
-            </HomeStacks.Group>
-        </HomeStacks.Navigator>
-    );
+              </View>
+            ),
+            // headerSearchBarOptions: {
+            //     autoCapitalize: "none",
+            //     shouldShowHintSearchIcon: true,
+            //     inputType: "text",
+            //     placeholder: "Enter your values"
+            // }
+          })}
+        />
+      </HomeStacks.Group>
+    </HomeStacks.Navigator>
+  );
 }
 
 /**
@@ -105,184 +130,211 @@ const HomeStacks = createNativeStackNavigator<HomeStackParamList>();
 // }
 
 export function UnauthenticatedNavigator() {
-    const colorScheme = useColorScheme();
-    return (
-        <LoginStacks.Navigator initialRouteName="Login" screenOptions={{
-            headerTintColor: '#fff',
-            animation: "fade_from_bottom",
-            headerTitleStyle: {
-                color: "black",
-            },
-
-            headerShadowVisible: false,
-            headerStyle: {
-                backgroundColor: layoutParams.colors.backgroundColor,
-            },
-            headerTitleAlign: 'center'
-        }}>
-            <LoginStacks.Screen name="Login" component={LoginScreen} options={{
-                headerShown: false,
-                title: "Login Page",
-                headerTitleStyle: {
-                    color: layoutParams.colors.black,
-                    fontFamily: "WorkSans_600SemiBold",
-                    fontSize: 20
-                }
-            }}/>
-            <LoginStacks.Screen name="SignUp" component={SignUpScreen}
-                                options={{
-                                    headerShown: true,
-                                    title: "Registration Page",
-                                    animation: "fade_from_bottom",
-                                    headerTitleStyle: {
-                                        color: "black",
-                                        fontFamily: "WorkSans_600SemiBold",
-                                        fontSize: 20
-                                    },
-                                    headerTintColor: "black",
-                                    headerBackVisible: true,
-                                    headerBackTitleStyle: {
-                                        fontSize: 20,
-                                        fontFamily: "WorkSans_600SemiBold"
-                                    }
-
-                                }}/>
-            <LoginStacks.Screen name="Reset" component={ResetPassword}
-                                options={{
-                                    headerShown: true,
-                                    animation: "fade_from_bottom",
-                                    title: "Reset password",
-                                    headerTitleStyle: {
-                                        color: "black",
-                                        fontFamily: "WorkSans_600SemiBold",
-                                        fontSize: 20
-                                    },
-                                    headerTintColor: "black",
-                                    headerBackVisible: true,
-                                    headerBackTitleStyle: {
-                                        fontSize: 20,
-                                        fontFamily: "Poppins_500Medium"
-                                    }
-                                }}/>
-            <LoginStacks.Screen name="HomeScreen" component={HomeStackNavigator} options={{headerShown: false}}/>
-        </LoginStacks.Navigator>
-    );
-
+  const colorScheme = useColorScheme();
+  return (
+    <LoginStacks.Navigator
+      initialRouteName="Login"
+      screenOptions={{
+        headerTintColor: "#fff",
+        animation: "fade_from_bottom",
+        headerTitleStyle: {
+          color: "black",
+        },
+        // statusBarColor: layoutParams.colors.primaryColor,
+        headerShadowVisible: true,
+        statusBarTranslucent: true,
+        headerStyle: {
+          backgroundColor: layoutParams.colors.backgroundColor,
+        },
+        headerTitleAlign: "center",
+      }}
+    >
+      <LoginStacks.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+          title: "Login Page",
+          headerTitleStyle: {
+            color: layoutParams.colors.black,
+            fontFamily: "WorkSans_600SemiBold",
+            fontSize: 20,
+          },
+        }}
+      />
+      <LoginStacks.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={{
+          headerShown: true,
+          title: "Registration Page",
+          animation: "fade_from_bottom",
+          headerTitleStyle: {
+            color: layoutParams.colors.lighGrey,
+            fontFamily: appFonts.WorkSans_500Medium,
+          },
+          headerTintColor: "black",
+          headerBackVisible: true,
+          headerBackTitleStyle: {
+            fontFamily: appFonts.WorkSans_500Medium,
+          },
+        }}
+      />
+      <LoginStacks.Screen
+        name="Reset"
+        component={ResetPassword}
+        options={{
+          headerShown: true,
+          animation: "fade_from_bottom",
+          title: "Reset password",
+          headerTitleStyle: {
+            color: layoutParams.colors.lighGrey,
+            fontFamily: appFonts.WorkSans_500Medium,
+          },
+          headerTintColor: "black",
+          headerBackVisible: true,
+          headerBackTitleStyle: {
+            fontSize: 20,
+            fontFamily: "Poppins_500Medium",
+          },
+        }}
+      />
+      <LoginStacks.Screen
+        name="HomeScreen"
+        component={HomeStackNavigator}
+        options={{ headerShown: false }}
+      />
+    </LoginStacks.Navigator>
+  );
 }
 
 function BottomTabNavigator() {
-    const [showLabel, setShowLabel] = React.useState(false);
-    const colorScheme = useColorScheme();
-    return (
-        <HomeBottomTabs.Navigator
-            initialRouteName="HomeTab"
-            // activeColor={layoutParams.colors.deepBlue}
-            // sceneAnimationEnabled
-            screenOptions={{
-                tabBarItemStyle: {
-                    justifyContent: "center",
-                    alignItems: "center"
-                },
-                tabBarLabelStyle: {
-                    fontSize: 14,
-                    fontFamily:"WorkSans_500Medium"
-                },
-                headerStyle: {
-                    // backgroundColor: colorScheme === "light" ? layoutParams.colors.backgroundColor :"rgba(255,255,255,0.05)"
-                },
-                headerTitleStyle: {
-                    fontSize: 20,
-                    fontFamily: "WorkSans_600SemiBold",
-                },
-                tabBarLabelPosition: "beside-icon",
-                headerTitleAlign: "center",
-                tabBarAllowFontScaling: true,
-                tabBarStyle: {
-                    borderTopRightRadius: 20,
-                    borderTopLeftRadius: 20,
-                },
-                headerTitleAllowFontScaling: true,
-                unmountOnBlur: true,
-                tabBarShowLabel: !showLabel
-            }}
-        >
-            <HomeBottomTabs.Screen
-                name="HomeTab"
-                component={Home}
-                options={({navigation}: HomeBottomTabScreenProps<'HomeTab'>) => ({
-                    tabBarLabel: "Home",
-                    tabBarIcon: ({color}) => <TabBarIcon name="home" color={color} size={25}/>,
-                    headerRight: () => (
-                        <View style={{
-                            justifyContent: 'space-between',
-                            flexDirection: "row",
-                            alignItems: "center"
-                        }}>
-                            <FontAwesome name="bell" size={30} color={layoutParams.colors.deepBlue}
-                                         style={{marginRight: 20}}/>
-                            <Avatar.Image size={50} source={require('../../assets/images/human-male.jpg')}
-                                          onTouchStart={() => navigation.navigate('Profile')} style={{
-                                justifyContent: "center", alignItems: 'center'
-                            }}/>
-                        </View>
-                    ),
-                    title: "Home",
-                    headerLeftContainerStyle: {
-                        marginLeft: 10
-                    },
-                    headerRightContainerStyle: {
-                        marginRight: 10
-                    },
-                    headerStyle: {
-                        height: 55,
-                        backgroundColor: layoutParams.colors.backgroundColor
-                    },
-                    headerShown: false,
-                    headerTitleStyle: false,
-                    headerTitleAllowFontScaling: true
-                })}
-            />
-            <HomeBottomTabs.Screen
-                name="RecentlyView"
-                component={RecentViews}
-                options={{
-                    title: "Recent Views",
-                    tabBarLabel: "Recent Views",
-                    tabBarIcon: ({color}) => <TabBarIcon name="cart" color={color} size={25}/>,
+  const [showLabel, setShowLabel] = React.useState(false);
+  const colorScheme = useColorScheme();
+  return (
+    <HomeBottomTabs.Navigator
+      initialRouteName="HomeTab"
+      // activeColor={layoutParams.colors.deepBlue}
+      // sceneAnimationEnabled
+      screenOptions={{
+        tabBarItemStyle: {
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontFamily: appFonts.WorkSans_500Medium,
+        },
+        headerStyle: {
+          // backgroundColor: colorScheme === "light" ? layoutParams.colors.backgroundColor :"rgba(255,255,255,0.05)"
+        },
+        headerTitleStyle: {
+          fontSize: 20,
+          fontFamily: "WorkSans_600SemiBold",
+        },
+        tabBarLabelPosition: "beside-icon",
+        headerTitleAlign: "center",
+        tabBarAllowFontScaling: true,
+        tabBarStyle: {
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
+        },
+        headerTitleAllowFontScaling: true,
+        unmountOnBlur: true,
+        tabBarShowLabel: !showLabel,
+      }}
+    >
+      <HomeBottomTabs.Screen
+        name="HomeTab"
+        component={Home}
+        options={({ navigation }: HomeBottomTabScreenProps<"HomeTab">) => ({
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="home" color={color} size={25} />
+          ),
+          headerRight: () => (
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome
+                name="bell"
+                size={30}
+                color={layoutParams.colors.deepBlue}
+                style={{ marginRight: 20 }}
+              />
+              <Avatar.Image
+                size={50}
+                source={require("../../assets/images/human-male.jpg")}
+                onTouchStart={() => navigation.navigate("Profile")}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-            />
-            <HomeBottomTabs.Screen
-                name="Messages"
-                component={Messages}
-                options={{
-                    tabBarLabel: "Messages",
-                    tabBarIcon: ({color}) => <TabBarIcon name="comment-multiple" color={color} size={25}/>,
-                }}
-            />
-            <HomeBottomTabs.Screen
-                name="Profile"
-                component={Profile}
-                options={{
-                    tabBarLabel: "Profile",
-                    tabBarIcon: ({color}) => <TabBarIcon name="account-cog" color={color} size={25}/>,
-                }}
-            />
-        </HomeBottomTabs.Navigator>
-    );
+              />
+            </View>
+          ),
+          title: "Home",
+          headerLeftContainerStyle: {
+            marginLeft: 10,
+          },
+          headerRightContainerStyle: {
+            marginRight: 10,
+          },
+          headerStyle: {
+            height: 55,
+            backgroundColor: layoutParams.colors.backgroundColor,
+          },
+          headerShown: false,
+          headerTitleStyle: false,
+          headerTitleAllowFontScaling: true,
+        })}
+      />
+      <HomeBottomTabs.Screen
+        name="RecentlyView"
+        component={RecentViews}
+        options={{
+          title: "Recent Views",
+          tabBarLabel: "Recent Views",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="cart" color={color} size={25} />
+          ),
+        }}
+      />
+      <HomeBottomTabs.Screen
+        name="Messages"
+        component={Messages}
+        options={{
+          tabBarLabel: "Messages",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="comment-multiple" color={color} size={25} />
+          ),
+        }}
+      />
+      <HomeBottomTabs.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="account-cog" color={color} size={25} />
+          ),
+        }}
+      />
+    </HomeBottomTabs.Navigator>
+  );
 }
-
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-    name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-    color: string;
-    size: number
+  name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  color: string;
+  size: number;
 }) {
-    return <MaterialCommunityIcons style={{marginBottom: -3}} {...props} />;
+  return <MaterialCommunityIcons style={{ marginBottom: -3 }} {...props} />;
 }
-
-
-
-

@@ -104,7 +104,7 @@ const Toast = () => {
             duration: 5000,
             useNativeDriver: true
         })
-        clearInterval();
+        clearInterval(0);
     }, [animatedOpacity]);
 
     useEffect(() => {
@@ -119,7 +119,7 @@ const Toast = () => {
         }
 
         return () => {
-            clearInterval();
+            clearInterval(10);
         };
     }, [closeToast, message, timeOutDuration]);
 

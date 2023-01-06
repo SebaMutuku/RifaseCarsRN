@@ -20,6 +20,7 @@ export default {
         white: "#FFFFFF",
         buttonColors: "#273746",
         deepBlue: "#185EA4",
+        primaryColor:"#0085FF",
         black: "#17202A",
         disabledButtonColor: "#D5D8DC",
         disabledTextColor: "#AEB6BF",
