@@ -216,7 +216,7 @@ export default function Messages() {
                 >
                   <Text
                     style={{
-                      fontFamily: "WorkSans_600SemiBold",
+                      fontFamily: appFonts.WorkSans_600SemiBold,
                     }}
                   >
                     {item.from}

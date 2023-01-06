@@ -25,7 +25,7 @@ export const sharedStyles = StyleSheet.create({
     color: layoutParams.colors.black,
   },
   appTitle: {
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
     fontSize: StatusBar.currentHeight,
     textAlign: "center",
   },
@@ -33,7 +33,7 @@ export const sharedStyles = StyleSheet.create({
     margin: 5,
     fontSize: 25,
     color: layoutParams.colors.black,
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
   },
   actionTextStyle: {
     color: layoutParams.colors.lighGrey,

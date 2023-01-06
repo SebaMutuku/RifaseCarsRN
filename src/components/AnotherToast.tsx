@@ -51,7 +51,7 @@
 //                 <Text style={{
 //                     fontSize: 20,
 //                     textAlign: 'center',
-//                     fontFamily: "WorkSans_600SemiBold",
+//                     fontFamily: appFonts.WorkSans_600SemiBold,
 //                     color: props.type == "success" ? layoutParams.colors.black : layoutParams.colors.white
 //                 }}>Message</Text>
 //                 <Text style={{

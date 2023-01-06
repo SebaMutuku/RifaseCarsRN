@@ -141,7 +141,8 @@ export default function CarDetails() {
       >
         <Text
           style={{
-            fontFamily: "WorkSans_600SemiBold",
+            fontFamily: appFonts.WorkSans_600SemiBold,
+            color: layoutParams.colors.primaryColor,
           }}
         >
           Vehicle Specifications
@@ -149,7 +150,8 @@ export default function CarDetails() {
         <Text
           style={{
             fontSize: 20,
-            fontFamily: "WorkSans_600SemiBold",
+            fontFamily: appFonts.WorkSans_600SemiBold,
+            color: layoutParams.colors.primaryColor,
           }}
         >
           Ksh. {route.params.cardetails.price}
@@ -291,7 +293,7 @@ export default function CarDetails() {
           style={{
             padding: 12,
             alignItems: "center",
-            backgroundColor: layoutParams.colors.black,
+            backgroundColor: layoutParams.colors.primaryColor,
           }}
           allowFontScaling={true}
         >
@@ -366,12 +368,12 @@ const styles = StyleSheet.create({
   },
   timeBoxTitle: {
     fontSize: 14,
-    fontFamily: "WorkSans_600SemiBold",
-    color: layoutParams.colors.black,
+    fontFamily: appFonts.WorkSans_600SemiBold,
+    color: layoutParams.colors.primaryColor,
   },
   textStyle: {
     fontFamily: appFonts.WorkSans_500Medium,
-    color: layoutParams.colors.lighGrey,
+    color: layoutParams.colors.primaryColor,
     letterSpacing: 0.27,
   },
   carDescText: {

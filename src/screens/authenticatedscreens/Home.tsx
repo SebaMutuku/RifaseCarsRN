@@ -22,7 +22,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import FlatListView from "../../components/FlatListView";
 import CircularImage from "../../components/CircularImage";
 import { carBrands, PopularCarData } from "../../utils/Data";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { sharedStyles } from "../../utils/SharedStyles";
 import PopularCarsList from "../../flatlist/PopularCarsList";
 import { CarItemProps } from "../../utils/AppInterfaces";
@@ -30,6 +29,7 @@ import RenderCarsBrandsList from "../../flatlist/RenderCarsBrandsList";
 import utils from "../../utils/Utils";
 import RenderSingleItem from "../../flatlist/RenderSingleItem";
 import { appFonts } from "../../utils/AllConstant";
+import TextInputComponent from "../../components/TextInputComponent";
 
 export default function Home() {
   const [state, setState] = React.useState({
@@ -127,28 +127,25 @@ export default function Home() {
 
   function searchInput() {
     return (
-      <View style={[sharedStyles.searchInputMainContainer]}>
-        <View style={sharedStyles.searchInputContainer}>
-          <TextInput
-            style={[
-              sharedStyles.searchInput,
-              !layoutParams.platform.isAndroid && { paddingVertical: 16 },
-            ]}
-            autoCapitalize="none"
-            selectionColor="dodgerblue"
-            placeholderTextColor="#B9BABC"
-            placeholder="Search for a car"
-            onChangeText={(carMake) =>
-              setState({
-                ...state,
-                searchedCar: carMake,
-              })
-            }
-            value={state.searchedCar}
-          />
-          <Icon name="search" size={30} color="#B9BABC" />
-        </View>
-      </View>
+      <TextInputComponent
+        placeholder="Search for a car"
+        onChange={(carMake) =>
+          setState({
+            ...state,
+            searchedCar: carMake,
+          })
+        }
+        secureEntry={false}
+        containerStyles={sharedStyles.searchInputMainContainer}
+        inputView={[sharedStyles.searchInputContainer, { padding: 8 }]}
+        searchInput={sharedStyles.searchInput}
+        autoCapitalize="none"
+        keyboardType="default"
+        value={state.searchedCar}
+        iconSize={25}
+        underlineColorAndroid="transparent"
+        blurOnSubmit={true}
+      />
     );
   }
 
@@ -213,7 +210,8 @@ export default function Home() {
     yom: string,
     mileage: string,
     model: string,
-    index: number
+    index: number,
+    make?: string
   ) {
     return (
       <View
@@ -222,9 +220,19 @@ export default function Home() {
         }}
         key={index}
       >
-        {renderCarItem("Model : ", model)}
-        {renderCarItem("Y.O.M : ", yom)}
-        {renderCarItem("Mileage : ", mileage + " kms")}
+        <Text
+          style={{
+            textDecorationLine: "underline",
+            fontFamily: appFonts.WorkSans_600SemiBold,
+            color: layoutParams.colors.primaryColor,
+          }}
+        >
+          Car Description
+        </Text>
+        <Text style={{ fontFamily: appFonts.WorkSans_500Medium }}>
+          Red {make} {model}, {"\n"}Mileage {mileage}, {"\n"}year of
+          manuafacturing {yom}
+        </Text>
       </View>
     );
   }
@@ -237,8 +245,7 @@ export default function Home() {
     >
       <Text
         style={{
-          fontFamily: "WorkSans_600SemiBold",
-          color: layoutParams.colors.lighGrey,
+          fontFamily: appFonts.WorkSans_600SemiBold,
         }}
         adjustsFontSizeToFit
       >
@@ -273,7 +280,8 @@ export default function Home() {
                   item?.yom,
                   item?.mileage,
                   item?.model,
-                  index
+                  index,
+                  item?.make
                 )}
                 selectedId={state.selectedId}
                 onPress={() => onPressPopularCar(index, item)}
@@ -343,27 +351,41 @@ export default function Home() {
                 style={{
                   fontSize: 20,
                   marginTop: 5,
-                  fontFamily: "WorkSans_600SemiBold",
+                  fontFamily: appFonts.WorkSans_600SemiBold,
+                  color: layout.colors.primaryColor,
                 }}
               >
-                {viewedCars[viewedCars.length - 1].make}
+                {viewedCars[viewedCars.length - 1].make} {""}
+                {viewedCars[viewedCars.length - 1].model},
+                {viewedCars[viewedCars.length - 1].yom}
               </Text>
-              {renderCarItem(
-                "Model : ",
-                viewedCars[viewedCars.length - 1].model
-              )}
-              {renderCarItem(
-                "Year Of Manufacturing : ",
-                viewedCars[viewedCars.length - 1].yom
-              )}
-              {renderCarItem(
-                "Mileage : ",
-                viewedCars[viewedCars.length - 1].mileage + " kms"
-              )}
-              {renderCarItem(
-                "Price : ",
-                "ksh. " + viewedCars[viewedCars.length - 1].price
-              )}
+              <Text
+                style={{
+                  textDecorationLine: "underline",
+                  fontFamily: appFonts.WorkSans_600SemiBold,
+                  color: layoutParams.colors.primaryColor,
+                }}
+              >
+                Car Description
+              </Text>
+              <Text style={{ fontFamily: appFonts.WorkSans_500Medium }}>
+                Red {viewedCars[viewedCars.length - 1].make}
+                {viewedCars[viewedCars.length - 1].model}, {"\n"}Mileage
+                {viewedCars[viewedCars.length - 1].mileage}, {"\n"}year of
+                manuafacturing {viewedCars[viewedCars.length - 1].yom}
+              </Text>
+              <Text
+                style={{
+                  textAlign: "left",
+                  marginTop: 5,
+                  color: layoutParams.colors.primaryColor,
+                  fontFamily: "WorkSans_700Bold",
+                  fontSize: 16,
+                }}
+                adjustsFontSizeToFit
+              >
+                Price Ksh. {viewedCars[viewedCars.length - 1].price}
+              </Text>
             </View>
           </AnimatedPressable>
         ) : (
@@ -384,7 +406,7 @@ export default function Home() {
           >
             <Text
               style={{
-                fontFamily: "WorkSans_600SemiBold",
+                fontFamily: appFonts.WorkSans_600SemiBold,
               }}
             >
               No Recently view cars
@@ -422,15 +444,17 @@ export default function Home() {
             rounded: true,
             onPress: onPressimage,
           })}
-          <Text
-            style={{
-              marginLeft: 10,
-              fontSize: 18,
-              fontFamily: "Poppins_500Medium",
-            }}
-          >
-            {state.loggedInUser}
-          </Text>
+          {state.loggedInUser && (
+            <Text
+              style={{
+                marginLeft: 10,
+                fontSize: 18,
+                fontFamily: "Poppins_500Medium",
+              }}
+            >
+              {state.loggedInUser}
+            </Text>
+          )}
         </View>
         <FontAwesome
           name="bell-o"
@@ -445,12 +469,12 @@ export default function Home() {
   );
 
   return (
-    <SafeAreaView
-      style={{
-        ...sharedStyles.container,
-      }}
-    >
-      <KeyboardAvoidingComponent>
+    <KeyboardAvoidingComponent>
+      <SafeAreaView
+        style={{
+          ...sharedStyles.container,
+        }}
+      >
         <View style={sharedStyles.container}>
           {/*top view with avatar*/}
           {topSection()}
@@ -461,34 +485,22 @@ export default function Home() {
             }}
           >
             {/*<Text style={{*/}
-            {/*    fontSize: 22, fontWeight: "normal", fontFamily: "WorkSans_600SemiBold", margin: 8*/}
+            {/*    fontSize: 22, fontWeight: "normal", fontFamily: appFonts.WorkSans_600SemiBold, margin: 8*/}
             {/*}}>View by  brand</Text>*/}
             {/*brandsFlatList*/}
             {carBrandFlatList()}
             <View
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                alignItems: "center",
                 margin: 5,
               }}
             >
               <Text
                 style={{
                   fontSize: 22,
-                  fontFamily: "WorkSans_600SemiBold",
+                  fontFamily: appFonts.WorkSans_600SemiBold,
                 }}
               >
                 Popular Cars
-              </Text>
-              <Text
-                style={{
-                  color: layoutParams.colors.deepBlue,
-                  fontFamily: "WorkSans_600SemiBold",
-                  textDecorationLine: "underline",
-                }}
-              >
-                View All
               </Text>
             </View>
           </View>
@@ -499,33 +511,22 @@ export default function Home() {
               marginRight: 10,
               marginLeft: 10,
               marginTop: 10,
-              flexDirection: "row",
               justifyContent: "space-between",
             }}
           >
             <Text
               style={{
                 fontSize: 20,
-                fontFamily: "WorkSans_600SemiBold",
+                fontFamily: appFonts.WorkSans_600SemiBold,
               }}
             >
               Recently Viewed
             </Text>
-            <Text
-              style={{
-                ...homeStyles.footerText,
-                color: layoutParams.colors.deepBlue,
-                textDecorationLine: "underline",
-                fontFamily: "WorkSans_600SemiBold",
-              }}
-            >
-              View All
-            </Text>
           </View>
           {renderRecentlyViewed()}
         </View>
-      </KeyboardAvoidingComponent>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingComponent>
   );
 }
 const homeStyles = StyleSheet.create({
@@ -546,7 +547,7 @@ const homeStyles = StyleSheet.create({
     borderRadius: 50 / 2,
   },
   footerText: {
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
     textAlign: "center",
   },
   carDetailsText: {
@@ -556,14 +557,13 @@ const homeStyles = StyleSheet.create({
   },
   headerTextNormal: {
     color: "grey",
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
     letterSpacing: 0.2,
     fontSize: 15,
   },
   headerTextBold: {
-    fontSize: 25,
-    fontFamily: appFonts.WorkSans_500Medium,
-
+    fontSize: 18,
+    fontFamily: appFonts.Poppins_600SemiBold,
     letterSpacing: 0.25,
   },
   homeFooter: {

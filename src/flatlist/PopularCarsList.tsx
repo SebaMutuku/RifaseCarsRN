@@ -3,6 +3,7 @@ import { Animated, Easing, Image, Pressable, StyleSheet } from "react-native";
 import { Text } from "../components/Widgets";
 import React, { memo } from "react";
 import { PopularCarListProps } from "../utils/AppInterfaces";
+import { appFonts } from "../utils/AllConstant";
 
 const PopularCarsList = ({ ...props }: PopularCarListProps) => {
   const popularCarOpacity = React.useRef<Animated.Value>(
@@ -43,7 +44,6 @@ const PopularCarsList = ({ ...props }: PopularCarListProps) => {
         ...popularCarStyles.popularCars,
         opacity: popularCarOpacity,
         translateY,
-        backgroundColor: layoutParams.colors.listColors,
       }}
       onPress={() => props.onPress()}
     >
@@ -60,37 +60,28 @@ const PopularCarsList = ({ ...props }: PopularCarListProps) => {
       <Text
         style={{
           margin: 5,
-          fontSize: 24,
-          fontFamily: "WorkSans_600SemiBold",
+          fontSize: 18,
+          fontFamily: appFonts.WorkSans_600SemiBold,
+          color: layoutParams.colors.primaryColor,
         }}
         adjustsFontSizeToFit
       >
-        {props.objectItem?.make}
+        {props.objectItem?.make} {""}
+        {props.objectItem?.model}, {props.objectItem?.yom}
       </Text>
       {props.renderCarSpecs}
       <Text
         style={{
           textAlign: "left",
           margin: 5,
-          color: layoutParams.colors.black,
+          color: layoutParams.colors.primaryColor,
           fontFamily: "WorkSans_700Bold",
           fontSize: 16,
         }}
         adjustsFontSizeToFit
       >
-        ksh. {props.objectItem?.price}
+        Price ksh. {props.objectItem?.price}
       </Text>
-      {/*Horizontal line*/}
-      {/*<Animated.View*/}
-      {/*    style={[*/}
-      {/*        popularCarStyles.favoriteIcon,*/}
-      {/*        {*/}
-      {/*            transform: [{scale: favIconScale.current}],*/}
-      {/*        },*/}
-      {/*    ]}*/}
-      {/*>*/}
-      {/*    <Icon name="favorite" size={24} color="white"/>*/}
-      {/*</Animated.View>*/}
     </PressableView>
   );
 };

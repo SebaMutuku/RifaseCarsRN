@@ -10,7 +10,7 @@ export const USERNAME = "USERNAME";
 export const PASSWORD = "password";
 
 export const appFonts = {
-  WorkSans_700Bold: "worksans700bold",
+  WorkSans_700Bold: "WorkSans_700Bold",
   WorkSans_600SemiBold: "WorkSans_600SemiBold",
   WorkSans_500Medium: "WorkSans_500Medium",
   WorkSans_400Regular: "WorkSans_400Regular",

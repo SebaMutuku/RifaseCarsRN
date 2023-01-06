@@ -4,6 +4,7 @@ import layout from "../utils/LayoutParams";
 import React from "react";
 import { Animated, Easing, StyleSheet } from "react-native";
 import { CarBrandsProps } from "../utils/AppInterfaces";
+import { appFonts } from "../utils/AllConstant";
 
 const RenderCarsBrandsList = ({ ...props }: CarBrandsProps) => {
   const brandOpacity = React.useRef<Animated.Value>(
@@ -44,16 +45,16 @@ const RenderCarsBrandsList = ({ ...props }: CarBrandsProps) => {
     >
       <Text
         style={{
-          fontSize: 20,
+          fontSize: 18,
           marginLeft: 10,
           marginRight: 10,
           marginBottom: 20,
           marginTop: 20,
-          fontFamily: "WorkSans_600SemiBold",
+          fontFamily: appFonts.WorkSans_600SemiBold,
           color:
             props.brandSelected === props.index
-              ? layoutParams.colors.black
-              : layout.colors.selectedColor,
+              ? layoutParams.colors.primaryColor
+              : layout.colors.grey,
         }}
         adjustsFontSizeToFit
         onPress={() => {

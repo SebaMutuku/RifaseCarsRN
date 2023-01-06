@@ -3,6 +3,7 @@ import React from "react";
 import { HeaderProps } from "../utils/AppInterfaces";
 import { Text, View } from "./Widgets";
 import layoutParams from "../utils/LayoutParams";
+import { appFonts } from "../utils/AllConstant";
 
 export default function HeaderSection({ ...props }: HeaderProps) {
   return (
@@ -55,7 +56,7 @@ const headerStyles = StyleSheet.create({
   },
   logoText: {
     fontSize: layoutParams.WINDOW.height * 0.02,
-    fontFamily: "WorkSans_600SemiBold",
+    fontFamily: appFonts.WorkSans_600SemiBold,
     marginTop: layoutParams.WINDOW.height * 0.05,
     letterSpacing: 0.27,
   },
