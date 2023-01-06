@@ -1,3 +1,4 @@
+import { appFonts } from "./AllConstant";
 import layoutParams from "./LayoutParams";
 import layout from "./LayoutParams";
 import { StatusBar, StyleSheet } from "react-native";
