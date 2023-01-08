@@ -48,7 +48,7 @@ const PopularCarsList = ({ ...props }: PopularCarListProps) => {
       onPress={() => props.onPress()}
     >
       <Image
-        source={require("../../assets/images/mainCarImage.jpg")}
+        source={require("../../assets/images/carImage.jpg")}
         style={{
           width: "100%",
           borderRadius: 10,

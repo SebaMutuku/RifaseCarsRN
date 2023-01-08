@@ -7,7 +7,12 @@ import {
   StyleSheet,
 } from "react-native";
 
-import { Text, useThemeColor, View } from "../../components/Widgets";
+import {
+  CustomIcon,
+  Text,
+  useThemeColor,
+  View,
+} from "../../components/Widgets";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import CircularImage from "../../components/CircularImage";
@@ -21,6 +26,8 @@ import { AuthContext } from "../../utils/AuthContext";
 import toast from "../../utils/toast";
 import { useTheme } from "@react-navigation/native";
 import { appFonts } from "../../utils/AllConstant";
+import { ListItem } from "react-native-elements";
+import { Avatar } from "react-native-elements";
 
 export default function Profile() {
   const [state, setState] = React.useState({
@@ -78,19 +85,27 @@ export default function Profile() {
     return (
       <Animated.View
         style={{
-          alignItems: "center",
           transform: [{ scale: profileView.current }],
           backgroundColor,
+          flexDirection: "row",
         }}
       >
-        {CircularImage({
-          source: { uri: "https://randomuser.me/api/portraits/men/36.jpg" },
-          size: layoutParams.WINDOW.height * 0.1,
-          rounded: true,
-        })}
+        <Avatar
+          size="large"
+          rounded
+          titleStyle={{
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: layoutParams.colors.white,
+          }}
+          containerStyle={{ marginLeft: 10, marginTop: 10 }}
+          source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
+        />
         <View
           style={{
+            marginLeft: 10,
             flexDirection: "column",
+            justifyContent: "center",
           }}
         >
           <Text
@@ -100,13 +115,28 @@ export default function Profile() {
               {
                 fontSize: 22,
                 fontFamily: appFonts.WorkSans_600SemiBold,
-                color: layoutParams.colors.textLightColor,
+                color: layoutParams.colors.primaryColor,
               },
             ]}
           >
-            Sebastian
+            Sebastian Mutuku
           </Text>
-          <Text style={[styles.profileText, { color }]}>abc@gmail.com</Text>
+          <Text
+            style={[
+              styles.profileText,
+              { color: layoutParams.colors.primaryColor },
+            ]}
+          >
+            abc@gmail.com
+          </Text>
+          <Text
+            style={[
+              styles.profileText,
+              { color: layoutParams.colors.primaryColor },
+            ]}
+          >
+            Software Engineer
+          </Text>
         </View>
       </Animated.View>
     );
@@ -190,6 +220,15 @@ export default function Profile() {
         break;
     }
   };
+  const renderItem = React.useCallback((item: any, index: number) => {
+    return (
+      <ListItem>
+        <ListItem.Content>
+
+        </ListItem.Content>
+      </ListItem>
+    );
+  }, []);
 
   function scrollSectionList() {
     return (
@@ -264,8 +303,9 @@ export default function Profile() {
                   justifyContent: "flex-start",
                 }}
               >
-                <FontAwesome
-                  name={iconName}
+                <CustomIcon
+                  icon={iconName}
+                  iconType="font-awesome"
                   size={20}
                   color={
                     theme.dark
@@ -275,7 +315,7 @@ export default function Profile() {
                 />
                 <Text
                   style={{
-                    fontFamily: appFonts.WorkSans_500Medium,
+                    fontFamily: appFonts.WorkSans_400Regular,
                     marginLeft: 10,
                     color:
                       item.match("Close Account") || item.match("Logout")
@@ -288,10 +328,11 @@ export default function Profile() {
                   {item}
                 </Text>
               </View>
-              <MaterialIcons
-                name="keyboard-arrow-right"
+              <CustomIcon
+                icon="keyboard-arrow-right"
                 size={20}
                 color={layoutParams.colors.lighGrey}
+                iconType="material-icon"
               />
             </AnimatedTouchable>
           );
@@ -333,7 +374,7 @@ export default function Profile() {
       <Animated.View
         style={{
           marginTop: 20,
-          backgroundColor,
+          backgroundColor: layoutParams.colors.backgroundColor,
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           shadowOffset: { width: 1.1, height: 1.1 },
@@ -373,8 +414,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileText: {
-    fontSize: 14,
-    fontFamily: appFonts.WorkSans_600SemiBold,
+    fontFamily: appFonts.WorkSans_400Regular,
   },
   scrollView: {
     borderTopLeftRadius: 20,

@@ -45,12 +45,15 @@ const RenderCarsBrandsList = ({ ...props }: CarBrandsProps) => {
     >
       <Text
         style={{
-          fontSize: 18,
+          fontSize: props.brandSelected === props.index ? 20 : 15,
           marginLeft: 10,
           marginRight: 10,
           marginBottom: 20,
           marginTop: 20,
-          fontFamily: appFonts.WorkSans_600SemiBold,
+          fontFamily:
+            props.brandSelected === props.index
+              ? appFonts.WorkSans_600SemiBold
+              : appFonts.WorkSans_400Regular,
           color:
             props.brandSelected === props.index
               ? layoutParams.colors.primaryColor

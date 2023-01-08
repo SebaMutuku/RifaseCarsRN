@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { Key } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { IconType } from "./Utils";
 
 export interface AppAuthState {
   isLoading: boolean;
@@ -51,7 +52,7 @@ export interface CommunicationDataProps {
   messageTime: string | typeof Date;
 }
 
-export interface SectionDateInterface {
+export interface SectionData {
   title: string;
   data: [...args: string[]];
 }
@@ -83,7 +84,7 @@ export interface flatlistProps {
   extraData?: any;
   horizontal?: boolean;
   columnWrapperStyle?: StyleProp<ViewStyle>;
-  contentContainerStyle: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
   itemSeparatorComponent?: React.ComponentType<any> | null | undefined;
   numColumns?: number | undefined;
   pagingEnabled?: boolean | undefined;
@@ -185,8 +186,8 @@ export type BottomSheetProps = {
 export interface ReviewData {
   date: string;
   reviewer: string;
-  rating: string;
-  reviewSammury: string;
+  rating: number;
+  reviewSummary: string;
   comment: string;
 }
 export interface AppCheckBoxProps {
@@ -195,4 +196,11 @@ export interface AppCheckBoxProps {
   getChecked: boolean;
   checked: boolean;
   checkboxRef: BouncyCheckbox | null;
+}
+
+export interface IconProps {
+  size: number;
+  icon: string;
+  iconType: IconType;
+  color: string;
 }

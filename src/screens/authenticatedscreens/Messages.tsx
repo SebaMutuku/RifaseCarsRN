@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  ActivityIndicator,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   TextInput,
@@ -8,8 +10,7 @@ import {
 import layoutParams from "../../utils/LayoutParams";
 import { Button } from "@rneui/base";
 import FlatListView from "../../components/FlatListView";
-import { Avatar } from "@rneui/themed";
-import { Text, View } from "../../components/Widgets";
+import { CustomIcon, Text, View } from "../../components/Widgets";
 import { messagesData, usersD } from "../../utils/Data";
 import moment from "moment";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,14 +19,10 @@ import { CombinedNavigationProps } from "../../navigation/ScreenTypes";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { appFonts } from "../../utils/AllConstant";
+import { Avatar, ListItem } from "react-native-elements";
 
 export default function Messages() {
   const navigation = useNavigation<CombinedNavigationProps>();
-  type messageTemplate = {
-    from: string;
-    messageTime: string;
-    lastMessage: string;
-  };
 
   const [state, setState] = React.useState({
     searchedMessage: "",
@@ -97,12 +94,13 @@ export default function Messages() {
             key={index}
           >
             <Avatar
-              size={layoutParams.WINDOW.height * 0.065}
+              size="medium"
               rounded
-              source={item.avatar_url ? { uri: item.avatar_url } : {}}
+              source={{ uri: item.avatar_url }}
               overlayContainerStyle={{
                 backgroundColor: layoutParams.colors.disabledTextColor,
               }}
+              renderPlaceholderContent={<ActivityIndicator />}
               containerStyle={{
                 borderColor: layoutParams.colors.selectedColor,
                 borderWidth: 2.5,
@@ -162,98 +160,155 @@ export default function Messages() {
     );
   }
 
+  const renderMessage = React.useCallback((item: any, index: number) => {
+    return (
+      <ListItem
+        key={index}
+        onPress={() => {
+          setState({
+            ...state,
+            selectedMessage: index,
+          });
+          viewUserMessage(item);
+        }}
+        style={{
+          borderRadius: 15,
+          marginLeft: 5,
+          marginRight: 5,
+        }}
+      >
+        <Avatar
+          overlayContainerStyle={{
+            backgroundColor: layoutParams.colors.disabledTextColor,
+          }}
+          source={{ uri: item.imageUrl }}
+          size="small"
+          rounded
+          containerStyle={{
+            ...layoutParams.elevation,
+          }}
+        />
+        <ListItem.Content
+          style={{
+            alignSelf: "flex-start",
+          }}
+        >
+          <ListItem.Title
+            style={{
+              fontFamily: appFonts.WorkSans_600SemiBold,
+            }}
+          >
+            {item.from}
+          </ListItem.Title>
+          <ListItem.Subtitle
+            ellipsizeMode="tail"
+            style={{
+              fontFamily: appFonts.WorkSans_400Regular,
+            }}
+          >
+            {item.lastMessage}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>
+    );
+  }, []);
+
   function messagesFlatList() {
     return (
       <FlatListView
         data={state.messages}
-        renderItem={({ item, index }: any) => {
-          return (
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                flexGrow: 1,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderRadius: 15,
-                margin: 1,
-                paddingRight: 10,
-                elevation:
-                  state.selectedMessage == index
-                    ? layoutParams.elevation.elevation
-                    : 0,
-                backgroundColor: layoutParams.colors.backgroundColor,
-              }}
-              key={index}
-              onPress={() => {
-                setState({
-                  ...state,
-                  selectedMessage: index,
-                });
-                viewUserMessage(item);
-              }}
-            >
-              <View
-                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-              >
-                <Avatar
-                  overlayContainerStyle={{
-                    backgroundColor: layoutParams.colors.disabledTextColor,
-                  }}
-                  source={{ uri: item.image }}
-                  size={layoutParams.WINDOW.height * 0.07}
-                  rounded
-                  containerStyle={{
-                    margin: 2,
-                  }}
-                />
-                <View
-                  style={{
-                    flexDirection: "column",
-                    marginLeft: 5,
-                    justifyContent: "space-evenly",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: appFonts.WorkSans_600SemiBold,
-                    }}
-                  >
-                    {item.from}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      color: layoutParams.colors.lighGrey,
-                    }}
-                  >
-                    {item.lastMessage}
-                  </Text>
-                </View>
-              </View>
-              <View>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: layoutParams.colors.lighGrey,
-                    fontFamily: "Poppins_400Regular",
-                  }}
-                >
-                  {moment(item.messageTime).fromNow()}
-                </Text>
-                <Ionicons
-                  name="md-checkmark-done"
-                  size={20}
-                  color={layoutParams.colors.lighGrey}
-                />
-              </View>
-            </TouchableOpacity>
-          );
-        }}
+        renderItem={
+          ({ item, index }: any) => renderMessage(item, index)
+
+          // {
+          //   return (
+          //     <Pressable
+          //       style={{
+          //         flex: 1,
+          //         flexGrow: 1,
+          //         flexDirection: "row",
+          //         justifyContent: "space-between",
+          //         alignItems: "center",
+          //         borderRadius: 15,
+          //         margin: 1,
+          //         paddingRight: 10,
+          //         elevation:
+          //           state.selectedMessage == index
+          //             ? layoutParams.elevation.elevation
+          //             : 0,
+          //         backgroundColor: layoutParams.colors.backgroundColor,
+          //       }}
+          //       key={index}
+          //       onPress={() => {
+          //         setState({
+          //           ...state,
+          //           selectedMessage: index,
+          //         });
+          //         viewUserMessage(item);
+          //       }}
+          //     >
+          //       <View
+          //         style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+          //       >
+          //         <Avatar
+          //           overlayContainerStyle={{
+          //             backgroundColor: layoutParams.colors.disabledTextColor,
+          //           }}
+          //           source={{ uri: item.image }}
+          //           size={layoutParams.WINDOW.height * 0.07}
+          //           rounded
+          //           containerStyle={{
+          //             margin: 2,
+          //           }}
+          //         />
+          //         <View
+          //           style={{
+          //             flexDirection: "column",
+          //             marginLeft: 5,
+          //             justifyContent: "space-evenly",
+          //           }}
+          //         >
+          //           <Text
+          //             style={{
+          //               fontFamily: appFonts.WorkSans_600SemiBold,
+          //             }}
+          //           >
+          //             {item.from}
+          //           </Text>
+          //           <Text
+          //             style={{
+          //               fontSize: 15,
+          //               color: layoutParams.colors.lighGrey,
+          //             }}
+          //           >
+          //             {item.lastMessage}
+          //           </Text>
+          //         </View>
+          //       </View>
+          //       <View>
+          //         <Text
+          //           style={{
+          //             fontSize: 12,
+          //             color: layoutParams.colors.lighGrey,
+          //             fontFamily: "Poppins_400Regular",
+          //           }}
+          //         >
+          //           {moment(item.messageTime).fromNow()}
+          //         </Text>
+          //         <CustomIcon
+          //           icon="md-checkmark-done"
+          //           iconType="ionicon"
+          //           size={20}
+          //           color={layoutParams.colors.lighGrey}
+          //         />
+          //       </View>
+          //     </Pressable>
+          //   );
+          // }
+        }
         keyExtractor={(item: any, index) => item + index}
         key={"_"}
         extraData={state.selectedUser}
-        contentContainerStyle={{ margin: 5 }}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={() => (
           <View
@@ -312,7 +367,7 @@ const messageStyles = StyleSheet.create({
   searchInputContainer: {
     padding: 10,
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.searchInput,
+    backgroundColor: layoutParams.colors.visibleColorOpacity1,
     borderRadius: 13,
     alignItems: "center",
   },

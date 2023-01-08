@@ -24,3 +24,4 @@ export const appFonts = {
   Bangers_400Regular: "Bangers_400Regular",
   OpenSans_400Regular: "OpenSans_400Regular",
 };
+

@@ -18,12 +18,14 @@ import layoutParams from "../utils/LayoutParams";
 import React from "react";
 import {
   AppCheckBoxProps,
+  IconProps,
   KeyBoardProps,
   ThemeProps,
 } from "../utils/AppInterfaces";
 import Colors from "../constants/Colors";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { appFonts } from "../utils/AllConstant";
+import { Icon } from "react-native-elements";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -158,5 +160,16 @@ export function KeyboardAvoidingComponent({ children }: KeyBoardProps) {
         <React.Fragment>{children}</React.Fragment>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+  );
+}
+
+export function CustomIcon({ ...props }: IconProps) {
+  return (
+    <Icon
+      name={props.icon}
+      size={props.size}
+      type={props.iconType}
+      color={props.color}
+    />
   );
 }

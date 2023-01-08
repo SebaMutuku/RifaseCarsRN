@@ -149,7 +149,8 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="default"
             value={state.username}
-            iconName="account"
+            icon="account"
+            iconType="material-community"
             iconSize={25}
             underlineColorAndroid="transparent"
             blurOnSubmit={true}
@@ -178,7 +179,8 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="default"
             value={state.password.trim()}
-            iconName={!state.showPassword ? "eye-off" : "eye"}
+            icon={!state.showPassword ? "eye-off" : "eye"}
+            iconType="ionicon"
             onPressIcon={() =>
               setState({
                 ...state,

@@ -141,7 +141,8 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             keyboardType="number-pad"
             value={state.phoneNumber}
-            iconName="phone"
+            icon="phone"
+            iconType="material-community"
             iconSize={25}
             underlineColorAndroid="transparent"
             blurOnSubmit={true}
@@ -157,7 +158,8 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             keyboardType="default"
             value={state.username}
-            iconName="account"
+            icon="account"
+            iconType="material-community"
             iconSize={25}
             underlineColorAndroid="transparent"
             blurOnSubmit={true}
@@ -173,7 +175,8 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             keyboardType="default"
             value={state.password}
-            iconName={state.showPassword ? "eye-off" : "eye"}
+            icon={state.showPassword ? "eye-off" : "eye"}
+            iconType="ionicon"
             onPressIcon={() =>
               setState({
                 ...state,
