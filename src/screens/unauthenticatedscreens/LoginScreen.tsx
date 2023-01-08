@@ -12,7 +12,7 @@ import layoutParams from "../../utils/LayoutParams";
 import React from "react";
 import HeaderSection from "../../components/HeaderSection";
 import {
-  ActivityIndicator,
+  ActivityIndicatorComponent,
   KeyboardAvoidingComponent,
   Text,
   View,
@@ -125,7 +125,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingComponent>
-      {ActivityIndicator(state.loading)}
+      {ActivityIndicatorComponent(state.loading)}
       <SafeAreaView
         style={{
           flex: 1,

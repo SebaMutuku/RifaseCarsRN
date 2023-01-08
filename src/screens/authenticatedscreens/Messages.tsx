@@ -10,7 +10,7 @@ import {
 import layoutParams from "../../utils/LayoutParams";
 import { Button } from "@rneui/base";
 import FlatListView from "../../components/FlatListView";
-import { CustomIcon, Text, View } from "../../components/Widgets";
+import { IconComponent, Text, View } from "../../components/Widgets";
 import { messagesData, usersD } from "../../utils/Data";
 import moment from "moment";
 import { Ionicons } from "@expo/vector-icons";

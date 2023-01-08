@@ -1,24 +1,21 @@
 import {
+  Alert,
   Animated,
   Pressable,
   SafeAreaView,
-  SectionList,
-  StatusBar,
   StyleSheet,
 } from "react-native";
 
 import {
-  CustomIcon,
+  IconComponent,
+  ProfileListItemComponent,
   Text,
   useThemeColor,
   View,
 } from "../../components/Widgets";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
-import CircularImage from "../../components/CircularImage";
 import React from "react";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { sectionData } from "../../utils/Data";
 import { sharedStyles } from "../../utils/SharedStyles";
 import { BottomSheetProps } from "../../utils/AppInterfaces";
 import CustomModal from "../../modals/CustomModal";
@@ -26,8 +23,7 @@ import { AuthContext } from "../../utils/AuthContext";
 import toast from "../../utils/toast";
 import { useTheme } from "@react-navigation/native";
 import { appFonts } from "../../utils/AllConstant";
-import { ListItem } from "react-native-elements";
-import { Avatar } from "react-native-elements";
+import { ListItem, Avatar } from "react-native-elements";
 
 export default function Profile() {
   const [state, setState] = React.useState({
@@ -36,6 +32,7 @@ export default function Profile() {
     modalVisble: false,
     modalHeading: "Loading...Please wait",
     modalAcceptString: "yes",
+    updateTheme: false,
   });
   const { toggleTheme } = React.useContext(AuthContext);
   const backgroundColor = useThemeColor(
@@ -79,65 +76,59 @@ export default function Profile() {
       }),
     ]).start();
   }, []);
-  const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
-  function topScreen() {
+  function headerSection() {
     return (
       <Animated.View
         style={{
           transform: [{ scale: profileView.current }],
-          backgroundColor,
-          flexDirection: "row",
+          backgroundColor: layoutParams.colors.backgroundColor,
         }}
       >
-        <Avatar
-          size="large"
-          rounded
-          titleStyle={{
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: layoutParams.colors.white,
-          }}
-          containerStyle={{ marginLeft: 10, marginTop: 10 }}
-          source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-        />
-        <View
-          style={{
-            marginLeft: 10,
-            flexDirection: "column",
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            adjustsFontSizeToFit
-            style={[
-              styles.profileText,
-              {
+        <ListItem>
+          <Avatar
+            size="large"
+            rounded
+            source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
+          />
+          <ListItem.Content>
+            <ListItem.Title
+              style={{
                 fontSize: 22,
-                fontFamily: appFonts.WorkSans_600SemiBold,
+                fontFamily: appFonts.Poppins_600SemiBold,
                 color: layoutParams.colors.primaryColor,
-              },
-            ]}
-          >
-            Sebastian Mutuku
-          </Text>
-          <Text
-            style={[
-              styles.profileText,
-              { color: layoutParams.colors.primaryColor },
-            ]}
-          >
-            abc@gmail.com
-          </Text>
-          <Text
-            style={[
-              styles.profileText,
-              { color: layoutParams.colors.primaryColor },
-            ]}
-          >
-            Software Engineer
-          </Text>
-        </View>
+              }}
+              adjustsFontSizeToFit
+            >
+              Sebastian Mutuku
+            </ListItem.Title>
+            <ListItem.Subtitle
+              adjustsFontSizeToFit
+              style={[
+                styles.profileText,
+                { color: layoutParams.colors.primaryColor },
+              ]}
+            >
+              abc@gmail.com
+            </ListItem.Subtitle>
+            <ListItem.Subtitle
+              adjustsFontSizeToFit
+              style={[
+                styles.profileText,
+                { color: layoutParams.colors.primaryColor },
+              ]}
+            >
+              Software Developer
+            </ListItem.Subtitle>
+          </ListItem.Content>
+          <IconComponent
+            color={layoutParams.colors.lighGrey}
+            icon="edit"
+            iconType="antdesign"
+            size={30}
+            onPress={() => Alert.alert("pressed")}
+          />
+        </ListItem>
       </Animated.View>
     );
   }
@@ -190,187 +181,200 @@ export default function Profile() {
     );
   }
 
-  const onPress = (item: any) => {
-    switch (item) {
-      case "Logout":
-        {
-          setState({
-            ...state,
-            modalVisble: true,
-            modalHeading: "Do you really wish to logout?",
-            modalAcceptString: "Log out",
-          });
-        }
-        break;
-      case "Close Account":
-        {
-          setState({
-            ...state,
-            modalVisble: true,
-            modalHeading: "Do you really wish to close your account?",
-            modalAcceptString: "Close Account",
-          });
-        }
-        break;
-      case "Change theme":
-        toggleTheme();
-        break;
-      default:
-        console.log("Pressed");
-        break;
-    }
+  const onLogout = () => {
+    setState({
+      ...state,
+      modalVisble: true,
+      modalHeading: "Do you really wish to logout?",
+      modalAcceptString: "Log out",
+    });
   };
-  const renderItem = React.useCallback((item: any, index: number) => {
-    return (
-      <ListItem>
-        <ListItem.Content>
 
-        </ListItem.Content>
-      </ListItem>
-    );
-  }, []);
+  const onCloseAccount = () => {
+    setState({
+      ...state,
+      modalVisble: true,
+      modalHeading: "Do you really wish to close your account?",
+      modalAcceptString: "Close Account",
+    });
+  };
+  const onChangeTheme = () => {
+    toggleTheme();
+    setState({
+      ...state,
+      updateTheme: !state.updateTheme,
+    });
+  };
 
   function scrollSectionList() {
     return (
-      <SectionList
-        sections={sectionData}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item, index, section }) => {
-          let iconName: any = "";
-          switch (item) {
-            case "Favourite Cars":
-              iconName = "heart";
-              break;
-            case "App Currency":
-              iconName = "money";
-              // color = layoutParams.colors.black;
-              break;
-            case "Language":
-              iconName = "language";
-              // color = layoutParams.colors.black;
-              break;
-            case "Notifications":
-              iconName = "bell";
-              // color = layoutParams.colors.black;
-              break;
-            case "Terms":
-              iconName = "book";
-              // color = layoutParams.colors.black;
-              break;
-            case "FAQ":
-              iconName = "question-circle";
-              // color = layoutParams.colors.black;
-              break;
-            case "About App":
-              iconName = "book";
-              // color = layoutParams.colors.black;
-              break;
-            case "Change Password":
-              iconName = "pencil";
-              // color = layoutParams.colors.black;
-              break;
-            case "Change theme":
-              iconName = "moon-o";
-              // color = layoutParams.colors.black;
-              break;
-            case "Update App":
-              iconName = "cloud-upload";
-              // color = layoutParams.colors.black;
-              break;
-            case "Privacy":
-              iconName = "user-secret";
-              // color = layoutParams.colors.black;
-              break;
-            case "Close Account":
-              iconName = "times-circle";
-              // color = layoutParams.colors.red;
-              break;
-            default:
-              iconName = "sign-out";
-            // color = layoutParams.colors.red;
-          }
-          return (
-            <AnimatedTouchable
-              style={{
-                ...sectionStyle(index, section).item,
-                backgroundColor,
-              }}
-              onPress={() => onPress(item)}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <CustomIcon
-                  icon={iconName}
-                  iconType="font-awesome"
-                  size={20}
-                  color={
-                    theme.dark
-                      ? layoutParams.colors.white
-                      : layoutParams.colors.black
-                  }
-                />
-                <Text
-                  style={{
-                    fontFamily: appFonts.WorkSans_400Regular,
-                    marginLeft: 10,
-                    color:
-                      item.match("Close Account") || item.match("Logout")
-                        ? layoutParams.colors.red
-                        : theme.dark
-                        ? layoutParams.colors.white
-                        : layoutParams.colors.black,
-                  }}
-                >
-                  {item}
-                </Text>
-              </View>
-              <CustomIcon
-                icon="keyboard-arrow-right"
-                size={20}
-                color={layoutParams.colors.lighGrey}
-                iconType="material-icon"
-              />
-            </AnimatedTouchable>
-          );
-        }}
-        showsVerticalScrollIndicator={false}
-        renderSectionHeader={({ section: { title } }) => (
-          <View
-            style={{
-              margin: 10,
-              padding: 5,
-            }}
-          >
-            <Text
-              style={{
-                ...styles.header,
-                color: theme.dark
-                  ? layoutParams.colors.white
-                  : layoutParams.colors.black,
-              }}
-            >
-              {title}
-            </Text>
-          </View>
-        )}
-        ListFooterComponentStyle={{
-          marginBottom: layoutParams.WINDOW.height * 0.1,
-        }}
-        ListFooterComponent={
-          <View style={{ paddingBottom: StatusBar.currentHeight }} />
-        }
-      />
+      <Animated.ScrollView showsVerticalScrollIndicator={false}>
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+            marginTop: 15,
+          }}
+        >
+          Content
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="favorite"
+          leftIconType="material"
+          chevron={true}
+          title="Favorites"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="attach-money"
+          leftIconType="material"
+          chevron={true}
+          title="App Currency"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+          }}
+        >
+          Preferences
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="language"
+          leftIconType="font-awesome"
+          chevron={true}
+          title="Language"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="bell"
+          leftIconType="font-awesome"
+          chevron={true}
+          title="Notifications"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+          }}
+        >
+          App Features
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="book"
+          leftIconType="font-awesome"
+          chevron={true}
+          title="Terms"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="questioncircle"
+          leftIconType="antdesign"
+          chevron={true}
+          title="FAQ"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="world"
+          leftIconType="fontisto"
+          chevron={true}
+          title="About app"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="versions"
+          leftIconType="octicon"
+          chevron={true}
+          title="App version"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+          }}
+        >
+          User Settings
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="edit"
+          leftIconType="antdesign"
+          chevron={true}
+          title="Change password"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="moon"
+          leftIconType="ionicon"
+          chevron={false}
+          title="Update Theme"
+          titleAndiconColor="black"
+          value={state.updateTheme}
+          onPress={() => onChangeTheme()}
+          rightIcon={true}
+        />
+        <ProfileListItemComponent
+          leftIcon="update"
+          leftIconType="material"
+          chevron={true}
+          title="Update App"
+          titleAndiconColor="black"
+          onPress={() => {}}
+          value={state.updateTheme}
+        />
+        <ProfileListItemComponent
+          leftIcon="privacy-tip"
+          leftIconType="material"
+          chevron={true}
+          title="Privacy"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+
+        <ProfileListItemComponent
+          leftIcon="delete"
+          leftIconType="antdesign"
+          chevron={true}
+          title="Close account"
+          titleAndiconColor="red"
+          onPress={() => onCloseAccount()}
+        />
+        <ProfileListItemComponent
+          leftIcon="logout"
+          leftIconType="antdesign"
+          chevron={true}
+          title="Logout"
+          titleAndiconColor="red"
+          onPress={() => onLogout()}
+        />
+        <View style={{ marginBottom: layoutParams.WINDOW.height * 0.15 }} />
+      </Animated.ScrollView>
     );
   }
 
   return (
     <SafeAreaView style={{ ...sharedStyles.container, backgroundColor }}>
       {/*TopImage Screen*/}
-      {topScreen()}
+      {headerSection()}
       <Animated.View
         style={{
           marginTop: 20,
@@ -384,7 +388,6 @@ export default function Profile() {
       >
         {scrollSectionList()}
       </Animated.View>
-
       <CustomModal
         visible={state.modalVisble}
         children={logoutChildren()}
@@ -396,7 +399,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   title: {
     fontSize: 20,
-    fontFamily: "WorkSans_700Bold",
+    fontFamily: appFonts.WorkSans_700Bold,
   },
   link: {
     marginTop: 15,
@@ -414,7 +417,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileText: {
-    fontFamily: appFonts.WorkSans_400Regular,
+    fontFamily: appFonts.Poppins_500Medium,
   },
   scrollView: {
     borderTopLeftRadius: 20,
@@ -423,9 +426,10 @@ const styles = StyleSheet.create({
     ...layoutParams.elevation,
     marginTop: 20,
   },
-  header: {
-    fontFamily: appFonts.WorkSans_600SemiBold,
-    fontSize: 20,
+  sectionHeads: {
+    fontFamily: appFonts.Poppins_500Medium,
+    marginLeft: 15,
+    fontSize: 15,
   },
   title1: {
     fontSize: 24,

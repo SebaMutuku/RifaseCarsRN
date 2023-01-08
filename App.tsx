@@ -72,7 +72,6 @@ export default function App() {
       try {
         let userToken = await utils.getValue("token");
         userToken = "hahaaha";
-        console.log("Token ", userToken);
         if (userToken !== null || userToken !== undefined) {
           dispatch({ type: "AUTHENTICATED", token: userToken });
         } else {

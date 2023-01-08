@@ -1,4 +1,9 @@
-import { CustomIcon, Text, TextInput, View } from "../../../components/Widgets";
+import {
+  IconComponent,
+  Text,
+  TextInput,
+  View,
+} from "../../../components/Widgets";
 import {
   Keyboard,
   SafeAreaView,
@@ -76,14 +81,14 @@ export default function UserMessage() {
           disabled={state.messageText.length <= 0}
         >
           {state.messageText.length > 0 ? (
-            <CustomIcon
+            <IconComponent
               icon="send"
               iconType="material"
               size={24}
               color={layoutParams.colors.white}
             />
           ) : (
-            <CustomIcon
+            <IconComponent
               icon="microphone"
               iconType="material-community"
               size={24}
@@ -139,7 +144,7 @@ export default function UserMessage() {
               >
                 {moment(item.messageTime).fromNow()}
               </Text>
-              <CustomIcon
+              <IconComponent
                 icon="md-checkmark-done"
                 iconType="ionicon"
                 size={20}

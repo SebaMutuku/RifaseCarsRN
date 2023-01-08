@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import layoutParams from "./LayoutParams";
 import { PixelRatio } from "react-native";
-import { showToast } from "../components/Widgets";
+import { toastComponent } from "../components/Widgets";
 import useColorScheme from "../hooks/useColorScheme";
 export declare type IconType =
   | "material"
@@ -18,6 +18,7 @@ export declare type IconType =
   | "antdesign"
   | "font-awesome-5"
   | "antdesign"
+  |"fontisto"
   | string;
 
 export const appBaseUrl = "https://carfueldjango.herokuapp.com/api";
@@ -92,7 +93,7 @@ export async function postData(url: string, ...params: any): Promise<any> {
   })
     .then((response) => response.json())
     .catch((error) => {
-      showToast(error.message);
+      toastComponent(error.message);
       console.log(error);
     });
   return response;

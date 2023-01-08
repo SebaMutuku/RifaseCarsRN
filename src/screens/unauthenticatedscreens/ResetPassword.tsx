@@ -4,9 +4,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import layoutParams from "../../utils/LayoutParams";
 import HeaderSection from "../../components/HeaderSection";
 import {
-  ActivityIndicator,
+  ActivityIndicatorComponent,
   KeyboardAvoidingComponent,
-  showToast,
+  toastComponent,
   Text,
   View,
 } from "../../components/Widgets";
@@ -58,7 +58,7 @@ export default function ResetPassword() {
               });
             }
           })
-          .catch((error) => showToast(error.message))
+          .catch((error) => toastComponent(error.message))
           .finally(() => {
             setState({
               ...state,
@@ -72,7 +72,7 @@ export default function ResetPassword() {
   return (
     <KeyboardAvoidingComponent>
       <SafeAreaProvider>
-        {ActivityIndicator(state.loading)}
+        {ActivityIndicatorComponent(state.loading)}
         <View style={sharedStyles.container}>
           <HeaderSection
             actionText="Recover your account"

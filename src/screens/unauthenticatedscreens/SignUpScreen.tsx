@@ -7,7 +7,7 @@ import { DarkTheme, useNavigation } from "@react-navigation/native";
 import { CombinedNavigationProps } from "../../navigation/ScreenTypes";
 import { Checkbox } from "react-native-paper";
 import {
-  ActivityIndicator,
+  ActivityIndicatorComponent,
   CheckBox,
   KeyboardAvoidingComponent,
   Text,
@@ -113,7 +113,7 @@ export default function SignUpScreen() {
 
   return (
     <KeyboardAvoidingComponent>
-      {ActivityIndicator(state.loading)}
+      {ActivityIndicatorComponent(state.loading)}
       <SafeAreaView
         style={{
           flex: 1,

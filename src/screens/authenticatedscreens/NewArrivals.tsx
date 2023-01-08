@@ -1,4 +1,4 @@
-import { showToast, Text, View } from "../../components/Widgets";
+import { toastComponent, Text, View } from "../../components/Widgets";
 import { Animated, SafeAreaView, StyleSheet } from "react-native";
 import { sharedStyles } from "../../utils/SharedStyles";
 import React from "react";
@@ -31,7 +31,7 @@ export default function NewArrivals() {
           viewedCars: response.data,
         })
       )
-      .catch((error) => showToast(error.message));
+      .catch((error) => toastComponent(error.message));
   };
 
   const renderSingleCarItem = (carItem: carData[]) => {

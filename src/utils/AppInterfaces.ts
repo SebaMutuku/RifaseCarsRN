@@ -8,6 +8,7 @@ import {
 import React, { Key } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { IconType } from "./Utils";
+import { IconComponent } from "../components/Widgets";
 
 export interface AppAuthState {
   isLoading: boolean;
@@ -203,4 +204,16 @@ export interface IconProps {
   icon: string;
   iconType: IconType;
   color: string;
+  onPress?: () => void;
+}
+export interface ListItemProfileProps {
+  leftIcon: string;
+  title: string;
+  chevron?: boolean;
+  leftIconType: IconType;
+  rightIcon?: boolean;
+  titleAndiconColor?: string | "black";
+  onPress?: () => void;
+  value?: any;
+  subtitle?: string;
 }

@@ -20,12 +20,14 @@ import {
   AppCheckBoxProps,
   IconProps,
   KeyBoardProps,
+  ListItemProfileProps,
   ThemeProps,
 } from "../utils/AppInterfaces";
 import Colors from "../constants/Colors";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { appFonts } from "../utils/AllConstant";
-import { Icon } from "react-native-elements";
+import { Icon, ListItem, Switch } from "react-native-elements";
+import { DarkTheme } from "react-native-paper";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -101,7 +103,7 @@ export function TextInput(props: TextInputProps) {
   );
 }
 
-export function ActivityIndicator(visible: boolean) {
+export function ActivityIndicatorComponent(visible: boolean) {
   return (
     visible && (
       <View
@@ -146,7 +148,7 @@ export function ActivityIndicator(visible: boolean) {
   );
 }
 
-export const showToast = (text: string) => {
+export const toastComponent = (text: string) => {
   toastRef.current?.show(text);
 };
 
@@ -163,13 +165,53 @@ export function KeyboardAvoidingComponent({ children }: KeyBoardProps) {
   );
 }
 
-export function CustomIcon({ ...props }: IconProps) {
+export function IconComponent({ ...props }: IconProps) {
   return (
     <Icon
       name={props.icon}
       size={props.size}
       type={props.iconType}
       color={props.color}
+      onPress={props.onPress}
     />
+  );
+}
+
+export function ProfileListItemComponent({ ...props }: ListItemProfileProps) {
+  return (
+    <ListItem
+      onPress={props.onPress}
+      style={{ marginLeft: 10, marginRight: 10 }}
+    >
+      <IconComponent
+        color={props.titleAndiconColor as string}
+        icon={props.leftIcon}
+        iconType={props.leftIconType}
+        size={18}
+      />
+      <ListItem.Content>
+        <ListItem.Title
+          style={{
+            color: props.titleAndiconColor,
+            fontFamily: appFonts.WorkSans_400Regular,
+          }}
+        >
+          {props.title}
+        </ListItem.Title>
+      </ListItem.Content>
+      {props.chevron && <ListItem.Chevron />}
+      <View
+        style={{
+          alignItems: "center",
+        }}
+      >
+        {props.rightIcon && (
+          <Switch
+            value={props.value}
+            color={layoutParams.colors.primaryColor}
+          />
+        )}
+      </View>
+    </ListItem>
   );
 }
