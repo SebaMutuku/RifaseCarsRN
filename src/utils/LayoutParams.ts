@@ -29,7 +29,7 @@ export default {
     grey: "#D7E1E7",
     selectedColor: "#8cb2c9",
     loadMore: "#C0392B",
-    red: "#DE3163",
+    red: "#FF0000",
     messageColor: "#DCF8C5",
     visibleColorOpacity1: "#F8FAFB",
     listColors: "#F5F9FD",

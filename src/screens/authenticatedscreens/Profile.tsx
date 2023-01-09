@@ -1,12 +1,7 @@
-import {
-  Alert,
-  Animated,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-} from "react-native";
+import { Alert, Animated, SafeAreaView, StyleSheet } from "react-native";
 
 import {
+  BottomSheetComponent,
   IconComponent,
   ProfileListItemComponent,
   Text,
@@ -17,13 +12,12 @@ import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
 import React from "react";
 import { sharedStyles } from "../../utils/SharedStyles";
-import { BottomSheetProps } from "../../utils/AppInterfaces";
-import CustomModal from "../../modals/CustomModal";
+import { BottomSheetComponentProps } from "../../utils/AppInterfaces";
+import ReusableBottomSheet from "../../modals/CustomModal";
 import { AuthContext } from "../../utils/AuthContext";
-import toast from "../../utils/toast";
 import { useTheme } from "@react-navigation/native";
 import { appFonts } from "../../utils/AllConstant";
-import { ListItem, Avatar } from "react-native-elements";
+import { ListItem, Avatar, Button } from "react-native-elements";
 
 export default function Profile() {
   const [state, setState] = React.useState({
@@ -33,6 +27,7 @@ export default function Profile() {
     modalHeading: "Loading...Please wait",
     modalAcceptString: "yes",
     updateTheme: false,
+    loading: false,
   });
   const { toggleTheme } = React.useContext(AuthContext);
   const backgroundColor = useThemeColor(
@@ -58,7 +53,7 @@ export default function Profile() {
     new Animated.Value(0)
   );
   const profileView = React.useRef<Animated.Value>(new Animated.Value(0));
-  const ref = React.useRef<BottomSheetProps>(null);
+  const ref = React.useRef<BottomSheetComponentProps>(null);
   const { signOut } = React.useContext(AuthContext);
   React.useEffect(() => {
     Animated.parallel([
@@ -137,56 +132,78 @@ export default function Profile() {
     return (
       <View
         style={{
-          marginTop: 10,
-          flexDirection: "row",
-          justifyContent: "space-evenly",
+          backgroundColor: layoutParams.colors.backgroundColor,
+
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
         }}
       >
-        <Pressable
-          onPress={() => setModalVisible(false)}
-          style={{ ...styles.logout, backgroundColor }}
-        >
-          <Text
-            style={{
-              ...styles.modalText,
-              fontSize: 16,
-            }}
-          >
-            No
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setModalVisible(true);
-            setTimeout(() => {
-              signOut();
-              toast.success("Successfully logged out");
-            }, 1000);
-          }}
+        <Text
           style={{
-            ...styles.logout,
+            fontFamily: appFonts.WorkSans_500Medium,
+            alignSelf: "center",
+            // fontSize: 18,
+            margin: 10,
           }}
         >
-          <Text
-            style={{
-              ...styles.modalText,
-              fontSize: 16,
-              color: layoutParams.colors.red,
+          Do you really wish to {state.modalAcceptString} ?
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Button
+            title="Yes"
+            buttonStyle={[
+              styles.button,
+              { backgroundColor: layoutParams.colors.red },
+            ]}
+            titleStyle={styles.titleStyle}
+            onPress={() => {
+              setModalVisible(true);
+              setTimeout(() => {
+                signOut();
+              }, 500);
+              setState({
+                ...state,
+                loading: false,
+              });
             }}
-          >
-            {state.modalAcceptString}
-          </Text>
-        </Pressable>
+          />
+          <Button
+            title="No"
+            onPress={() => {
+              setState({
+                ...state,
+                loading: false,
+              });
+              setModalVisible(false);
+            }}
+            buttonStyle={[
+              styles.button,
+              { backgroundColor: layoutParams.colors.primaryColor },
+            ]}
+            titleStyle={styles.titleStyle}
+          />
+        </View>
       </View>
     );
   }
 
   const onLogout = () => {
+    setTimeout(() => {
+      setState({
+        ...state,
+        modalVisble: true,
+        loading: true,
+        modalAcceptString: "log out",
+      });
+    });
     setState({
       ...state,
-      modalVisble: true,
-      modalHeading: "Do you really wish to logout?",
-      modalAcceptString: "Log out",
+      loading: false,
     });
   };
 
@@ -194,16 +211,16 @@ export default function Profile() {
     setState({
       ...state,
       modalVisble: true,
-      modalHeading: "Do you really wish to close your account?",
-      modalAcceptString: "Close Account",
+      modalAcceptString: "close your account",
     });
   };
-  const onChangeTheme = () => {
+  const onThemePress = () => {
     toggleTheme();
     setState({
       ...state,
       updateTheme: !state.updateTheme,
     });
+    return <BottomSheetComponent children={<View></View>} isVisible={true} />;
   };
 
   function scrollSectionList() {
@@ -329,7 +346,7 @@ export default function Profile() {
           title="Update Theme"
           titleAndiconColor="black"
           value={state.updateTheme}
-          onPress={() => onChangeTheme()}
+          onPress={() => onThemePress()}
           rightIcon={true}
         />
         <ProfileListItemComponent
@@ -388,7 +405,7 @@ export default function Profile() {
       >
         {scrollSectionList()}
       </Animated.View>
-      <CustomModal
+      <ReusableBottomSheet
         visible={state.modalVisble}
         children={logoutChildren()}
         modalHeading={state.modalHeading}
@@ -448,6 +465,15 @@ const styles = StyleSheet.create({
     borderColor: layout.colors.deepBlue,
     margin: 3,
     borderRadius: 24,
+  },
+  titleStyle: {
+    fontFamily: appFonts.Poppins_400Regular,
+  },
+  button: {
+    padding: 8,
+    margin: 15,
+    minWidth: 80,
+    borderRadius: 50,
   },
 });
 

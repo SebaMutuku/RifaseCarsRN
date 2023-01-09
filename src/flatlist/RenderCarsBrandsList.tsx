@@ -44,21 +44,14 @@ const RenderCarsBrandsList = ({ ...props }: CarBrandsProps) => {
       }}
     >
       <Text
-        style={{
-          fontSize: props.brandSelected === props.index ? 20 : 15,
-          marginLeft: 10,
-          marginRight: 10,
-          marginBottom: 20,
-          marginTop: 20,
-          fontFamily:
-            props.brandSelected === props.index
-              ? appFonts.WorkSans_600SemiBold
-              : appFonts.WorkSans_400Regular,
-          color:
-            props.brandSelected === props.index
-              ? layoutParams.colors.primaryColor
-              : layout.colors.grey,
-        }}
+        style={[
+          styles.brandText,
+          props.brandSelected === props.index && {
+            fontSize: 18,
+            fontFamily: appFonts.WorkSans_600SemiBold,
+            color: layoutParams.colors.primaryColor,
+          },
+        ]}
         adjustsFontSizeToFit
         onPress={() => {
           props.onPress();
@@ -72,22 +65,14 @@ const RenderCarsBrandsList = ({ ...props }: CarBrandsProps) => {
   );
 };
 export default React.memo(RenderCarsBrandsList);
-const brandStyles = (brandSelected: number, index: number) =>
-  StyleSheet.create({
-    brandButton: {
-      alignItems: "center",
-      justifyContent: "center",
-      minWidth: layoutParams.WINDOW.width * 0.2,
-      padding: brandSelected == index ? 10 : 6,
-      backgroundColor:
-        brandSelected == index ? layout.colors.deepBlue : layout.colors.white,
-      borderColor:
-        brandSelected == index
-          ? layout.colors.deepBlue
-          : layout.colors.deepBlue,
-      borderWidth: 0.05,
-      margin: 3,
-      borderRadius: 24,
-      ...layoutParams.elevation,
-    },
-  });
+const styles = StyleSheet.create({
+  brandText: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 20,
+    marginTop: 20,
+    fontSize: 15,
+    fontFamily: appFonts.WorkSans_400Regular,
+    color: layout.colors.grey,
+  },
+});

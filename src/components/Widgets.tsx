@@ -12,21 +12,30 @@ import {
   TextInput as DefaultTextInput,
   TouchableWithoutFeedback,
   View as DefaultView,
+  SafeAreaView,
 } from "react-native";
 import useColorScheme from "../hooks/useColorScheme";
 import layoutParams from "../utils/LayoutParams";
 import React from "react";
 import {
   AppCheckBoxProps,
+  BottomSheetComponentProps,
   IconProps,
   KeyBoardProps,
   ListItemProfileProps,
+  LoadingLinearProps,
   ThemeProps,
 } from "../utils/AppInterfaces";
 import Colors from "../constants/Colors";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { appFonts } from "../utils/AllConstant";
-import { Icon, ListItem, Switch } from "react-native-elements";
+import {
+  BottomSheet,
+  Icon,
+  LinearProgress,
+  ListItem,
+  Switch,
+} from "react-native-elements";
 import { DarkTheme } from "react-native-paper";
 
 export function useThemeColor(
@@ -181,7 +190,11 @@ export function ProfileListItemComponent({ ...props }: ListItemProfileProps) {
   return (
     <ListItem
       onPress={props.onPress}
-      style={{ marginLeft: 10, marginRight: 10 }}
+      style={{
+        marginLeft: 10,
+        marginRight: 10,
+        backgroundColor: layoutParams.colors.backgroundColor,
+      }}
     >
       <IconComponent
         color={props.titleAndiconColor as string}
@@ -213,5 +226,41 @@ export function ProfileListItemComponent({ ...props }: ListItemProfileProps) {
         )}
       </View>
     </ListItem>
+  );
+}
+
+export function BottomSheetComponent({ ...props }: BottomSheetComponentProps) {
+  return (
+    <SafeAreaView>
+      <BottomSheet {...props}>{props.children}</BottomSheet>
+    </SafeAreaView>
+  );
+}
+export function LinearProgressComponent({ loading }: LoadingLinearProps) {
+  return (
+    <>
+      {loading && (
+        <LinearProgress
+          color={layoutParams.colors.primaryColor}
+          accessibilityViewIsModal
+          accessible={false}
+          children={
+            <View
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <Text>Loading</Text>
+            </View>
+          }
+          style={{
+            justifyContent: "center",
+            alignContent: "center",
+            // top: 300,
+            // position: "absolute",
+          }}
+        />
+      )}
+    </>
   );
 }

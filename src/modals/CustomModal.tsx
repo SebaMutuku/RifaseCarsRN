@@ -1,4 +1,4 @@
-import { Text, View } from "../components/Widgets";
+import { BottomSheetComponent, Text, View } from "../components/Widgets";
 import { Modal, StyleSheet } from "react-native";
 import React from "react";
 import layoutParams from "../utils/LayoutParams";
@@ -10,42 +10,16 @@ interface CloseAccountProps {
   children: React.ReactNode;
 }
 
-export default function CustomModal({ ...props }: CloseAccountProps) {
+export default function ReusableBottomSheet({ ...props }: CloseAccountProps) {
   const [modalVisible, setModalVisible] = React.useState(props.visible);
 
   return (
     <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={props.visible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text
-              style={{
-                ...styles.modalText,
-              }}
-            >
-              Message
-            </Text>
-            <Text
-              style={[
-                styles.subtitleText,
-                {
-                  fontSize: 16,
-                },
-              ]}
-            >
-              {props.modalHeading}
-            </Text>
-            {props.children}
-          </View>
-        </View>
-      </Modal>
+      <BottomSheetComponent
+        children={props.children}
+        isVisible={props.visible}
+        containerStyle={{}}
+      />
     </View>
   );
 }
@@ -62,10 +36,14 @@ const styles = StyleSheet.create({
     padding: 35,
     ...layoutParams.elevation,
   },
+  titleStyle: {
+    fontFamily: appFonts.Poppins_400Regular,
+  },
   button: {
-    borderRadius: 20,
     padding: 10,
-    elevation: 2,
+    margin: 20,
+    minWidth: 100,
+    borderRadius: 20,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",

@@ -33,7 +33,7 @@ export default function UserMessage() {
   });
   React.useEffect(() => {}, [state.messagesData]);
 
-  const sendmessage = React.useCallback(() => {
+  const sendmessage = () => {
     const todayDate = new Date().toISOString();
     const sendMessage: MessageContext = {
       message: state.messageText,
@@ -46,7 +46,7 @@ export default function UserMessage() {
       messageText: "",
     }));
     Keyboard.dismiss();
-  }, []);
+  };
 
   function replyInput() {
     return (
@@ -103,13 +103,13 @@ export default function UserMessage() {
   function userMessagesFlatList() {
     const renderUserMessage = React.useCallback((item: any, index: number) => {
       return (
-        <ListItem key={index} style={{}}>
+        <ListItem key={index}>
           <ListItem.Content
             style={{
               backgroundColor:
                 item.sender === "me"
                   ? layoutParams.colors.listColors
-                  : layoutParams.colors.messageColor,
+                  : layoutParams.colors.primaryColor,
               marginRight: item.sender === "me" ? StatusBar.currentHeight : 0,
               marginLeft: item.sender === "me" ? 0 : StatusBar.currentHeight,
               ...userMessageStyles.messageContent,

@@ -1,6 +1,7 @@
 import {
   ImageSourcePropType,
   ImageStyle,
+  ModalProps,
   StyleProp,
   TextStyle,
   ViewStyle,
@@ -178,10 +179,11 @@ export interface GetUserresponse {
   responseCode: number;
 }
 
-export type BottomSheetProps = {
-  children?: React.ReactNode;
-  visible: boolean | undefined;
-  height: number;
+export type BottomSheetComponentProps = {
+  children: React.ReactNode;
+  containerStyle?: StyleProp<ViewStyle>;
+  modalProps?: ModalProps;
+  isVisible?: boolean;
 };
 
 export interface ReviewData {
@@ -216,4 +218,7 @@ export interface ListItemProfileProps {
   onPress?: () => void;
   value?: any;
   subtitle?: string;
+}
+export interface LoadingLinearProps {
+  loading: boolean;
 }
