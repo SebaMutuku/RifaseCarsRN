@@ -196,7 +196,7 @@ export interface ReviewData {
 export interface AppCheckBoxProps {
   label: any | undefined;
   getValue?: any;
-  getChecked: boolean;
+  getChecked(checked: boolean): void;
   checked: boolean;
   checkboxRef: BouncyCheckbox | null;
 }

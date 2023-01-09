@@ -60,7 +60,6 @@ export const toastRef = React.createRef<any>();
 export function CheckBox({ ...props }: AppCheckBoxProps) {
   const [checked, setChecked] = React.useState(props.checked);
   let checkboxRef: BouncyCheckbox | null = null;
-  props.getChecked = checked;
   return (
     <BouncyCheckbox
       style={{ marginTop: 16 }}
@@ -74,7 +73,11 @@ export function CheckBox({ ...props }: AppCheckBoxProps) {
       }}
       unfillColor={layoutParams.colors.backgroundColor}
       disableBuiltInState
-      onPress={() => setChecked(!checked)}
+      onPress={() => {
+        console.log(checked);
+        setChecked(!checked);
+        props.getChecked(checked);
+      }}
     />
   );
 }

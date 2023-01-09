@@ -18,7 +18,7 @@ export declare type IconType =
   | "antdesign"
   | "font-awesome-5"
   | "antdesign"
-  |"fontisto"
+  | "fontisto"
   | string;
 
 export const appBaseUrl = "https://carfueldjango.herokuapp.com/api";
@@ -29,6 +29,15 @@ export async function saveValue(key: string, value: any) {
   } catch (e) {
     console.log(e);
   }
+}
+export async function saveSeveralValues(...values: string[]) {
+  values.forEach(async (k, v: any) => {
+    try {
+      await SecureStore.setItemAsync(k, v);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 }
 
 export async function getValue(key: string) {

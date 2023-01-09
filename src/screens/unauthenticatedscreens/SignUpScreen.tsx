@@ -34,12 +34,14 @@ export default function SignUpScreen() {
 
   function inputsValid() {
     return (
-      state.phoneNumber.length > 0 &&
+      state.phoneNumber.length >= 10 &&
       state.phoneNumber.length < 14 &&
       state.username.length > 0 &&
-      state.password.length >= 8 &&
-      state.checkBoxChecked
+      state.password.length >= 8
     );
+  }
+  function getChecked(checked: boolean) {
+    return checked;
   }
 
   function onRegister() {
@@ -195,23 +197,28 @@ export default function SignUpScreen() {
           >
             <CheckBox
               label="Accept terms and conditions here"
-              checked={false}
-              getChecked={false}
+              checked={state.checkBoxChecked}
+              getChecked={() => getChecked(state.checkBoxChecked)}
               checkboxRef={null}
             />
           </View>
           <Pressable
             onPress={() => onRegister()}
             disabled={!inputsValid() || state.disabledButton}
-            style={{
-              ...buttonStyle(inputsValid()).button,
-            }}
+            style={[
+              buttonStyle().button,
+              inputsValid() && {
+                backgroundColor: layoutParams.colors.primaryColor,
+              },
+            ]}
           >
             <Text
-              style={{
-                ...registerStyles.buttonText,
-                color: layoutParams.colors.white,
-              }}
+              style={[
+                registerStyles.buttonText,
+                inputsValid() && {
+                  color: layoutParams.colors.white,
+                },
+              ]}
             >
               Sign Up
             </Text>
@@ -241,6 +248,7 @@ export default function SignUpScreen() {
 }
 const registerStyles = StyleSheet.create({
   buttonText: {
+    color: layoutParams.colors.primaryColor,
     fontFamily: appFonts.Poppins_500Medium,
     textAlign: "center",
   },

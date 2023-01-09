@@ -15,6 +15,7 @@ import { buttonStyle, sharedStyles } from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
 import { GetUserresponse } from "../../utils/AppInterfaces";
 import toast from "../../utils/toast";
+import { appFonts } from "../../utils/AllConstant";
 
 export default function ResetPassword() {
   const [state, setState] = React.useState({
@@ -130,17 +131,22 @@ export default function ResetPassword() {
             )}
 
             <Pressable
-              style={{
-                ...buttonStyle(inputsValid()).button,
-              }}
+              style={[
+                buttonStyle().button,
+                inputsValid() && {
+                  backgroundColor: layoutParams.colors.primaryColor,
+                },
+              ]}
               onPress={() => onResetPass()}
               disabled={!inputsValid()}
             >
               <Text
-                style={{
-                  ...resetPassStyles.buttonText,
-                  color: layoutParams.colors.white,
-                }}
+                style={[
+                  resetPassStyles.buttonText,
+                  inputsValid() && {
+                    color: layoutParams.colors.white,
+                  },
+                ]}
               >
                 Reset Password
               </Text>
@@ -153,6 +159,8 @@ export default function ResetPassword() {
 }
 const resetPassStyles = StyleSheet.create({
   buttonText: {
-    fontFamily: "Poppins_500Medium",
+    color: layoutParams.colors.primaryColor,
+    fontFamily: appFonts.WorkSans_600SemiBold,
+    textAlign: "center",
   },
 });
