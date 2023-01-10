@@ -4,9 +4,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import layoutParams from "../../utils/LayoutParams";
 import HeaderSection from "../../components/HeaderSection";
 import {
-  ActivityIndicator,
+  ActivityIndicatorComponent,
   KeyboardAvoidingComponent,
-  showToast,
+  toastComponent,
   Text,
   View,
 } from "../../components/Widgets";
@@ -15,6 +15,7 @@ import { buttonStyle, sharedStyles } from "../../utils/SharedStyles";
 import utils from "../../utils/Utils";
 import { GetUserresponse } from "../../utils/AppInterfaces";
 import toast from "../../utils/toast";
+import { appFonts } from "../../utils/AllConstant";
 
 export default function ResetPassword() {
   const [state, setState] = React.useState({
@@ -58,7 +59,7 @@ export default function ResetPassword() {
               });
             }
           })
-          .catch((error) => showToast(error.message))
+          .catch((error) => toastComponent(error.message))
           .finally(() => {
             setState({
               ...state,
@@ -72,7 +73,7 @@ export default function ResetPassword() {
   return (
     <KeyboardAvoidingComponent>
       <SafeAreaProvider>
-        {ActivityIndicator(state.loading)}
+        {ActivityIndicatorComponent(state.loading)}
         <View style={sharedStyles.container}>
           <HeaderSection
             actionText="Recover your account"
@@ -94,7 +95,8 @@ export default function ResetPassword() {
               autoCapitalize="none"
               keyboardType="default"
               value={state.username}
-              iconName="account"
+              icon="account"
+              iconType="material-community"
               iconSize={25}
               underlineColorAndroid="transparent"
               blurOnSubmit={true}
@@ -113,7 +115,8 @@ export default function ResetPassword() {
                 autoCapitalize="none"
                 keyboardType="default"
                 value={state.password.trim()}
-                iconName={!state.showPassword ? "eye-off" : "eye"}
+                icon={!state.showPassword ? "eye-off" : "eye"}
+                iconType="material-icon"
                 onPressIcon={() =>
                   setState({
                     ...state,
@@ -128,17 +131,22 @@ export default function ResetPassword() {
             )}
 
             <Pressable
-              style={{
-                ...buttonStyle(inputsValid()).button,
-              }}
+              style={[
+                buttonStyle().button,
+                inputsValid() && {
+                  backgroundColor: layoutParams.colors.primaryColor,
+                },
+              ]}
               onPress={() => onResetPass()}
               disabled={!inputsValid()}
             >
               <Text
-                style={{
-                  ...resetPassStyles.buttonText,
-                  color: layoutParams.colors.white,
-                }}
+                style={[
+                  resetPassStyles.buttonText,
+                  inputsValid() && {
+                    color: layoutParams.colors.white,
+                  },
+                ]}
               >
                 Reset Password
               </Text>
@@ -151,6 +159,8 @@ export default function ResetPassword() {
 }
 const resetPassStyles = StyleSheet.create({
   buttonText: {
-    fontFamily: "Poppins_500Medium",
+    color: layoutParams.colors.primaryColor,
+    fontFamily: appFonts.WorkSans_600SemiBold,
+    textAlign: "center",
   },
 });

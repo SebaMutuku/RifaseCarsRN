@@ -7,7 +7,6 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  TextInput,
 } from "react-native";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
@@ -145,6 +144,8 @@ export default function Home() {
         iconSize={25}
         underlineColorAndroid="transparent"
         blurOnSubmit={true}
+        icon="search"
+        iconType="evilicon"
       />
     );
   }
@@ -332,7 +333,7 @@ export default function Home() {
           >
             {/*Image at the start*/}
             <Image
-              source={require("../../../assets/images/mainCarImage.jpg")}
+              source={require("../../../assets/images/carImage.jpg")}
               style={{
                 justifyContent: "flex-start",
                 height: "100%",
@@ -571,7 +572,7 @@ const homeStyles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.searchInput,
+    backgroundColor: layoutParams.colors.visibleColorOpacity1,
     ...layoutParams.elevation,
   },
 });

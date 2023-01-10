@@ -19,15 +19,15 @@ import SignUpScreen from "../screens/unauthenticatedscreens/SignUpScreen";
 import Home from "../screens/authenticatedscreens/Home";
 import ResetPassword from "../screens/unauthenticatedscreens/ResetPassword";
 import layoutParams from "../utils/LayoutParams";
-import { Avatar } from "react-native-paper";
-import { View } from "../components/Widgets";
+import { IconComponent, View } from "../components/Widgets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import RecentViews from "../screens/authenticatedscreens/RecentViews";
+import NewArrivals from "../screens/authenticatedscreens/NewArrivals";
 import CarDetails from "../screens/authenticatedscreens/stackscreens/CarDetails";
 import Messages from "../screens/authenticatedscreens/Messages";
 import UserMessage from "../screens/authenticatedscreens/stackscreens/UserMessage";
 import CircularImage from "../components/CircularImage";
 import { appFonts } from "../utils/AllConstant";
+import { Avatar } from "react-native-elements";
 
 /**
  * A root stack navigator is often used for displaying modals on top of all other content.
@@ -225,7 +225,6 @@ function BottomTabNavigator() {
           alignItems: "center",
         },
         tabBarLabelStyle: {
-          fontSize: 14,
           fontFamily: appFonts.WorkSans_500Medium,
         },
         headerStyle: {
@@ -239,8 +238,8 @@ function BottomTabNavigator() {
         headerTitleAlign: "center",
         tabBarAllowFontScaling: true,
         tabBarStyle: {
-          borderTopRightRadius: 20,
-          borderTopLeftRadius: 20,
+          // borderTopRightRadius: 20,
+          // borderTopLeftRadius: 20,
         },
         headerTitleAllowFontScaling: true,
         unmountOnBlur: true,
@@ -253,7 +252,12 @@ function BottomTabNavigator() {
         options={({ navigation }: HomeBottomTabScreenProps<"HomeTab">) => ({
           tabBarLabel: "Home",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="home" color={color} size={25} />
+            <IconComponent
+              icon="home"
+              color={color}
+              size={25}
+              iconType="material-icon"
+            />
           ),
           headerRight: () => (
             <View
@@ -269,11 +273,11 @@ function BottomTabNavigator() {
                 color={layoutParams.colors.deepBlue}
                 style={{ marginRight: 20 }}
               />
-              <Avatar.Image
+              <Avatar
                 size={50}
                 source={require("../../assets/images/human-male.jpg")}
-                onTouchStart={() => navigation.navigate("Profile")}
-                style={{
+                onPress={() => navigation.navigate("Profile")}
+                avatarStyle={{
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -297,13 +301,18 @@ function BottomTabNavigator() {
         })}
       />
       <HomeBottomTabs.Screen
-        name="RecentlyView"
-        component={RecentViews}
+        name="NewArrivals"
+        component={NewArrivals}
         options={{
-          title: "Recent Views",
-          tabBarLabel: "Recent Views",
+          title: "New Arrivals",
+          tabBarLabel: "New Arrivals",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="cart" color={color} size={25} />
+            <IconComponent
+              icon="baby-carriage"
+              color={color}
+              size={20}
+              iconType="font-awesome-5"
+            />
           ),
         }}
       />
@@ -313,7 +322,12 @@ function BottomTabNavigator() {
         options={{
           tabBarLabel: "Messages",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="comment-multiple" color={color} size={25} />
+            <IconComponent
+              icon="facebook-messenger"
+              color={color}
+              size={20}
+              iconType="material-community"
+            />
           ),
         }}
       />
@@ -323,7 +337,12 @@ function BottomTabNavigator() {
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="account-cog" color={color} size={25} />
+            <IconComponent
+              icon="account"
+              iconType="material-community"
+              color={color}
+              size={20}
+            />
           ),
         }}
       />
@@ -334,10 +353,3 @@ function BottomTabNavigator() {
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-  color: string;
-  size: number;
-}) {
-  return <MaterialCommunityIcons style={{ marginBottom: -3 }} {...props} />;
-}

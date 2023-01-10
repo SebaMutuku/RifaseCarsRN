@@ -1,26 +1,23 @@
-import {
-  Animated,
-  Pressable,
-  SafeAreaView,
-  SectionList,
-  StatusBar,
-  StyleSheet,
-} from "react-native";
+import { Alert, Animated, SafeAreaView, StyleSheet } from "react-native";
 
-import { Text, useThemeColor, View } from "../../components/Widgets";
+import {
+  BottomSheetComponent,
+  IconComponent,
+  ProfileListItemComponent,
+  Text,
+  useThemeColor,
+  View,
+} from "../../components/Widgets";
 import layoutParams from "../../utils/LayoutParams";
 import layout from "../../utils/LayoutParams";
-import CircularImage from "../../components/CircularImage";
 import React from "react";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { sectionData } from "../../utils/Data";
 import { sharedStyles } from "../../utils/SharedStyles";
-import { BottomSheetProps } from "../../utils/AppInterfaces";
-import CustomModal from "../../modals/CustomModal";
+import { BottomSheetComponentProps } from "../../utils/AppInterfaces";
+import ReusableBottomSheet from "../../modals/CustomModal";
 import { AuthContext } from "../../utils/AuthContext";
-import toast from "../../utils/toast";
 import { useTheme } from "@react-navigation/native";
 import { appFonts } from "../../utils/AllConstant";
+import { ListItem, Avatar, Button } from "react-native-elements";
 
 export default function Profile() {
   const [state, setState] = React.useState({
@@ -29,6 +26,8 @@ export default function Profile() {
     modalVisble: false,
     modalHeading: "Loading...Please wait",
     modalAcceptString: "yes",
+    updateTheme: false,
+    loading: false,
   });
   const { toggleTheme } = React.useContext(AuthContext);
   const backgroundColor = useThemeColor(
@@ -54,7 +53,7 @@ export default function Profile() {
     new Animated.Value(0)
   );
   const profileView = React.useRef<Animated.Value>(new Animated.Value(0));
-  const ref = React.useRef<BottomSheetProps>(null);
+  const ref = React.useRef<BottomSheetComponentProps>(null);
   const { signOut } = React.useContext(AuthContext);
   React.useEffect(() => {
     Animated.parallel([
@@ -72,42 +71,59 @@ export default function Profile() {
       }),
     ]).start();
   }, []);
-  const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
 
-  function topScreen() {
+  function headerSection() {
     return (
       <Animated.View
         style={{
-          alignItems: "center",
           transform: [{ scale: profileView.current }],
-          backgroundColor,
+          backgroundColor: layoutParams.colors.backgroundColor,
         }}
       >
-        {CircularImage({
-          source: { uri: "https://randomuser.me/api/portraits/men/36.jpg" },
-          size: layoutParams.WINDOW.height * 0.1,
-          rounded: true,
-        })}
-        <View
-          style={{
-            flexDirection: "column",
-          }}
-        >
-          <Text
-            adjustsFontSizeToFit
-            style={[
-              styles.profileText,
-              {
+        <ListItem>
+          <Avatar
+            size="large"
+            rounded
+            source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
+          />
+          <ListItem.Content>
+            <ListItem.Title
+              style={{
                 fontSize: 22,
-                fontFamily: appFonts.WorkSans_600SemiBold,
-                color: layoutParams.colors.textLightColor,
-              },
-            ]}
-          >
-            Sebastian
-          </Text>
-          <Text style={[styles.profileText, { color }]}>abc@gmail.com</Text>
-        </View>
+                fontFamily: appFonts.Poppins_600SemiBold,
+                color: layoutParams.colors.primaryColor,
+              }}
+              adjustsFontSizeToFit
+            >
+              Sebastian Mutuku
+            </ListItem.Title>
+            <ListItem.Subtitle
+              adjustsFontSizeToFit
+              style={[
+                styles.profileText,
+                { color: layoutParams.colors.primaryColor },
+              ]}
+            >
+              abc@gmail.com
+            </ListItem.Subtitle>
+            <ListItem.Subtitle
+              adjustsFontSizeToFit
+              style={[
+                styles.profileText,
+                { color: layoutParams.colors.primaryColor },
+              ]}
+            >
+              Software Developer
+            </ListItem.Subtitle>
+          </ListItem.Content>
+          <IconComponent
+            color={layoutParams.colors.lighGrey}
+            icon="edit"
+            iconType="antdesign"
+            size={30}
+            onPress={() => Alert.alert("pressed")}
+          />
+        </ListItem>
       </Animated.View>
     );
   }
@@ -116,224 +132,270 @@ export default function Profile() {
     return (
       <View
         style={{
-          marginTop: 10,
-          flexDirection: "row",
-          justifyContent: "space-evenly",
+          backgroundColor: layoutParams.colors.backgroundColor,
+
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
         }}
       >
-        <Pressable
-          onPress={() => setModalVisible(false)}
-          style={{ ...styles.logout, backgroundColor }}
-        >
-          <Text
-            style={{
-              ...styles.modalText,
-              fontSize: 16,
-            }}
-          >
-            No
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setModalVisible(true);
-            setTimeout(() => {
-              signOut();
-              toast.success("Successfully logged out");
-            }, 1000);
-          }}
+        <Text
           style={{
-            ...styles.logout,
+            fontFamily: appFonts.WorkSans_500Medium,
+            alignSelf: "center",
+            // fontSize: 18,
+            margin: 10,
           }}
         >
-          <Text
-            style={{
-              ...styles.modalText,
-              fontSize: 16,
-              color: layoutParams.colors.red,
+          Do you really wish to {state.modalAcceptString} ?
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Button
+            title="Yes"
+            buttonStyle={[
+              styles.button,
+              { backgroundColor: layoutParams.colors.red },
+            ]}
+            titleStyle={styles.titleStyle}
+            onPress={() => {
+              setModalVisible(true);
+              setTimeout(() => {
+                signOut();
+              }, 500);
+              setState({
+                ...state,
+                loading: false,
+              });
             }}
-          >
-            {state.modalAcceptString}
-          </Text>
-        </Pressable>
+          />
+          <Button
+            title="No"
+            onPress={() => {
+              setState({
+                ...state,
+                loading: false,
+              });
+              setModalVisible(false);
+            }}
+            buttonStyle={[
+              styles.button,
+              { backgroundColor: layoutParams.colors.primaryColor },
+            ]}
+            titleStyle={styles.titleStyle}
+          />
+        </View>
       </View>
     );
   }
 
-  const onPress = (item: any) => {
-    switch (item) {
-      case "Logout":
-        {
-          setState({
-            ...state,
-            modalVisble: true,
-            modalHeading: "Do you really wish to logout?",
-            modalAcceptString: "Log out",
-          });
-        }
-        break;
-      case "Close Account":
-        {
-          setState({
-            ...state,
-            modalVisble: true,
-            modalHeading: "Do you really wish to close your account?",
-            modalAcceptString: "Close Account",
-          });
-        }
-        break;
-      case "Change theme":
-        toggleTheme();
-        break;
-      default:
-        console.log("Pressed");
-        break;
-    }
+  const onLogout = () => {
+    setTimeout(() => {
+      setState({
+        ...state,
+        modalVisble: true,
+        loading: true,
+        modalAcceptString: "log out",
+      });
+    });
+    setState({
+      ...state,
+      loading: false,
+    });
+  };
+
+  const onCloseAccount = () => {
+    setState({
+      ...state,
+      modalVisble: true,
+      modalAcceptString: "close your account",
+    });
+  };
+  const onThemePress = () => {
+    toggleTheme();
+    setState({
+      ...state,
+      updateTheme: !state.updateTheme,
+    });
+    return <BottomSheetComponent children={<View></View>} isVisible={true} />;
   };
 
   function scrollSectionList() {
     return (
-      <SectionList
-        sections={sectionData}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item, index, section }) => {
-          let iconName: any = "";
-          switch (item) {
-            case "Favourite Cars":
-              iconName = "heart";
-              break;
-            case "App Currency":
-              iconName = "money";
-              // color = layoutParams.colors.black;
-              break;
-            case "Language":
-              iconName = "language";
-              // color = layoutParams.colors.black;
-              break;
-            case "Notifications":
-              iconName = "bell";
-              // color = layoutParams.colors.black;
-              break;
-            case "Terms":
-              iconName = "book";
-              // color = layoutParams.colors.black;
-              break;
-            case "FAQ":
-              iconName = "question-circle";
-              // color = layoutParams.colors.black;
-              break;
-            case "About App":
-              iconName = "book";
-              // color = layoutParams.colors.black;
-              break;
-            case "Change Password":
-              iconName = "pencil";
-              // color = layoutParams.colors.black;
-              break;
-            case "Change theme":
-              iconName = "moon-o";
-              // color = layoutParams.colors.black;
-              break;
-            case "Update App":
-              iconName = "cloud-upload";
-              // color = layoutParams.colors.black;
-              break;
-            case "Privacy":
-              iconName = "user-secret";
-              // color = layoutParams.colors.black;
-              break;
-            case "Close Account":
-              iconName = "times-circle";
-              // color = layoutParams.colors.red;
-              break;
-            default:
-              iconName = "sign-out";
-            // color = layoutParams.colors.red;
-          }
-          return (
-            <AnimatedTouchable
-              style={{
-                ...sectionStyle(index, section).item,
-                backgroundColor,
-              }}
-              onPress={() => onPress(item)}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <FontAwesome
-                  name={iconName}
-                  size={20}
-                  color={
-                    theme.dark
-                      ? layoutParams.colors.white
-                      : layoutParams.colors.black
-                  }
-                />
-                <Text
-                  style={{
-                    fontFamily: appFonts.WorkSans_500Medium,
-                    marginLeft: 10,
-                    color:
-                      item.match("Close Account") || item.match("Logout")
-                        ? layoutParams.colors.red
-                        : theme.dark
-                        ? layoutParams.colors.white
-                        : layoutParams.colors.black,
-                  }}
-                >
-                  {item}
-                </Text>
-              </View>
-              <MaterialIcons
-                name="keyboard-arrow-right"
-                size={20}
-                color={layoutParams.colors.lighGrey}
-              />
-            </AnimatedTouchable>
-          );
-        }}
-        showsVerticalScrollIndicator={false}
-        renderSectionHeader={({ section: { title } }) => (
-          <View
-            style={{
-              margin: 10,
-              padding: 5,
-            }}
-          >
-            <Text
-              style={{
-                ...styles.header,
-                color: theme.dark
-                  ? layoutParams.colors.white
-                  : layoutParams.colors.black,
-              }}
-            >
-              {title}
-            </Text>
-          </View>
-        )}
-        ListFooterComponentStyle={{
-          marginBottom: layoutParams.WINDOW.height * 0.1,
-        }}
-        ListFooterComponent={
-          <View style={{ paddingBottom: StatusBar.currentHeight }} />
-        }
-      />
+      <Animated.ScrollView showsVerticalScrollIndicator={false}>
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+            marginTop: 15,
+          }}
+        >
+          Content
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="favorite"
+          leftIconType="material"
+          chevron={true}
+          title="Favorites"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="attach-money"
+          leftIconType="material"
+          chevron={true}
+          title="App Currency"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+          }}
+        >
+          Preferences
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="language"
+          leftIconType="font-awesome"
+          chevron={true}
+          title="Language"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="bell"
+          leftIconType="font-awesome"
+          chevron={true}
+          title="Notifications"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+          }}
+        >
+          App Features
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="book"
+          leftIconType="font-awesome"
+          chevron={true}
+          title="Terms"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="questioncircle"
+          leftIconType="antdesign"
+          chevron={true}
+          title="FAQ"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="world"
+          leftIconType="fontisto"
+          chevron={true}
+          title="About app"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="versions"
+          leftIconType="octicon"
+          chevron={true}
+          title="App version"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <Text
+          style={{
+            ...styles.sectionHeads,
+            color: theme.dark
+              ? layoutParams.colors.white
+              : layoutParams.colors.primaryColor,
+          }}
+        >
+          User Settings
+        </Text>
+        <ProfileListItemComponent
+          leftIcon="edit"
+          leftIconType="antdesign"
+          chevron={true}
+          title="Change password"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+        <ProfileListItemComponent
+          leftIcon="moon"
+          leftIconType="ionicon"
+          chevron={false}
+          title="Update Theme"
+          titleAndiconColor="black"
+          value={state.updateTheme}
+          onPress={() => onThemePress()}
+          rightIcon={true}
+        />
+        <ProfileListItemComponent
+          leftIcon="update"
+          leftIconType="material"
+          chevron={true}
+          title="Update App"
+          titleAndiconColor="black"
+          onPress={() => {}}
+          value={state.updateTheme}
+        />
+        <ProfileListItemComponent
+          leftIcon="privacy-tip"
+          leftIconType="material"
+          chevron={true}
+          title="Privacy"
+          titleAndiconColor="black"
+          onPress={() => {}}
+        />
+
+        <ProfileListItemComponent
+          leftIcon="delete"
+          leftIconType="antdesign"
+          chevron={true}
+          title="Close account"
+          titleAndiconColor="red"
+          onPress={() => onCloseAccount()}
+        />
+        <ProfileListItemComponent
+          leftIcon="logout"
+          leftIconType="antdesign"
+          chevron={true}
+          title="Logout"
+          titleAndiconColor="red"
+          onPress={() => onLogout()}
+        />
+        <View style={{ marginBottom: layoutParams.WINDOW.height * 0.15 }} />
+      </Animated.ScrollView>
     );
   }
 
   return (
     <SafeAreaView style={{ ...sharedStyles.container, backgroundColor }}>
       {/*TopImage Screen*/}
-      {topScreen()}
+      {headerSection()}
       <Animated.View
         style={{
           marginTop: 20,
-          backgroundColor,
+          backgroundColor: layoutParams.colors.backgroundColor,
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           shadowOffset: { width: 1.1, height: 1.1 },
@@ -343,8 +405,7 @@ export default function Profile() {
       >
         {scrollSectionList()}
       </Animated.View>
-
-      <CustomModal
+      <ReusableBottomSheet
         visible={state.modalVisble}
         children={logoutChildren()}
         modalHeading={state.modalHeading}
@@ -355,7 +416,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   title: {
     fontSize: 20,
-    fontFamily: "WorkSans_700Bold",
+    fontFamily: appFonts.WorkSans_700Bold,
   },
   link: {
     marginTop: 15,
@@ -373,8 +434,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileText: {
-    fontSize: 14,
-    fontFamily: appFonts.WorkSans_600SemiBold,
+    fontFamily: appFonts.Poppins_500Medium,
   },
   scrollView: {
     borderTopLeftRadius: 20,
@@ -383,9 +443,10 @@ const styles = StyleSheet.create({
     ...layoutParams.elevation,
     marginTop: 20,
   },
-  header: {
-    fontFamily: appFonts.WorkSans_600SemiBold,
-    fontSize: 20,
+  sectionHeads: {
+    fontFamily: appFonts.Poppins_500Medium,
+    marginLeft: 15,
+    fontSize: 15,
   },
   title1: {
     fontSize: 24,
@@ -404,6 +465,15 @@ const styles = StyleSheet.create({
     borderColor: layout.colors.deepBlue,
     margin: 3,
     borderRadius: 24,
+  },
+  titleStyle: {
+    fontFamily: appFonts.Poppins_400Regular,
+  },
+  button: {
+    padding: 8,
+    margin: 15,
+    minWidth: 80,
+    borderRadius: 50,
   },
 });
 

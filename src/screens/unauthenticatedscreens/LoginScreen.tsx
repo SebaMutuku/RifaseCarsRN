@@ -12,7 +12,7 @@ import layoutParams from "../../utils/LayoutParams";
 import React from "react";
 import HeaderSection from "../../components/HeaderSection";
 import {
-  ActivityIndicator,
+  ActivityIndicatorComponent,
   KeyboardAvoidingComponent,
   Text,
   View,
@@ -20,7 +20,7 @@ import {
 import Toast from "react-native-toast-message";
 import TextInputComponent from "../../components/TextInputComponent";
 import { buttonStyle, sharedStyles } from "../../utils/SharedStyles";
-import utils from "../../utils/Utils";
+import utils, { saveSeveralValues } from "../../utils/Utils";
 import { LoginResponse } from "../../utils/AppInterfaces";
 import toast from "../../utils/toast";
 import { AuthContext } from "../../utils/AuthContext";
@@ -86,18 +86,12 @@ export default function LoginScreen() {
                 responseData.user != null &&
                 responseData.user.token != null
               ) {
-                utils.saveValue(
-                  "username",
-                  JSON.stringify(responseData.user.username)
-                );
-                utils.saveValue(
-                  "token",
-                  JSON.stringify(responseData.user.token)
-                );
-                utils.saveValue(
-                  "role_id",
-                  JSON.stringify(responseData.user.role_id)
-                );
+                let values: any = [
+                  { username: JSON.stringify(responseData.user.username) },
+                  { token: JSON.stringify(responseData.user.token) },
+                  { role_id: JSON.stringify(responseData.user.role_id) },
+                ];
+                saveSeveralValues(values);
                 signIn(responseData.user.token);
                 toast.success({
                   message: responseData.message,
@@ -125,7 +119,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingComponent>
-      {ActivityIndicator(state.loading)}
+      {ActivityIndicatorComponent(state.loading)}
       <SafeAreaView
         style={{
           flex: 1,
@@ -149,7 +143,8 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="default"
             value={state.username}
-            iconName="account"
+            icon="account"
+            iconType="material-community"
             iconSize={25}
             underlineColorAndroid="transparent"
             blurOnSubmit={true}
@@ -178,7 +173,8 @@ export default function LoginScreen() {
             autoCapitalize="none"
             keyboardType="default"
             value={state.password.trim()}
-            iconName={!state.showPassword ? "eye-off" : "eye"}
+            icon={!state.showPassword ? "eye-off" : "eye"}
+            iconType="ionicon"
             onPressIcon={() =>
               setState({
                 ...state,
@@ -204,9 +200,12 @@ export default function LoginScreen() {
           </Text>
 
           <Pressable
-            style={{
-              ...buttonStyle(inputsValid()).button,
-            }}
+            style={[
+              buttonStyle().button,
+              inputsValid() && {
+                backgroundColor: layoutParams.colors.primaryColor,
+              },
+            ]}
             onPress={() => {
               onLogin();
               // showToast("User Logged In")
@@ -214,10 +213,12 @@ export default function LoginScreen() {
             disabled={!inputsValid() || state.disabledButton}
           >
             <Text
-              style={{
-                ...styles.buttonText,
-                color: layoutParams.colors.white,
-              }}
+              style={[
+                styles.buttonText,
+                inputsValid() && {
+                  color: layoutParams.colors.white,
+                },
+              ]}
             >
               Login
             </Text>
@@ -247,6 +248,7 @@ export default function LoginScreen() {
 }
 const styles = StyleSheet.create({
   buttonText: {
+    color: layoutParams.colors.primaryColor,
     fontFamily: appFonts.WorkSans_600SemiBold,
     textAlign: "center",
   },

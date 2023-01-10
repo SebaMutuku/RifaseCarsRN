@@ -12,18 +12,32 @@ import {
   TextInput as DefaultTextInput,
   TouchableWithoutFeedback,
   View as DefaultView,
+  SafeAreaView,
+  StyleSheet,
 } from "react-native";
 import useColorScheme from "../hooks/useColorScheme";
 import layoutParams from "../utils/LayoutParams";
 import React from "react";
 import {
   AppCheckBoxProps,
+  BottomSheetComponentProps,
+  IconProps,
   KeyBoardProps,
+  ListItemProfileProps,
+  LoadingLinearProps,
   ThemeProps,
 } from "../utils/AppInterfaces";
 import Colors from "../constants/Colors";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { CheckBox } from "react-native-elements";
 import { appFonts } from "../utils/AllConstant";
+import {
+  BottomSheet,
+  Icon,
+  LinearProgress,
+  ListItem,
+  Switch,
+} from "react-native-elements";
+import { DarkTheme } from "react-native-paper";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -44,24 +58,22 @@ export type ViewProps = ThemeProps & DefaultView["props"];
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 export const toastRef = React.createRef<any>();
 
-export function CheckBox({ ...props }: AppCheckBoxProps) {
-  const [checked, setChecked] = React.useState(props.checked);
-  let checkboxRef: BouncyCheckbox | null = null;
-  props.getChecked = checked;
+export function CheckBoxComponent({ ...props }: AppCheckBoxProps) {
   return (
-    <BouncyCheckbox
+    <CheckBox
       style={{ marginTop: 16 }}
-      ref={(ref: any) => (checkboxRef = ref)}
-      isChecked={checked}
-      text={props.label}
-      fillColor={layoutParams.colors.primaryColor}
-      textStyle={{
-        color: layoutParams.colors.black,
-        fontFamily: appFonts.WorkSans_500Medium,
+      checked={props.checked}
+      title={<Text style={styles.textStyle}>{props.label}</Text>}
+      containerStyle={{
+        backgroundColor: layoutParams.colors.backgroundColor,
+        borderWidth: 0,
+        borderColor: layoutParams.colors.backgroundColor,
       }}
-      unfillColor={layoutParams.colors.backgroundColor}
-      disableBuiltInState
-      onPress={() => setChecked(!checked)}
+      checkedColor={layoutParams.colors.primaryColor}
+      uncheckedColor={layoutParams.colors.grey}
+      onPress={() => {
+        props.getChecked(!props.checked);
+      }}
     />
   );
 }
@@ -99,7 +111,7 @@ export function TextInput(props: TextInputProps) {
   );
 }
 
-export function ActivityIndicator(visible: boolean) {
+export function ActivityIndicatorComponent(visible: boolean) {
   return (
     visible && (
       <View
@@ -144,7 +156,7 @@ export function ActivityIndicator(visible: boolean) {
   );
 }
 
-export const showToast = (text: string) => {
+export const toastComponent = (text: string) => {
   toastRef.current?.show(text);
 };
 
@@ -160,3 +172,101 @@ export function KeyboardAvoidingComponent({ children }: KeyBoardProps) {
     </KeyboardAvoidingView>
   );
 }
+
+export function IconComponent({ ...props }: IconProps) {
+  return (
+    <Icon
+      name={props.icon}
+      size={props.size}
+      type={props.iconType}
+      color={props.color}
+      onPress={props.onPress}
+    />
+  );
+}
+
+export function ProfileListItemComponent({ ...props }: ListItemProfileProps) {
+  return (
+    <ListItem
+      onPress={props.onPress}
+      style={{
+        marginLeft: 10,
+        marginRight: 10,
+        backgroundColor: layoutParams.colors.backgroundColor,
+      }}
+    >
+      <IconComponent
+        color={props.titleAndiconColor as string}
+        icon={props.leftIcon}
+        iconType={props.leftIconType}
+        size={18}
+      />
+      <ListItem.Content>
+        <ListItem.Title
+          style={{
+            color: props.titleAndiconColor,
+            fontFamily: appFonts.WorkSans_400Regular,
+          }}
+        >
+          {props.title}
+        </ListItem.Title>
+      </ListItem.Content>
+      {props.chevron && <ListItem.Chevron />}
+      <View
+        style={{
+          alignItems: "center",
+        }}
+      >
+        {props.rightIcon && (
+          <Switch
+            value={props.value}
+            color={layoutParams.colors.primaryColor}
+          />
+        )}
+      </View>
+    </ListItem>
+  );
+}
+
+export function BottomSheetComponent({ ...props }: BottomSheetComponentProps) {
+  return (
+    <SafeAreaView>
+      <BottomSheet {...props}>{props.children}</BottomSheet>
+    </SafeAreaView>
+  );
+}
+export function LinearProgressComponent({ loading }: LoadingLinearProps) {
+  return (
+    <>
+      {loading && (
+        <LinearProgress
+          color={layoutParams.colors.primaryColor}
+          accessibilityViewIsModal
+          accessible={false}
+          children={
+            <View
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <Text>Loading</Text>
+            </View>
+          }
+          style={{
+            justifyContent: "center",
+            alignContent: "center",
+            // top: 300,
+            // position: "absolute",
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  textStyle: {
+    color: layoutParams.colors.black,
+    fontFamily: appFonts.WorkSans_500Medium,
+  },
+});

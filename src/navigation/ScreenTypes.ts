@@ -24,7 +24,7 @@ declare global {
 
 export type HomeBottomTabParamList = {
   HomeTab: StackScreenProps<HomeStackParamList>;
-  RecentlyView: undefined;
+  NewArrivals: undefined;
   Profile: undefined
   Messages: undefined
 };

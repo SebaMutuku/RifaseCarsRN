@@ -42,17 +42,15 @@ export const sharedStyles = StyleSheet.create({
     textAlign: "center",
   },
 });
-export const buttonStyle = (validatedInput: boolean) =>
+export const buttonStyle = () =>
   StyleSheet.create({
     button: {
       alignItems: "center",
       justifyContent: "center",
       padding: 15,
-      backgroundColor: validatedInput
-        ? layout.colors.primaryColor
-        : layout.colors.primaryColor,
+      backgroundColor: layoutParams.colors.white,
       borderWidth: 0.5,
-      borderColor: layoutParams.colors.grey,
+      borderColor: layoutParams.colors.primaryColor,
       margin: 10,
       borderRadius: 10,
     },

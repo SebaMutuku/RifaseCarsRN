@@ -1,4 +1,4 @@
-import {carData, CommunicationDataProps, MessageTemplate, ReviewData, SectionDateInterface} from "./AppInterfaces";
+import {carData, CommunicationDataProps, MessageTemplate, ReviewData, SectionData} from "./AppInterfaces";
 
 export const PopularCarData: carData[] = [{
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -7,7 +7,7 @@ export const PopularCarData: carData[] = [{
     mileage: "20000",
     yom: "1999",
     price: "900,000",
-    imageUrl: "../../../assets/images/mainCarImage.jpg",
+    imageUrl: "../../../assets/images/carImage.jpg",
 
 }, {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
@@ -16,14 +16,14 @@ export const PopularCarData: carData[] = [{
     mileage: "21000",
     yom: "2000",
     price: "951,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg'
+    imageUrl: '../../../assets/images/carImage.jpg'
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
     make: "Suzuki",
     mileage: "22000",
     yom: "2001",
     price: "550,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "Swift",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d73",
@@ -31,7 +31,7 @@ export const PopularCarData: carData[] = [{
     mileage: "23000",
     yom: "2002",
     price: "2,100,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "i320",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d74",
@@ -39,7 +39,7 @@ export const PopularCarData: carData[] = [{
     mileage: "24000",
     yom: "2003",
     price: "2,300,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "Mark X",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d75",
@@ -47,7 +47,7 @@ export const PopularCarData: carData[] = [{
     mileage: "25000",
     yom: "2004",
     price: "2,800,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "C5",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d76",
@@ -55,7 +55,7 @@ export const PopularCarData: carData[] = [{
     mileage: "26000",
     yom: "2005",
     price: "760,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "C6",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d77",
@@ -63,7 +63,7 @@ export const PopularCarData: carData[] = [{
     mileage: "27000",
     yom: "2006",
     price: "2,700,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "E5",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d78",
@@ -71,7 +71,7 @@ export const PopularCarData: carData[] = [{
     mileage: "28000",
     yom: "2007",
     price: "4,500,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "L2",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d79",
@@ -79,7 +79,7 @@ export const PopularCarData: carData[] = [{
     mileage: "20000",
     yom: "2010",
     price: "940,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "Murano",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d80",
@@ -87,7 +87,7 @@ export const PopularCarData: carData[] = [{
     mileage: "29000",
     yom: "2008",
     price: "1,400,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "V1",
 }, {
     id: "58694a0f-3da1-471f-bd96-145571e29d81",
@@ -95,7 +95,7 @@ export const PopularCarData: carData[] = [{
     mileage: "30000",
     yom: "2009",
     price: "1,410,000",
-    imageUrl: '../../../assets/images/mainCarImage.jpg',
+    imageUrl: '../../../assets/images/carImage.jpg',
     model: "Impreza",
 }];
 export const carBrands: any [] = ["audi", "bmw", "honda", "lexus", "mazda", "mercedes", "nissan", "rangerover", "subaru", "suzuki", "toyota", "volvo"];
@@ -187,7 +187,7 @@ export const communicationData: CommunicationDataProps[] = [{
 }, {
     sender: "me", message: "Hey man? Good morning bro?", messageTime: "2022-09-18"
 }]
-export const sectionData: SectionDateInterface[] = [{
+export const sectionData: SectionData[] = [{
     title: "Content", data: ["Favourite Cars", "App Currency"]
 }, {
     title: "Preferences", data: ["Language", "Notifications"]
@@ -197,24 +197,46 @@ export const sectionData: SectionDateInterface[] = [{
     title: "User Settings", data: ["Change Password", "Change theme", "Update App", "Privacy", "Close Account", "Logout"]
 }];
 
+const content: SectionData[] = [
+    { title: "Content", data: ["Favourite Cars", "App Currency"] },
+  ];
+  const Preferences: SectionData[] = [
+    { title: "Preferences", data: ["Language", "Notifications"] },
+  ];
+  const appFeatures: SectionData[] = [
+    { title: "App Features", data: ["Terms", "FAQ", "About App"] },
+  ];
+  const userSettings: SectionData[] = [
+    {
+      title: "User Settings",
+      data: [
+        "Change Password",
+        "Change theme",
+        "Update App",
+        "Privacy",
+        "Close Account",
+        "Logout",
+      ],
+    },
+  ];
+
 export const reviewArray: ReviewData[] = [{
     reviewer: "Sebastian",
     date: new Date().toDateString(),
     comment: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back,and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment.",
-    reviewSammury: "Very Good",
-    rating: "9.1"
+    reviewSummary: "Very Good",
+    rating: 4
 }, {
     reviewer: "Seba",
     date: new Date().toDateString(),
     comment: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back,and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment.",
-    reviewSammury: "Good service",
-    rating: "8"
+    reviewSummary: "Good service",
+    rating: 1.5
 }, {
     reviewer: "User Tester",
     date: new Date().toDateString(),
     comment: "One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back,and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment.",
-    reviewSammury: "Longer delivery",
-    rating: "2"
+    reviewSummary: "Longer delivery",
+    rating: 2
 },
-
 ]

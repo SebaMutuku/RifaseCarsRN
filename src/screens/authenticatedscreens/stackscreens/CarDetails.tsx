@@ -9,6 +9,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  Image,
 } from "react-native";
 import layoutParams from "../../../utils/LayoutParams";
 import layout from "../../../utils/LayoutParams";
@@ -19,6 +20,7 @@ import { sharedStyles } from "../../../utils/SharedStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { reviewArray } from "../../../utils/Data";
 import { appFonts } from "../../../utils/AllConstant";
+import { AirbnbRating, Avatar, Rating } from "react-native-elements";
 
 export default function CarDetails() {
   const viewOpacity = React.useRef<Animated.Value>(
@@ -112,10 +114,11 @@ export default function CarDetails() {
           ...styles.carSliderView,
         }}
       >
-        <ImageBackground
-          source={require("../../../../assets/images/mainCarImage.jpg")}
+        <Image
+          source={require("../../../../assets/images/carImage.jpg")}
+          resizeMethod="resize"
           style={{
-            height: "70%",
+            height: "85%",
             width: "95%",
             borderRadius: 10,
             marginTop: 20,
@@ -213,13 +216,10 @@ export default function CarDetails() {
         <Text style={[styles.textStyle, styles.timeBoxTitle, { fontSize: 18 }]}>
           Reviews
         </Text>
-        <Text style={[styles.textStyle, { fontSize: 18 }]} onPress={() => {}}>
-          See All
-        </Text>
       </Animated.View>
       <View
         style={{
-          borderBottomColor: layoutParams.colors.lighGrey,
+          borderBottomColor: layoutParams.colors.grey,
           marginTop: 10,
           marginBottom: 10,
           borderBottomWidth: StyleSheet.hairlineWidth,
@@ -227,36 +227,100 @@ export default function CarDetails() {
       />
       {/*Review Row*/}
       {reviewArray.map((item, index: number) => (
-        <View key={index}>
+        <View
+          key={index}
+          style={{
+            marginTop: 5,
+            marginBottom: 5,
+            borderRadius: 10,
+            backgroundColor: layoutParams.colors.visibleColorOpacity1,
+          }}
+        >
           <Animated.View
             style={{
               flexDirection: "row",
-              marginTop: 10,
+              margin: 8,
               justifyContent: "space-between",
             }}
           >
-            <View>
-              <Text style={[styles.textStyle, styles.timeBoxTitle]}>
-                {item.reviewer}
-              </Text>
-              <Text style={[styles.textStyle, { fontSize: 14 }]}>
-                {item.date}
-              </Text>
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <Avatar
+                rounded
+                size="medium"
+                avatarStyle={{
+                  backgroundColor: layoutParams.colors.disabledButtonColor,
+                }}
+                title="UW"
+                titleStyle={{
+                  color: layoutParams.colors.black,
+                }}
+                icon={{ name: "home", type: "font-awesome" }}
+              />
+              <View
+                style={{
+                  marginLeft: 5,
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Text
+                  style={[
+                    styles.textStyle,
+                    styles.timeBoxTitle,
+                    { fontFamily: appFonts.WorkSans_700Bold },
+                  ]}
+                >
+                  {item.reviewer}
+                </Text>
+                <AirbnbRating
+                  count={5}
+                  defaultRating={item.rating}
+                  size={15}
+                  isDisabled={true}
+                  reviewSize={18}
+                  showRating={false}
+                  onFinishRating={(ratingValue) => {
+                    ratingValue;
+                  }}
+                  selectedColor={layoutParams.colors.primaryColor}
+                  reviewColor={layoutParams.colors.primaryColor}
+                />
+              </View>
             </View>
             <View>
-              <Text style={[styles.textStyle, styles.timeBoxTitle]}>
-                {item.reviewSammury}
-              </Text>
-              <Text style={[styles.textStyle, { fontSize: 14 }]}>
-                Rating: {item.rating}
+              <Text
+                style={[
+                  styles.textStyle,
+                  {
+                    fontSize: 14,
+                    color: layoutParams.colors.lighGrey,
+                    fontFamily: appFonts.WorkSans_600SemiBold,
+                  },
+                ]}
+              >
+                {item.date}
               </Text>
             </View>
           </Animated.View>
           <Text
             style={[
               styles.textStyle,
-              { fontSize: 14, color: layoutParams.colors.black },
+              styles.timeBoxTitle,
+              { marginLeft: 8, marginRight: 8 },
             ]}
+          >
+            {item.reviewSummary}
+          </Text>
+          <Text
+            style={{
+              fontFamily: appFonts.WorkSans_400Regular,
+              color: layoutParams.colors.black,
+              margin: 8,
+            }}
           >
             {item.comment}
           </Text>
@@ -307,11 +371,10 @@ export default function CarDetails() {
     <SafeAreaView
       style={{
         ...sharedStyles.container,
-        backgroundColor: layoutParams.colors.listColors,
+        backgroundColor: layoutParams.colors.backgroundColor,
       }}
     >
       <View style={{ flex: 1 }}>
-        <StatusBar backgroundColor="transparent" barStyle="dark-content" />
         <View
           style={{
             flex: 1,

@@ -1,4 +1,4 @@
-import { showToast, Text, View } from "../../components/Widgets";
+import { toastComponent, Text, View } from "../../components/Widgets";
 import { Animated, SafeAreaView, StyleSheet } from "react-native";
 import { sharedStyles } from "../../utils/SharedStyles";
 import React from "react";
@@ -6,11 +6,11 @@ import { carData } from "../../utils/AppInterfaces";
 import utils from "../../utils/Utils";
 import { PopularCarData } from "../../utils/Data";
 import FlatListView from "../../components/FlatListView";
-import ViewedCarList from "../../flatlist/ViewedCarList";
+import NewCarsList from "../../flatlist/NewCars";
 import layoutParams from "../../utils/LayoutParams";
 import { appFonts } from "../../utils/AllConstant";
 
-export default function RecentViews() {
+export default function NewArrivals() {
   const [state, setState] = React.useState({
     viewedCars: PopularCarData,
   });
@@ -31,7 +31,7 @@ export default function RecentViews() {
           viewedCars: response.data,
         })
       )
-      .catch((error) => showToast(error.message));
+      .catch((error) => toastComponent(error.message));
   };
 
   const renderSingleCarItem = (carItem: carData[]) => {
@@ -40,7 +40,7 @@ export default function RecentViews() {
         showsHorizontalScrollIndicator={false}
         data={carItem}
         renderItem={({ item, index }: any) => (
-          <ViewedCarList carData={item} index={index} />
+          <NewCarsList carData={item} index={index} />
         )}
         ListFooterComponentStyle={null}
         horizontal={false}
@@ -56,6 +56,7 @@ export default function RecentViews() {
     <SafeAreaView
       style={{
         ...sharedStyles.container,
+        backgroundColor:layoutParams.colors.backgroundColor
       }}
     >
       {state.viewedCars.length > 0 ? (
@@ -75,7 +76,7 @@ export default function RecentViews() {
               fontSize: 18,
             }}
           >
-            No Recently view cars
+            New batch coming soon
           </Text>
         </Animated.View>
       )}
@@ -88,7 +89,7 @@ const recentViewsStyles = StyleSheet.create({
     borderRadius: 10,
     minHeight: layoutParams.WINDOW.height * 0.15,
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.searchInput,
+    backgroundColor: layoutParams.colors.visibleColorOpacity1,
     ...layoutParams.elevation,
   },
 });

@@ -1,4 +1,9 @@
-import { Text, TextInput, View } from "../../../components/Widgets";
+import {
+  IconComponent,
+  Text,
+  TextInput,
+  View,
+} from "../../../components/Widgets";
 import {
   Keyboard,
   SafeAreaView,
@@ -19,6 +24,7 @@ import {
 } from "@expo/vector-icons";
 import { MessageContext } from "../../../utils/AppInterfaces";
 import { appFonts } from "../../../utils/AllConstant";
+import { ListItem } from "react-native-elements";
 
 export default function UserMessage() {
   const [state, setState] = React.useState({
@@ -27,7 +33,7 @@ export default function UserMessage() {
   });
   React.useEffect(() => {}, [state.messagesData]);
 
-  const sendmessage = React.useCallback(() => {
+  const sendmessage = () => {
     const todayDate = new Date().toISOString();
     const sendMessage: MessageContext = {
       message: state.messageText,
@@ -40,7 +46,7 @@ export default function UserMessage() {
       messageText: "",
     }));
     Keyboard.dismiss();
-  }, []);
+  };
 
   function replyInput() {
     return (
@@ -75,14 +81,16 @@ export default function UserMessage() {
           disabled={state.messageText.length <= 0}
         >
           {state.messageText.length > 0 ? (
-            <MaterialIcons
-              name="send"
+            <IconComponent
+              icon="send"
+              iconType="material"
               size={24}
               color={layoutParams.colors.white}
             />
           ) : (
-            <MaterialCommunityIcons
-              name="microphone"
+            <IconComponent
+              icon="microphone"
+              iconType="material-community"
               size={24}
               color={layoutParams.colors.white}
             />
@@ -93,68 +101,66 @@ export default function UserMessage() {
   }
 
   function userMessagesFlatList() {
-    const renderUserMessages = React.useCallback((item: any, index: number) => {
+    const renderUserMessage = React.useCallback((item: any, index: number) => {
       return (
-        <View
-          style={{
-            ...userMessageStyles.messageContent,
-            backgroundColor:
-              item.sender === "me"
-                ? layoutParams.colors.listColors
-                : layoutParams.colors.messageColor,
-            marginRight: item.sender === "me" ? StatusBar.currentHeight : 0,
-            marginLeft: item.sender === "me" ? 0 : StatusBar.currentHeight,
-          }}
-          key={index}
-        >
-          <Text
+        <ListItem key={index}>
+          <ListItem.Content
             style={{
-              ...userMessageStyles.sender,
+              backgroundColor:
+                item.sender === "me"
+                  ? layoutParams.colors.listColors
+                  : layoutParams.colors.primaryColor,
+              marginRight: item.sender === "me" ? StatusBar.currentHeight : 0,
+              marginLeft: item.sender === "me" ? 0 : StatusBar.currentHeight,
+              ...userMessageStyles.messageContent,
             }}
           >
-            {item.sender}
-          </Text>
-          <Text
-            allowFontScaling={true}
-            style={{
-              fontSize: 15,
-            }}
-          >
-            {item.message}
-          </Text>
-          <View
-            style={{
-              ...userMessageStyles.momentAndIcon,
-            }}
-          >
-            <Text
+            <ListItem.Title
               style={{
-                ...userMessageStyles.messageTime,
-                fontFamily: appFonts.WorkSans_500Medium,
+                ...userMessageStyles.sender,
+              }}
+              allowFontScaling={true}
+            >
+              {item.sender}
+            </ListItem.Title>
+            <ListItem.Subtitle
+              style={{
+                fontFamily: appFonts.WorkSans_400Regular,
+              }}
+              allowFontScaling
+            >
+              {item.message}
+            </ListItem.Subtitle>
+            <View
+              style={{
+                ...userMessageStyles.momentAndIcon,
               }}
             >
-              {moment(item.messageTime).fromNow()}
-            </Text>
-            <Ionicons
-              name="md-checkmark-done"
-              size={20}
-              color={
-                item.sender === "me"
-                  ? layoutParams.colors.lighGrey
-                  : layoutParams.colors.deepBlue
-              }
-            />
-          </View>
-        </View>
+              <Text
+                style={{
+                  ...userMessageStyles.messageTime,
+                  fontFamily: appFonts.WorkSans_500Medium,
+                }}
+              >
+                {moment(item.messageTime).fromNow()}
+              </Text>
+              <IconComponent
+                icon="md-checkmark-done"
+                iconType="ionicon"
+                size={20}
+                color={layoutParams.colors.primaryColor}
+              />
+            </View>
+          </ListItem.Content>
+        </ListItem>
       );
     }, []);
     return (
       <FlatListView
         data={state.messagesData}
-        renderItem={({ item, index }: any) => renderUserMessages(item, index)}
+        renderItem={({ item, index }: any) => renderUserMessage(item, index)}
         extraData={null}
         keyExtractor={(item: any, index) => item + index}
-        contentContainerStyle={{ margin: 5 }}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={() => (
           <View
@@ -203,7 +209,6 @@ const userMessageStyles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 10,
     padding: 5,
-    marginTop: 10,
   },
   sender: {
     fontSize: 15,
@@ -215,7 +220,8 @@ const userMessageStyles = StyleSheet.create({
   },
   momentAndIcon: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    alignSelf: "flex-end",
+    justifyContent: "space-evenly",
   },
   userMessage: {
     width: "85%",

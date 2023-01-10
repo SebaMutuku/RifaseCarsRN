@@ -152,7 +152,7 @@ const singleItemStyles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.searchInput,
+    backgroundColor: layoutParams.colors.visibleColorOpacity1,
     ...layoutParams.elevation,
   },
 });

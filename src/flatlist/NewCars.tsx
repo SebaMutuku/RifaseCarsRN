@@ -1,5 +1,11 @@
 import { CarViewProps } from "../utils/AppInterfaces";
-import { Animated, Easing, Image, Pressable, StyleSheet } from "react-native";
+import {
+  Animated,
+  Easing,
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import layoutParams from "../utils/LayoutParams";
 import { Text, View } from "../components/Widgets";
 import React from "react";
@@ -7,8 +13,9 @@ import { useNavigation } from "@react-navigation/native";
 import { CombinedNavigationProps } from "../navigation/ScreenTypes";
 import { PopularCarData } from "../utils/Data";
 import { appFonts } from "../utils/AllConstant";
+import { AirbnbRating, Image } from "react-native-elements";
 
-const ViewedCarList = ({ ...props }: CarViewProps) => {
+const NewCarsList = ({ ...props }: CarViewProps) => {
   const PressableView = Animated.createAnimatedComponent(Pressable);
   const opacity = React.useRef<Animated.Value>(new Animated.Value(0)).current;
   const translateY = React.useRef<Animated.Value>(
@@ -49,7 +56,7 @@ const ViewedCarList = ({ ...props }: CarViewProps) => {
     >
       <Text
         style={{
-          fontFamily: appFonts.WorkSans_600SemiBold,
+          fontFamily: appFonts.WorkSans_500Medium,
           color: layoutParams.colors.lighGrey,
         }}
         adjustsFontSizeToFit
@@ -69,7 +76,6 @@ const ViewedCarList = ({ ...props }: CarViewProps) => {
     <PressableView
       style={{
         ...viewedCarStyles.list,
-        padding: 5,
         opacity,
         translateY,
       }}
@@ -86,40 +92,72 @@ const ViewedCarList = ({ ...props }: CarViewProps) => {
     >
       {/*Car Items at the start*/}
       <Image
-        source={require("../../assets/images/mainCarImage.jpg")}
+        source={require("../../assets/images/carImage.jpg")}
         style={{
           justifyContent: "flex-start",
-          height: "100%",
-          width: layoutParams.WINDOW.width * 0.4,
+          minHeight: layoutParams.WINDOW.height * 0.15,
+          width: layoutParams.WINDOW.width * 0.3,
           borderRadius: 10,
-          resizeMode: "contain",
+          resizeMode: "cover",
         }}
+        PlaceholderContent={<ActivityIndicator />}
       />
       <View
         style={{
-          flex: 1,
-          marginLeft: 5,
+          flexDirection: "column",
         }}
       >
-        <Text
+        <View
           style={{
-            fontSize: 20,
-            marginTop: 5,
-            fontFamily: appFonts.WorkSans_600SemiBold,
+            marginLeft: 5,
           }}
         >
-          {props.carData.make}
-        </Text>
-        {carRowItems("Model : ", props.carData.model as string)}
-        {carRowItems("Price : ", "ksh. " + props.carData.price)}
-        {carRowItems("Year Of Manufacturing : ", props.carData.yom)}
-        {carRowItems("Mileage : ", props.carData.mileage + " kms")}
+          <Text
+            style={{
+              fontFamily: appFonts.WorkSans_600SemiBold,
+              color: layoutParams.colors.primaryColor,
+            }}
+            adjustsFontSizeToFit
+          >
+            {props.carData?.make} {""}
+            {props.carData?.model}, {props.carData?.yom}
+          </Text>
+          {carRowItems("Model : ", props.carData.model as string)}
+          {carRowItems("Year Of Manufacturing : ", props.carData.yom)}
+          {carRowItems("Mileage : ", props.carData.mileage + " kms")}
+          <Text
+            style={{
+              textAlign: "left",
+              color: layoutParams.colors.primaryColor,
+              fontFamily: appFonts.WorkSans_400Regular,
+              // fontSize: 16,
+            }}
+            adjustsFontSizeToFit
+          >
+            Price ksh. {props.carData?.price}
+          </Text>
+        </View>
+        <AirbnbRating
+          count={5}
+          defaultRating={3}
+          size={14}
+          isDisabled={true}
+          showRating={false}
+          onFinishRating={(ratingValue) => {
+            ratingValue;
+          }}
+          starContainerStyle={{
+            alignSelf: "flex-start",
+          }}
+          selectedColor={layoutParams.colors.primaryColor}
+          reviewColor={layoutParams.colors.primaryColor}
+        />
       </View>
     </PressableView>
   );
 };
 
-export default React.memo(ViewedCarList);
+export default React.memo(NewCarsList);
 
 const viewedCarStyles = StyleSheet.create({
   list: {
@@ -127,7 +165,6 @@ const viewedCarStyles = StyleSheet.create({
     borderRadius: 10,
     minHeight: layoutParams.WINDOW.height * 0.15,
     flexDirection: "row",
-    backgroundColor: layoutParams.colors.searchInput,
-    ...layoutParams.elevation,
+    // backgroundColor: layoutParams.colors.visibleColorOpacity1,
   },
 });
