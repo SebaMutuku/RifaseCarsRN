@@ -71,7 +71,7 @@ export default function App() {
     const bootstrapAsync = async () => {
       try {
         let userToken = await utils.getValue("token");
-        // userToken = "hahaaha";
+        userToken = "hahaaha";
         if (userToken !== null || userToken !== undefined) {
           dispatch({ type: "AUTHENTICATED", token: userToken });
         } else {

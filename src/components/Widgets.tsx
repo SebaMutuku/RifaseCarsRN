@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   View as DefaultView,
   SafeAreaView,
+  StyleSheet,
 } from "react-native";
 import useColorScheme from "../hooks/useColorScheme";
 import layoutParams from "../utils/LayoutParams";
@@ -27,7 +28,7 @@ import {
   ThemeProps,
 } from "../utils/AppInterfaces";
 import Colors from "../constants/Colors";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { CheckBox } from "react-native-elements";
 import { appFonts } from "../utils/AllConstant";
 import {
   BottomSheet,
@@ -57,26 +58,21 @@ export type ViewProps = ThemeProps & DefaultView["props"];
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 export const toastRef = React.createRef<any>();
 
-export function CheckBox({ ...props }: AppCheckBoxProps) {
-  const [checked, setChecked] = React.useState(props.checked);
-  let checkboxRef: BouncyCheckbox | null = null;
+export function CheckBoxComponent({ ...props }: AppCheckBoxProps) {
   return (
-    <BouncyCheckbox
+    <CheckBox
       style={{ marginTop: 16 }}
-      ref={(ref: any) => (checkboxRef = ref)}
-      isChecked={checked}
-      text={props.label}
-      fillColor={layoutParams.colors.primaryColor}
-      textStyle={{
-        color: layoutParams.colors.black,
-        fontFamily: appFonts.WorkSans_500Medium,
+      checked={props.checked}
+      title={<Text style={styles.textStyle}>{props.label}</Text>}
+      containerStyle={{
+        backgroundColor: layoutParams.colors.backgroundColor,
+        borderWidth: 0,
+        borderColor: layoutParams.colors.backgroundColor,
       }}
-      unfillColor={layoutParams.colors.backgroundColor}
-      disableBuiltInState
+      checkedColor={layoutParams.colors.primaryColor}
+      uncheckedColor={layoutParams.colors.grey}
       onPress={() => {
-        console.log(checked);
-        setChecked(!checked);
-        props.getChecked(checked);
+        props.getChecked(!props.checked);
       }}
     />
   );
@@ -267,3 +263,10 @@ export function LinearProgressComponent({ loading }: LoadingLinearProps) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  textStyle: {
+    color: layoutParams.colors.black,
+    fontFamily: appFonts.WorkSans_500Medium,
+  },
+});

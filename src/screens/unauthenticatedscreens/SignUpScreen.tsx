@@ -8,7 +8,7 @@ import { CombinedNavigationProps } from "../../navigation/ScreenTypes";
 import { Checkbox } from "react-native-paper";
 import {
   ActivityIndicatorComponent,
-  CheckBox,
+  CheckBoxComponent,
   KeyboardAvoidingComponent,
   Text,
   View,
@@ -37,11 +37,15 @@ export default function SignUpScreen() {
       state.phoneNumber.length >= 10 &&
       state.phoneNumber.length < 14 &&
       state.username.length > 0 &&
-      state.password.length >= 8
+      state.password.length >= 8 &&
+      state.checkBoxChecked
     );
   }
   function getChecked(checked: boolean) {
-    return checked;
+    setState({
+      ...state,
+      checkBoxChecked: checked,
+    });
   }
 
   function onRegister() {
@@ -195,10 +199,10 @@ export default function SignUpScreen() {
               marginLeft: 10,
             }}
           >
-            <CheckBox
+            <CheckBoxComponent
               label="Accept terms and conditions here"
               checked={state.checkBoxChecked}
-              getChecked={() => getChecked(state.checkBoxChecked)}
+              getChecked={(value) => getChecked(value)}
               checkboxRef={null}
             />
           </View>
